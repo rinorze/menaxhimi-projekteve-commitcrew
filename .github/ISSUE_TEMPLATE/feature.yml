@@ -1,0 +1,68 @@
+name: Feature or course task
+description: Create an independently reviewable task for a weekly sprint.
+title: "[Feature] "
+labels: ["triage"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal and context
+      description: What outcome should this task deliver, and why does it matter to the MVP?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable outcomes that define completion.
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
+  - type: dropdown
+    id: sprint
+    attributes:
+      label: Sprint
+      options:
+        - Sprint 1 — Kickoff and scope
+        - Sprint 2 — Research and UX
+        - Sprint 3 — Foundation and data
+        - Sprint 4 — Attraction discovery
+        - Sprint 5 — Content and navigation
+        - Sprint 6 — Photo check-in
+        - Sprint 7 — Passport
+        - Sprint 8 — Quests
+        - Sprint 9 — Lightweight admin
+        - Sprint 10 — Integration and hardening
+        - Sprint 11 — Final review and handoff
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: Primary role
+      options:
+        - R1 — Product and project lead
+        - R2 — UX and content
+        - R3 — Visitor experience and map
+        - R4 — Check-in and passport
+        - R5 — Data and web admin
+        - R6 — Quality and release
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 — Must have
+        - P1 — Should have
+        - P2 — Could have
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and notes
+      description: Link prerequisite issues and note risks. Assign one confirmed team member after the roster is available.
+    validations:
+      required: false

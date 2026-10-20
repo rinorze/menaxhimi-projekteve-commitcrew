@@ -1,0 +1,30 @@
+# Contributing
+
+## Work from an issue
+
+Before starting, choose an issue in the current sprint, confirm its acceptance criteria, and make sure it has one owner. If the scope is unclear or blocked, discuss it in the issue before creating a large implementation.
+
+## Branch and pull request flow
+
+1. Update local `main` before starting.
+2. Create a focused branch named `feat/<issue-number>-short-description`, `fix/<issue-number>-short-description`, or `docs/<issue-number>-short-description`.
+3. Keep each pull request focused on one issue and link it with `Closes #<issue-number>` when it completes that issue.
+4. Explain what changed, how to review it, and any remaining limitation. Include screenshots for visible interface changes.
+5. Ask a teammate to review the work against the issue's acceptance criteria. The author should not approve their own pull request.
+6. Resolve review feedback, keep the branch current, and merge after checks and review are complete.
+
+## Quality and collaboration
+
+- Keep `main` in a demoable state; do not commit unfinished experiments directly to it.
+- Add or update documentation when setup, behavior, or project decisions change.
+- Record third-party content and media sources and only use assets the team may use.
+- Do not commit secrets, private user data, or real location/photo data from participants.
+- Raise blockers early and update the issue and sprint board during the weekly task check.
+
+## Pull request checklist
+
+- [ ] Linked issue and acceptance criteria are addressed.
+- [ ] Change is focused and includes appropriate documentation.
+- [ ] Relevant checks were run and their results are stated.
+- [ ] UI behavior was checked at a narrow and wide viewport when applicable.
+- [ ] No secrets, unlicensed assets, or real participant data were added.

@@ -1,0 +1,47 @@
+name: Bug or blocker
+description: Report a defect or a blocker to the MVP journey.
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include steps to reproduce and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: User impact and evidence
+      description: Which part of the MVP journey is affected? Add screenshots or error details if useful.
+    validations:
+      required: true
+  - type: dropdown
+    id: sprint
+    attributes:
+      label: Sprint
+      options:
+        - Sprint 1 — Kickoff and scope
+        - Sprint 2 — Research and UX
+        - Sprint 3 — Foundation and data
+        - Sprint 4 — Attraction discovery
+        - Sprint 5 — Content and navigation
+        - Sprint 6 — Photo check-in
+        - Sprint 7 — Passport
+        - Sprint 8 — Quests
+        - Sprint 9 — Lightweight admin
+        - Sprint 10 — Integration and hardening
+        - Sprint 11 — Final review and handoff
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 — Must have
+        - P1 — Should have
+        - P2 — Could have
+    validations:
+      required: true
