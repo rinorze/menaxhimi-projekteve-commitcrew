@@ -37,7 +37,7 @@ Hold one check each week, ideally at the same time. For every issue in the activ
 
 ## GitHub Project setup
 
-Create a project named **Discover Kosovo — 11-Week Course Plan** and link this repository. Recommended fields:
+The private [Discover Kosovo — 11-Week Course Plan](https://github.com/users/rinorze/projects/1) project is linked to this repository. Its fields are:
 
 - **Status:** Backlog, Ready, In progress, In review, Done, Blocked.
 - **Sprint:** Sprint 1 — Kickoff and scope; Sprint 2 — Research and UX; Sprint 3 — Foundation and data; Sprint 4 — Attraction discovery; Sprint 5 — Content and navigation; Sprint 6 — Photo check-in; Sprint 7 — Passport; Sprint 8 — Quests; Sprint 9 — Lightweight admin; Sprint 10 — Integration and hardening; Sprint 11 — Final review and handoff.

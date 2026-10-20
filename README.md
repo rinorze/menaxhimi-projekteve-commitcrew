@@ -21,7 +21,7 @@ The six roles and their responsibilities are in [the project plan](docs/PROJECT-
 
 ## Project links
 
-- GitHub Project: to be linked after the board is created.
+- GitHub Project: [Discover Kosovo — 11-Week Course Plan](https://github.com/users/rinorze/projects/1).
 - Course instructor: Professor Lorent Sinani (`@lorentsinani`), invited as a collaborator.
 - Weekly plan and sprint checks: [docs/PROJECT-PLAN.md](docs/PROJECT-PLAN.md).
 - Contribution and branching rules: [CONTRIBUTING.md](CONTRIBUTING.md).
