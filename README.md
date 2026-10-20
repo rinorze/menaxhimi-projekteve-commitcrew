@@ -46,6 +46,6 @@ The implementation stack and exact setup commands will be documented once the te
 ## Course workflow
 
 - Every work item starts as a GitHub Issue with an owner, role, week, priority, acceptance criteria, and dependencies.
-- Create a branch from `main` for each issue and open a pull request that links the issue.
+- Work on your assigned `member-N-*` branch and open issue-focused pull requests into `app-mobile`. Review the integrated app and open a pull request from `app-mobile` into `main` for each course milestone. See [CONTRIBUTING.md](CONTRIBUTING.md) for the branch map and review flow.
 - Review the sprint board and check acceptance criteria once each week; record decisions and blockers on the issue or in the sprint review.
 - Keep the MVP small: a working end-to-end visitor journey is more valuable than unfinished advanced features.

@@ -6,12 +6,28 @@ Before starting, choose an issue in the current sprint, confirm its acceptance c
 
 ## Branch and pull request flow
 
-1. Update local `main` before starting.
-2. Create a focused branch named `feat/<issue-number>-short-description`, `fix/<issue-number>-short-description`, or `docs/<issue-number>-short-description`.
-3. Keep each pull request focused on one issue and link it with `Closes #<issue-number>` when it completes that issue.
+The team has six personal work branches, mapped to the six project roles, and one shared mobile integration branch:
+
+| Branch | Initial role mapping |
+| --- | --- |
+| `member-1-product` | R1 — Product and project lead |
+| `member-2-ux-content` | R2 — UX and content |
+| `member-3-discovery-map` | R3 — Visitor experience and map |
+| `member-4-checkin-passport` | R4 — Check-in and passport |
+| `member-5-data-admin` | R5 — Data and web admin |
+| `member-6-quality-release` | R6 — Quality and release |
+| `app-mobile` | Shared mobile app integration |
+
+The member numbers are placeholders until the six GitHub usernames are confirmed. The role mapping can be changed with the team roster.
+
+1. Pull the latest version of your assigned `member-N-*` branch before starting work.
+2. Commit only work for your assigned issues to your member branch. Put the issue number in commit messages or pull request descriptions.
+3. Open a pull request from the member branch into `app-mobile` for mobile app work. Keep each pull request focused on one issue and use `Closes #<issue-number>` when it completes that issue.
 4. Explain what changed, how to review it, and any remaining limitation. Include screenshots for visible interface changes.
 5. Ask a teammate to review the work against the issue's acceptance criteria. The author should not approve their own pull request.
-6. Resolve review feedback, keep the branch current, and merge after checks and review are complete.
+6. After the weekly review, integrate the approved work into `app-mobile`. Open a pull request from `app-mobile` into `main` for a reviewed, runnable milestone. Only merge after checks and review are complete.
+
+Do not commit directly to `main`. Keep the `app-mobile` branch buildable and bring it up to date with `main` after each integration pull request.
 
 ## Quality and collaboration
 
