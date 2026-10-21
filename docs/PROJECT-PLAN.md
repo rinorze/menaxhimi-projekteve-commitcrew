@@ -161,9 +161,9 @@ Each sprint runs Monday → Sunday and is checked in class every week. Design wo
 | **S1** | Competitor audit; personas and journey map; send MVP to professor | ADRs; Supabase project | Spike: Next.js + Supabase auth | Spike: MapLibre in a dev build | Spike: camera + GPS | Working agreement; spike: feed list |
 | **S2** | IA and user flows; lo-fi wireframes | **Monorepo scaffold**; DB schema v1 + RLS | CI pipeline; content plan (60 places) | App shell: 5 tabs, theme, i18n | Auth screens | Feed UI on mock data |
 | **S3** | Visual identity; Figma UI kit and tokens | OSM/Wikidata import; places API | Admin login and layout | **Explore map v1** | Onboarding and profile setup | Profile screen |
-| **S4** | Hi-fi feed and explore; hi-fi check-in and stamps; map style | Storage buckets; **check-in RPC** | **Admin places CRUD** | Place detail | Check-in camera screen | Follow system |
+| **S4** | Hi-fi feed and explore; hi-fi check-in and stamps | Storage buckets; **check-in RPC** | **Admin places CRUD** | Place detail | Check-in camera screen | Follow system |
 | **S4 content** | Gjilan + Ferizaj | Prishtinë | Prizren | Pejë | Gjakovë | Mitrovicë/Vushtrri |
-| **S5** | Hi-fi social and passport; usability test #1 | Feed, likes and comments backend | Admin quests; test plan | Demo mode; search and filters | **Check-in end to end** | **Live feed**, likes, comments |
+| **S5** | Hi-fi social and passport; map style and pins; usability test #1 | Feed, likes and comments backend | Admin quests; test plan | Demo mode; search and filters | **Check-in end to end** | **Live feed**, likes, comments |
 | **S6** | Hi-fi quests and web pages; motion spec | Gamification and leaderboards backend | Moderation queue | Visited states; place photos | **Passport** and stamp component | Notifications; report/block |
 | **S7** | Usability test #2; app icon and splash | Quests backend | Public web profile | **Besa Quests UI** | XP/levels; settings | Share and deep links |
 | **S8** | Empty states and microcopy; events design | Events backend | Landing page; admin events; **beta test** | Fog of war | Events and festival stamps | Leaderboards |
@@ -172,6 +172,19 @@ Each sprint runs Monday → Sunday and is checked in class every week. Design wo
 | **S11** | Demo video; design case study | **v1.0.0 release** | Final web deploy | Final demo checks | Final demo checks | Rehearsals; **submission** |
 
 Every member also has a weekly **sprint review** item (owned by Krenare) and takes part in the final presentation.
+
+### Epics on the board
+
+Every task is a sub-issue of one epic, so the progress bars on the **Epics** view show how far each area is.
+
+| Epic | Owner | Epic | Owner |
+| --- | --- | --- | --- |
+| [#2 Project management and Scrum](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/2) | Krenare | [#8 Social: feed, follows, likes, comments](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/8) | Krenare |
+| [#3 UX research and design system](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/3) | Rinor | [#9 Passport, stamps and gamification](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/9) | Elvina |
+| [#4 Platform, backend and DevOps](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/4) | Elios | [#10 Besa Quests](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/10) | Erleta |
+| [#5 Accounts, onboarding and settings](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/5) | Elvina | [#11 Web: admin, moderation, public pages](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/11) | Artiola |
+| [#6 Explore: map and discovery](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/6) | Erleta | [#12 Content and data (60+ places)](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/12) | Artiola |
+| [#7 Verified check-in and posts](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/7) | Elvina | [#13 Quality, release and presentation](https://github.com/rinorze/menaxhimi-projekteve-commitcrew/issues/13) | Artiola |
 
 ---
 

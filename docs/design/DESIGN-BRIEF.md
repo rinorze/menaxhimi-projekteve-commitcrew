@@ -68,8 +68,8 @@ Design is due **one sprint before** development starts.
 | S1 | Competitor and inspiration audit; 3 proto-personas and a journey map | `docs/design/research/` |
 | S2 | IA, user flows (FigJam), lo-fi wireframes and a clickable lo-fi prototype | Figma + links in the issue |
 | S3 | Visual identity (logo, color, type, icons); Figma UI kit; **design tokens** | Figma · `design/tokens.json` → `packages/shared/theme` |
-| S4 | Hi-fi: feed, explore, place detail, check-in, stamp system; map style; category pins | Figma · `design/map-style/` · `design/icons/` |
-| S5 | Hi-fi: profiles, comments, notifications, passport, report/block; **usability test #1** (prototype, 5 people) | Figma · `docs/design/research/usability-1.md` |
+| S4 | Hi-fi: feed, explore, place detail, check-in, stamp system (SVG frames) | Figma · `design/stamps/` |
+| S5 | Hi-fi: profiles, comments, notifications, passport, report/block; custom map style and category pins; **usability test #1** (prototype, 5 people) | Figma · `design/map-style/` · `design/icons/` · `docs/design/research/usability-1.md` |
 | S6 | Hi-fi: quests, fog, leaderboards, XP, settings, web pages; motion spec and Lottie files | Figma · `design/motion/` |
 | S7 | **Usability test #2** on the real app; app icon, splash, share card | `docs/design/research/usability-2.md` · `design/brand/` |
 | S8 | Empty/loading/error states and a microcopy deck (sq/en); events and festival stamps | Figma · `docs/design/copy-deck.md` |
