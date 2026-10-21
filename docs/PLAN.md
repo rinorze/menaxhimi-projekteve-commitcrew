@@ -3,7 +3,7 @@
 > **Team:** CommitCrew · **Course:** Menaxhimi i Projekteve (Prof. Lorent Sinani) · **Board:** [GitHub Project](https://github.com/users/rinorze/projects/1)
 > **Timeline:** 11 weekly sprints, 19 Oct 2026 → 10 Jan 2027 (holiday break 28 Dec – 3 Jan)
 
-This plan describes **what** we build, **which screens** come first, and **who builds what each week**. Every line in section 6 is an issue on the board.
+This plan describes **what** we build, **which screens** come first, and **who builds what each week**. Every cell in section 6 is one card on the board: **one card per person per week**.
 
 ---
 
@@ -197,7 +197,7 @@ Elios → Prishtinë region (8) · Krenare → Mitrovicë region (7) · Artiola 
 | **S10** 21–27 Dec · *Release candidate* | Presentation deck + demo storyboard | Android release build | **Final report** | Bug fixes (own screens) | Bug fixes + demo data | Bug fixes |
 | **S11** 4–10 Jan · *Final* | Demo video + case study | v1.0 release | Rehearsals + submission | Final QA | Demo phones checklist | Demo phones checklist |
 
-Every sprint also has a **sprint review** (Krenare), and in Sprint 1 everyone merges a first **onboarding PR**.
+Krenare's card also includes the weekly **sprint review**, and in Sprint 1 everyone's card includes a first **PR** to practise the workflow.
 
 ---
 
@@ -230,9 +230,9 @@ flowchart LR
 ## 8. How we work
 
 - **Scrum with 1-week sprints.** Planning right after class, an async stand-up in the group chat (Mon / Wed / Fri: *done · next · blocked*), and a review in class.
-- **Board columns:** Backlog → Todo → In Progress → In Review → Done. Every issue has one owner, a sprint, a priority (P0/P1/P2) and points.
-- **Git:** `main` (a stable release per sprint) ← `develop` (integration) ← `feat/<issue>-<name>` branches. A PR needs 1 approval, and a PR that changes UI also needs Rinor's design review. Details are in [CONTRIBUTING.md](../CONTRIBUTING.md).
-- **Definition of Done:** acceptance criteria met · screenshots in the PR · reviewed · merged into `develop` · sq/en text · card in Done.
+- **Board:** one card per person per week, with a checklist inside. Columns: Todo → In Progress → In Review → Done. Views: *This week*, *All sprints*, *By person*, *My work*.
+- **Git:** everyone pushes to **`staging`** (the default branch). When the week's work runs, it goes to `develop` and at the end of the sprint to `main`. Both are protected, so we always have a safe copy. Details are in [CONTRIBUTING.md](../CONTRIBUTING.md).
+- **Definition of Done:** the card's checklist is ticked · pushed to `staging` with `Closes #card` · screenshots for screens · sq/en text · card in Done.
 
 ---
 

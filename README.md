@@ -95,7 +95,6 @@ At the same time, the people who would love these places are everywhere. **More 
 | **Backend** (`backend/`) | Python · Django and Django REST Framework · GeoDjango · Django Channels (chat and live location) |
 | **Database** | PostgreSQL with PostGIS · Redis |
 | **AI** | Vision and language models, called only from the backend |
-| **Design** | Figma · FigJam |
 
 ## Team: CommitCrew
 
@@ -108,4 +107,4 @@ At the same time, the people who would love these places are everywhere. **More 
 | Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Frontend Developer: cities, places, 2D/3D map |
 | Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Frontend Developer: camera unlock, collection, chat, AI |
 
-Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every task, owner and deadline lives on the [project board](https://github.com/users/rinorze/projects/1).
+Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has one card per week on the [project board](https://github.com/users/rinorze/projects/1), and everyone pushes to the `staging` branch.

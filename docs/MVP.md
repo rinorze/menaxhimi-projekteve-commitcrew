@@ -71,8 +71,8 @@ Përmbajtja e 38 komunave ndahet sipas rajoneve te të gjithë anëtarët.
 ## 6. Mënyra e punës
 
 - **Scrum me sprinte javore:** planifikimi pas orës, *stand-up* tri herë në javë në grup dhe rishikimi në klasë.
-- **GitHub Projects:** çdo task ka pronar, sprint, prioritet (P0/P1/P2) dhe pikë.
-- **Degët:** `main` (versioni i çdo sprinti) ← `develop` (integrimi) ← `feat/<issue>-<emri>`, me Pull Request dhe review nga një shok i ekipit.
+- **GitHub Projects:** një kartelë për çdo anëtar për çdo javë (66 kartela), me listë detyrash brenda.
+- **Degët:** të gjithë punojnë në **`staging`**. Puna e testuar kalon në `develop`, ndërsa në fund të çdo sprinti në `main`. `develop` dhe `main` janë të mbrojtura, kështu që gjithmonë kemi një kopje të sigurt.
 
 ## 7. Demo finale
 
