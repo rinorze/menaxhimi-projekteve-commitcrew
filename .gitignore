@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.keystore
+!debug.keystore
+google-services.json
+GoogleService-Info.plist
+
+# Expo / React Native
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+frontend/android/
+frontend/ios/
+*.apk
+*.aab
+*.ipa
+
+# Turborepo & builds
+.turbo/
+build/
+coverage/
+*.tsbuildinfo
+
+# Python / Django
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+media/
+staticfiles/
+celerybeat-schedule
+db.sqlite3
+
+# Testing
+playwright-report/
+test-results/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log

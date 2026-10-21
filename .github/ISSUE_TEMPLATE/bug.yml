@@ -1,0 +1,45 @@
+name: Bug report
+description: Something is broken or behaves differently from the design or spec.
+title: "bug: <what is wrong>"
+labels: ["bug"]
+projects: ["rinorze/1"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you expected vs. what you saw. Add screenshots or a recording.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options: [Android app, iOS app, Backend / API, Django admin]
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - "P0: blocks the core journey or the demo"
+        - "P1: important, has a workaround"
+        - "P2: cosmetic / minor"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device / build
+      placeholder: "Pixel 7, Android 15, dev build from 12 Nov"

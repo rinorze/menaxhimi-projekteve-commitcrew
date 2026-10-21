@@ -1,0 +1,50 @@
+name: Feature / task
+description: A piece of work that delivers functionality (mobile, web, backend, data).
+title: "<short, verb-first title>"
+labels: ["type: feature"]
+projects: ["rinorze/1"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be possible when this is done, and for whom?
+      placeholder: "Screen or endpoint, e.g. E2 Cities grid: show all 38 municipalities as photo cards"
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Tasks
+      value: |
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How will the reviewer know it is done? Make each item testable.
+      value: |
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
+  - type: input
+    id: design
+    attributes:
+      label: Design
+      description: Figma link (required for UI work)
+  - type: input
+    id: depends
+    attributes:
+      label: Depends on
+      placeholder: "#12, #15"
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [frontend, backend, data, devops, qa]
+    validations:
+      required: true
