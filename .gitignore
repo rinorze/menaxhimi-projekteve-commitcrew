@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.keystore
+!debug.keystore
+google-services.json
+GoogleService-Info.plist
+
+# Expo / React Native
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+apps/mobile/android/
+apps/mobile/ios/
+*.apk
+*.aab
+*.ipa
+
+# Next.js / Vercel
+.next/
+out/
+.vercel/
+next-env.d.ts
+
+# Turborepo & builds
+.turbo/
+build/
+coverage/
+*.tsbuildinfo
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Testing
+playwright-report/
+test-results/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log

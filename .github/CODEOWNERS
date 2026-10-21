@@ -1,0 +1,15 @@
+# Reviewers are requested automatically for changes in these paths.
+# See CONTRIBUTING.md for the review pairs.
+
+/supabase/                 @eliosmernica15
+/data/                     @eliosmernica15 @artiolaferizi
+/packages/shared/          @eliosmernica15
+/packages/shared/theme/    @rinorze
+
+/apps/web/                 @artiolaferizi @rinorze
+/apps/mobile/              @erletaqerimi-oss @elvinasinani-netizen @krenareveselii @rinorze
+
+/design/                   @rinorze
+/docs/design/              @rinorze
+/docs/sprints/             @krenareveselii
+/.github/                  @eliosmernica15 @artiolaferizi
