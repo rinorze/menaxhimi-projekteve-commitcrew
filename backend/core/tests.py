@@ -46,14 +46,21 @@ class PlaceTests(TestCase):
         )
         self.place = models.Place.objects.create(
             municipality=self.muni, name_sq='Ura', name_en='Bridge', slug='bridge',
-            latitude=42.6629, longitude=21.1655, unlock_radius_m=100,
+            lat=42.6629, lng=21.1655, unlock_radius_m=100,
         )
 
     def test_list_places(self):
         res = self.client.get('/api/places/')
         self.assertEqual(res.status_code, 200)
         results = res.json().get('results', res.json())
+        self.assertTrue(any(p['slug'] == 'bridge' for p in results))
+
+    def test_list_municipalities(self):
+        res = self.client.get('/api/municipalities/')
+        self.assertEqual(res.status_code, 200)
+        results = res.json()
         self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]['slug'], 'prishtine-muni')
 
     def test_place_detail(self):
         res = self.client.get('/api/places/bridge/')
@@ -67,7 +74,7 @@ class UnlockTests(TestCase):
         self.muni = models.Municipality.objects.create(region=self.region, name_sq='X', name_en='X', slug='x-muni')
         self.place = models.Place.objects.create(
             municipality=self.muni, name_sq='V', name_en='Place', slug='place',
-            latitude=42.6629, longitude=21.1655, unlock_radius_m=100,
+            lat=42.6629, lng=21.1655, unlock_radius_m=100,
         )
         self.user = User.objects.create_user(username='u1', password='Str0ngPass!23')
         self.client = APIClient()
@@ -75,7 +82,7 @@ class UnlockTests(TestCase):
 
     def test_unlock_in_range(self):
         res = self.client.post('/api/unlocks/', {
-            'place_slug': 'place', 'latitude': 42.6629, 'longitude': 21.1655, 'accuracy_m': 10,
+            'place_slug': 'place', 'lat': 42.6629, 'lng': 21.1655, 'accuracy_m': 10,
         }, format='json')
         self.assertEqual(res.status_code, 201)
         self.assertTrue(models.Unlock.objects.filter(user=self.user, place=self.place).exists())
@@ -84,26 +91,26 @@ class UnlockTests(TestCase):
 
     def test_unlock_out_of_range(self):
         res = self.client.post('/api/unlocks/', {
-            'place_slug': 'place', 'latitude': 42.7, 'longitude': 21.2, 'accuracy_m': 10,
+            'place_slug': 'place', 'lat': 42.7, 'lng': 21.2, 'accuracy_m': 10,
         }, format='json')
         self.assertEqual(res.status_code, 400)
         self.assertFalse(models.Unlock.objects.exists())
 
     def test_unlock_bad_accuracy(self):
         res = self.client.post('/api/unlocks/', {
-            'place_slug': 'place', 'latitude': 42.6629, 'longitude': 21.1655, 'accuracy_m': 200,
+            'place_slug': 'place', 'lat': 42.6629, 'lng': 21.1655, 'accuracy_m': 200,
         }, format='json')
         self.assertEqual(res.status_code, 400)
 
     def test_unlock_twice(self):
-        data = {'place_slug': 'place', 'latitude': 42.6629, 'longitude': 21.1655, 'accuracy_m': 10}
+        data = {'place_slug': 'place', 'lat': 42.6629, 'lng': 21.1655, 'accuracy_m': 10}
         self.client.post('/api/unlocks/', data, format='json')
         res = self.client.post('/api/unlocks/', data, format='json')
         self.assertEqual(res.status_code, 400)
 
     def test_unlock_requires_auth(self):
         self.client.force_authenticate(user=None)
-        res = self.client.post('/api/unlocks/', {'place_slug': 'place', 'latitude': 1, 'longitude': 1}, format='json')
+        res = self.client.post('/api/unlocks/', {'place_slug': 'place', 'lat': 1, 'lng': 1}, format='json')
         self.assertEqual(res.status_code, 401)
 
 
@@ -166,7 +173,7 @@ class AIRouteTests(TestCase):
         muni = models.Municipality.objects.create(region=region, name_sq='M', name_en='M', slug='m')
         models.Place.objects.create(
             municipality=muni, name_sq='P', name_en='Prizren Fortress', slug='fortress',
-            latitude=42.2, longitude=20.7,
+            lat=42.2, lng=20.7,
         )
         res = APIClient().post('/api/ai/ask/', {'question': 'Prizren'}, format='json')
         self.assertEqual(res.status_code, 200)
@@ -176,7 +183,7 @@ class AIRouteTests(TestCase):
     def test_plan_returns_db_places_only(self):
         region = models.Region.objects.create(name_sq='R2', name_en='R2', slug='r2')
         muni = models.Municipality.objects.create(region=region, name_sq='M2', name_en='M2', slug='m2')
-        models.Place.objects.create(municipality=muni, name_sq='P2', name_en='P2', slug='p2', latitude=1, longitude=1)
+        models.Place.objects.create(municipality=muni, name_sq='P2', name_en='P2', slug='p2', lat=1, lng=1)
         res = APIClient().post('/api/ai/plan/', {'hours': 4}, format='json')
         self.assertEqual(res.status_code, 200)
         self.assertGreaterEqual(len(res.json()['stops']), 1)
@@ -200,3 +207,11 @@ class TripTests(TestCase):
         res = self.client.get('/api/streak/')
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json()['current'], 0)
+
+
+class WaitlistTests(TestCase):
+    def test_waitlist_create(self):
+        client = APIClient()
+        res = client.post('/api/waitlist/', {'email': 'test@example.com'}, format='json')
+        self.assertIn(res.status_code, [200, 201])
+        self.assertTrue(models.WaitlistEntry.objects.filter(email='test@example.com').exists())

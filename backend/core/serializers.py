@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import models
 
@@ -22,7 +21,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
+            raise serializers.ValidationError({'password': "Password fields didn't match."})
         return attrs
 
     def create(self, validated_data):
@@ -35,61 +34,105 @@ class RegisterSerializer(serializers.ModelSerializer):
 class RegionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Region
-        fields = '__all__'
+        fields = ('id', 'slug', 'name_sq', 'name_en', 'name_de', 'name_fr')
 
 
 class MunicipalitySerializer(serializers.ModelSerializer):
     region = RegionSerializer(read_only=True)
+    places_count = serializers.IntegerField(source='places.count', read_only=True)
 
     class Meta:
         model = models.Municipality
-        fields = '__all__'
+        fields = (
+            'id', 'slug', 'region', 'name_sq', 'name_en', 'name_de', 'name_fr', 'name_sr',
+            'blurb_sq', 'blurb_en', 'blurb_de', 'blurb_fr',
+            'lat', 'lng', 'population', 'population_year', 'area_km2',
+            'website', 'wikidata', 'image', 'places_count',
+        )
+
+
+class MunicipalityBriefSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Municipality
+        fields = ('id', 'slug', 'name_sq', 'name_en')
 
 
 class PlaceSerializer(serializers.ModelSerializer):
-    municipality = MunicipalitySerializer(read_only=True)
+    municipality = MunicipalityBriefSerializer(read_only=True)
 
     class Meta:
         model = models.Place
-        fields = '__all__'
+        fields = (
+            'id', 'slug', 'municipality',
+            'name_sq', 'name_en', 'name_de', 'name_fr', 'name_sr',
+            'category', 'tags', 'lat', 'lng', 'unlock_radius_m', 'elevation_m',
+            'summary_sq', 'summary_en', 'summary_de', 'summary_fr',
+            'summary_source', 'summary_url',
+            'best_time', 'duration_min', 'difficulty', 'sensitive',
+            'opening_hours', 'website', 'phone', 'wheelchair', 'fee', 'access',
+            'osm_id', 'osm_url', 'wikidata', 'checked_at',
+            'photos', 'image', 'xp', 'score',
+        )
+
+
+class PlaceListSerializer(serializers.ModelSerializer):
+    """Lighter payload for the map and grid: no long summaries."""
+
+    municipality = MunicipalityBriefSerializer(read_only=True)
+
+    class Meta:
+        model = models.Place
+        fields = (
+            'id', 'slug', 'municipality', 'name_sq', 'name_en',
+            'category', 'tags', 'lat', 'lng', 'unlock_radius_m',
+            'sensitive', 'image', 'xp',
+        )
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    home_municipality = MunicipalityBriefSerializer(read_only=True)
+    home_municipality_slug = serializers.SlugRelatedField(
+        slug_field='slug',
+        queryset=models.Municipality.objects.all(),
+        source='home_municipality',
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
 
     class Meta:
         model = models.Profile
-        fields = '__all__'
-
-
-class UnlockSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Unlock
-        fields = '__all__'
-        read_only_fields = ('user', 'unlocked_at')
-
-
-class UnlockCreateSerializer(serializers.Serializer):
-    place_slug = serializers.SlugField()
-    latitude = serializers.FloatField()
-    longitude = serializers.FloatField()
-    accuracy_m = serializers.FloatField(required=False, allow_null=True)
+        fields = (
+            'id', 'user', 'display_name', 'home_municipality', 'home_municipality_slug',
+            'language', 'avatar', 'bio', 'ghost_mode', 'location_sharing',
+            'created_at', 'updated_at',
+        )
 
 
 class StampSerializer(serializers.ModelSerializer):
-    place = PlaceSerializer(read_only=True)
+    place = PlaceListSerializer(read_only=True)
 
     class Meta:
         model = models.Stamp
-        fields = '__all__'
+        fields = ('id', 'place', 'created_at')
+
+
+class UnlockSerializer(serializers.ModelSerializer):
+    place = PlaceListSerializer(read_only=True)
+
+    class Meta:
+        model = models.Unlock
+        fields = ('id', 'place', 'unlocked_at', 'lat', 'lng', 'accuracy_m', 'photo')
 
 
 class ActivitySerializer(serializers.ModelSerializer):
-    place = PlaceSerializer(read_only=True)
+    place = PlaceListSerializer(read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = models.Activity
-        fields = '__all__'
+        fields = ('id', 'user', 'username', 'type', 'place', 'text_sq', 'text_en', 'created_at')
 
 
 class FriendshipSerializer(serializers.ModelSerializer):
@@ -98,19 +141,17 @@ class FriendshipSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Friendship
-        fields = '__all__'
-        read_only_fields = ('from_user', 'status', 'created_at', 'updated_at')
+        fields = ('id', 'from_user', 'to_user', 'status', 'created_at', 'updated_at')
 
 
 class PostcardSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
     recipient = UserSerializer(read_only=True)
-    place = PlaceSerializer(read_only=True)
+    place = PlaceListSerializer(read_only=True)
 
     class Meta:
         model = models.Postcard
-        fields = '__all__'
-        read_only_fields = ('sender', 'created_at')
+        fields = ('id', 'sender', 'recipient', 'place', 'message', 'created_at')
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -118,8 +159,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Message
-        fields = '__all__'
-        read_only_fields = ('sender', 'created_at', 'read')
+        fields = ('id', 'sender', 'content', 'created_at', 'read')
 
 
 class ConversationSerializer(serializers.ModelSerializer):
@@ -131,31 +171,31 @@ class ConversationSerializer(serializers.ModelSerializer):
         fields = ('id', 'participants', 'created_at', 'updated_at', 'last_message')
 
     def get_last_message(self, obj):
-        msg = obj.messages.order_by('-created_at').first()
-        if msg:
-            return MessageSerializer(msg).data
-        return None
-
-
-class AskKosovoSerializer(serializers.Serializer):
-    question = serializers.CharField()
-
-
-class PlanMyDaySerializer(serializers.Serializer):
-    hours = serializers.IntegerField(default=4, min_value=1, max_value=12)
-    interests = serializers.ListField(child=serializers.CharField(), required=False)
-    municipality_slug = serializers.SlugField(required=False)
+        message = obj.messages.order_by('-created_at').first()
+        return MessageSerializer(message).data if message else None
 
 
 class TripSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
     participants = UserSerializer(many=True, read_only=True)
-    places = PlaceSerializer(many=True, read_only=True)
+    places = PlaceListSerializer(many=True, read_only=True)
+    place_slugs = serializers.ListField(
+        child=serializers.SlugField(), write_only=True, required=False
+    )
 
     class Meta:
         model = models.Trip
-        fields = '__all__'
-        read_only_fields = ('owner', 'created_at')
+        fields = (
+            'id', 'name', 'owner', 'participants', 'municipality',
+            'start_date', 'end_date', 'places', 'place_slugs', 'created_at',
+        )
+
+    def create(self, validated_data):
+        place_slugs = validated_data.pop('place_slugs', [])
+        trip = models.Trip.objects.create(owner=self.context['request'].user, **validated_data)
+        if place_slugs:
+            trip.places.set(models.Place.objects.filter(slug__in=place_slugs))
+        return trip
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
@@ -167,4 +207,39 @@ class ChallengeSerializer(serializers.ModelSerializer):
 class StreakSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Streak
+        fields = ('current', 'longest', 'last_unlock_date')
+
+
+class EventSerializer(serializers.ModelSerializer):
+    municipality = MunicipalityBriefSerializer(read_only=True)
+
+    class Meta:
+        model = models.Event
         fields = '__all__'
+
+
+class WaitlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.WaitlistEntry
+        fields = ('id', 'email', 'source', 'created_at')
+
+
+# ------------------------------------------------------------ request payloads
+
+
+class UnlockCreateSerializer(serializers.Serializer):
+    place_slug = serializers.SlugField()
+    lat = serializers.FloatField()
+    lng = serializers.FloatField()
+    accuracy_m = serializers.FloatField(required=False, allow_null=True)
+
+
+class AskKosovoSerializer(serializers.Serializer):
+    question = serializers.CharField()
+    language = serializers.ChoiceField(choices=['sq', 'en'], default='sq')
+
+
+class PlanMyDaySerializer(serializers.Serializer):
+    hours = serializers.IntegerField(default=4, min_value=1, max_value=12)
+    municipality = serializers.SlugField(required=False, allow_blank=True)
+    interests = serializers.ListField(child=serializers.CharField(), required=False)
