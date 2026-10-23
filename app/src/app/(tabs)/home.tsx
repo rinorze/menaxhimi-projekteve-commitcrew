@@ -6,12 +6,11 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button, Glass, GlassIconButton, Icon, Press, Txt } from '@/components';
-import { Collect } from '@/components/home/Collect';
 import { ComingUp } from '@/components/home/ComingUp';
 import { KosovoMap } from '@/components/home/KosovoMap';
+import { PlaceOfTheDay } from '@/components/home/PlaceOfTheDay';
 import { QuestCard } from '@/components/home/QuestCard';
 import { StreakStrip } from '@/components/home/StreakStrip';
-import { SurpriseCard } from '@/components/home/SurpriseCard';
 import { UpNext } from '@/components/home/UpNext';
 import { places, stamps } from '@/data';
 import { placePhotos } from '@/data/photos';
@@ -94,21 +93,20 @@ export default function Home() {
           <Txt variant="title2" weight="800" tone="label3" style={{ marginTop: 2 }}>
             {subline}
           </Txt>
-          <View style={{ flexDirection: 'row', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
-            <Glass style={styles.chip}>
-              <Txt variant="footnote" weight="800">{t({ sq: `${count} nga ${places.length} vende`, en: `${count} of ${places.length} places` })}</Txt>
-            </Glass>
-            <Glass style={styles.chip}>
-              <Txt variant="footnote" weight="800">{t({ sq: `${visited.size} nga 38 komuna`, en: `${visited.size} of 38 municipalities` })}</Txt>
-            </Glass>
-          </View>
+          <Txt variant="subheadline" tone="label2" weight="600" style={{ marginTop: 10, fontVariant: ['tabular-nums'] }}>
+            {t({ sq: `${count} nga ${places.length} vende · ${visited.size} nga 38 komuna`, en: `${count} of ${places.length} places · ${visited.size} of 38 municipalities` })}
+          </Txt>
+        </Animated.View>
+
+        <Animated.View entering={FadeInDown.duration(350).delay(60)} style={{ marginTop: 18 }}>
+          <PlaceOfTheDay place={upNext[0]} />
         </Animated.View>
 
         {/* the living map */}
-        <Animated.View entering={FadeInDown.duration(450).delay(80)}>
+        <Animated.View entering={FadeInDown.duration(450).delay(120)}>
           <Press onPress={() => router.navigate('/map')} scaleTo={0.985} accessibilityLabel={t({ sq: 'Hap hartën', en: 'Open the map' })}>
             <View style={[styles.mapCard, { width: cardW, height: mapH + 20, backgroundColor: dark ? 'rgba(28,28,32,0.72)' : 'rgba(255,255,255,0.62)', borderColor: dark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.85)' }]}>
-              <KosovoMap width={mapW} visited={visited} />
+              <KosovoMap width={mapW} visited={visited} pins />
             </View>
           </Press>
         </Animated.View>
@@ -118,21 +116,15 @@ export default function Home() {
         </Animated.View>
 
         <Animated.View entering={FadeInDown.duration(450).delay(240)} style={{ marginTop: 22 }}>
-          <UpNext items={upNext} />
+          <UpNext items={upNext.slice(1)} />
         </Animated.View>
 
-        <Section title={t({ sq: 'Mblidhi të gjitha', en: 'Collect them all' })}>
-          <Collect />
-        </Section>
         <View style={{ marginTop: 22 }}>
           <QuestCard />
         </View>
         <Section title={t({ sq: 'Së shpejti', en: 'Coming up' })}>
           <ComingUp />
         </Section>
-        <View style={{ marginTop: 26 }}>
-          <SurpriseCard />
-        </View>
 
         <Txt variant="caption" tone="label3" align="center" style={{ paddingHorizontal: 30, marginTop: 28 }}>
           {t({ sq: 'Vendet nga OpenStreetMap dhe Wikidata · fotot nga Wikimedia Commons', en: 'Places from OpenStreetMap and Wikidata · photos from Wikimedia Commons' })}
