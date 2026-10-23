@@ -54,3 +54,36 @@ class ActivityAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     list_display = ('name_en', 'municipality', 'start_date')
     list_filter = ('start_date',)
+
+
+@admin.register(models.Trip)
+class TripAdmin(admin.ModelAdmin):
+    list_display = ('name', 'owner', 'municipality', 'start_date')
+    filter_horizontal = ('participants', 'places')
+
+
+@admin.register(models.Challenge)
+class ChallengeAdmin(admin.ModelAdmin):
+    list_display = ('title_en', 'points', 'start_date', 'end_date', 'is_active')
+    list_filter = ('is_active',)
+
+
+@admin.register(models.Streak)
+class StreakAdmin(admin.ModelAdmin):
+    list_display = ('user', 'current', 'longest', 'last_unlock_date')
+
+
+@admin.register(models.LocationShare)
+class LocationShareAdmin(admin.ModelAdmin):
+    list_display = ('user', 'precision', 'updated_at')
+
+
+@admin.register(models.Report)
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ('reporter', 'reported_user', 'place', 'reason', 'resolved', 'created_at')
+    list_filter = ('reason', 'resolved')
+
+
+@admin.register(models.Postcard)
+class PostcardAdmin(admin.ModelAdmin):
+    list_display = ('sender', 'recipient', 'place', 'created_at')

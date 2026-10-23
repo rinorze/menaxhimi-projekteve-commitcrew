@@ -145,3 +145,26 @@ class PlanMyDaySerializer(serializers.Serializer):
     hours = serializers.IntegerField(default=4, min_value=1, max_value=12)
     interests = serializers.ListField(child=serializers.CharField(), required=False)
     municipality_slug = serializers.SlugField(required=False)
+
+
+class TripSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    participants = UserSerializer(many=True, read_only=True)
+    places = PlaceSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Trip
+        fields = '__all__'
+        read_only_fields = ('owner', 'created_at')
+
+
+class ChallengeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Challenge
+        fields = '__all__'
+
+
+class StreakSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Streak
+        fields = '__all__'

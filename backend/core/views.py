@@ -362,3 +362,39 @@ class PlanMyDayView(generics.GenericAPIView):
             'plan_sq': f'Një plan {hours}-orësh duke përdorur vetëm vende nga databaza jonë.',
             'stops': [serializers.PlaceSerializer(p).data for p in places],
         })
+
+
+class TripListCreateView(generics.ListCreateAPIView):
+    serializer_class = serializers.TripSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.Trip.objects.filter(Q(owner=user) | Q(participants=user)).distinct().order_by('-created_at').prefetch_related('participants', 'places').order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class TripDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = serializers.TripSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        return models.Trip.objects.filter(Q(owner=user) | Q(participants=user)).distinct().order_by('-created_at')
+
+
+class ChallengeListView(generics.ListAPIView):
+    serializer_class = serializers.ChallengeSerializer
+    permission_classes = (permissions.AllowAny,)
+    queryset = models.Challenge.objects.filter(is_active=True).order_by('-start_date')
+
+
+class MyStreakView(generics.RetrieveAPIView):
+    serializer_class = serializers.StreakSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        streak, _ = models.Streak.objects.get_or_create(user=self.request.user)
+        return streak

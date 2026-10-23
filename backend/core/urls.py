@@ -24,4 +24,8 @@ urlpatterns = [
     path('conversations/<int:pk>/messages/', views.MessageListCreateView.as_view(), name='conversation-messages'),
     path('ai/ask/', views.AskKosovoView.as_view(), name='ask-kosovo'),
     path('ai/plan/', views.PlanMyDayView.as_view(), name='plan-my-day'),
+    path('trips/', views.TripListCreateView.as_view(), name='trips'),
+    path('trips/<int:pk>/', views.TripDetailView.as_view(), name='trip-detail'),
+    path('challenges/', views.ChallengeListView.as_view(), name='challenges'),
+    path('streak/', views.MyStreakView.as_view(), name='my-streak'),
 ]
