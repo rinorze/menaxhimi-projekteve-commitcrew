@@ -93,7 +93,40 @@ Every 2 to 3 days, bring in the others' work: `git pull origin staging`. Check w
 
 When the card is done: on GitHub → **Compare & pull request** → base **`staging`**, write `Closes #139`, and add **rinorze** as reviewer. When it is merged, your card moves to Done by itself. Prefer buttons? [GitHub Desktop](https://desktop.github.com) does the same steps.
 
-## 4. Rules
+## 4. Shared components (use these, do not draw your own)
+
+Open the app, go to Home → **Komponentet** to see every one with an example. Import them from one place:
+
+```tsx
+import { Screen, Txt, Button, Chip, ProgressDots, Icon, Glass } from '@/components';
+import { useT } from '@/lib/i18n';
+
+export default function Language() {
+  const t = useT();
+  return (
+    <Screen>
+      <ProgressDots step={1} total={7} />
+      <Txt variant="largeTitle">{t({ sq: 'Gjuha', en: 'Language' })}</Txt>
+      <Button label={t({ sq: 'Vazhdo', en: 'Continue' })} onPress={() => router.push('/where-today')} />
+    </Screen>
+  );
+}
+```
+
+| Component | Use it for |
+| --- | --- |
+| `Screen` | the start of every screen: safe area, background in light and dark, side margin (`scroll` for long screens) |
+| `Txt` | all text; `variant` = size (largeTitle, title2, headline, body, subheadline, footnote…), `tone` = colour name |
+| `Button` | `primary` (black), `secondary` (grey), `text`, `reward` (gold: only when a stamp can be earned) |
+| `Chip` | picking one or more options (language, interests, filters) |
+| `ProgressDots` | the "step X of 7" bar on onboarding |
+| `Icon` | Apple SF Symbols by name |
+| `Glass` | Liquid Glass on controls over photos only |
+| `Press` | anything else tappable (cards, rows) |
+
+`t({ sq, en })` picks the Albanian or English text; the app starts in Albanian. Need something that is missing? Ask Rinor instead of copying one.
+
+## 5. Rules
 
 - Use the colours and sizes from `app/src/theme/tokens.ts` (`useColors()`), never hard-coded hex, so light and dark mode both work.
 - Tap targets at least 44 pt. Real data only, no fake numbers. Gold only for rewards.
