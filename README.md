@@ -80,6 +80,18 @@ More than 100 features: see every one, with a screen mockup, in the **[Feature A
 | **AI** | Language and vision models, called only from the backend |
 | **Design** | [docs/design](docs/design): every screen in order, colours, type, photos |
 
+## Get started
+
+```bash
+git clone https://github.com/rinorze/menaxhimi-projekteve-commitcrew.git
+cd menaxhimi-projekteve-commitcrew
+docker compose up                        # PostgreSQL + backend: http://localhost:8000/api/health/
+cd app && npm install && npx expo start  # the iPhone app: scan the QR code with Expo Go
+cd website && npm install && npm run dev # the website
+```
+
+Full setup, who does what, branches and the shared components: **[CONTRIBUTING.md](CONTRIBUTING.md)**. Every screen of the app, in order, with colours, type and photos: **[docs/design](docs/design)**.
+
 ## Team: CommitCrew
 
 | Member | Role |
