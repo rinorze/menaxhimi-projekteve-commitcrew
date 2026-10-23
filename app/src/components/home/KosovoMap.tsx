@@ -3,6 +3,9 @@ import { StyleSheet } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Path, Pattern, Rect } from 'react-native-svg';
 
+import { places } from "@/data";
+import { placePhotos } from "@/data/photos";
+import { project } from "@/lib/projection";
 import map from '@/data/kosovo-map.json';
 import { motion, useIsDark } from '@/theme/tokens';
 
@@ -13,7 +16,7 @@ const [, , VW, VH] = map.viewBox.split(' ').map(Number);
  * The 38 municipalities. Explored ones are solid, the one you are in is blue, the rest sit under slowly
  * moving dotted fog ("fog of the unexplored"). It settles in once when the screen opens.
  */
-export function KosovoMap({ width, visited, current }: { width: number; visited: Set<string>; current?: string }) {
+export function KosovoMap({ width, visited, current, pins }: { width: number; visited: Set<string>; current?: string; pins?: boolean }) {
   const dark = useIsDark();
   const reduce = useReducedMotion();
   const height = (width * VH) / VW;
@@ -37,6 +40,7 @@ export function KosovoMap({ width, visited, current }: { width: number; visited:
         {map.municipalities.map((m) => (
           <Path key={m.slug} d={m.d} fill={m.slug === current ? BLUE : visited.has(m.slug) ? inkFill : fogFill} stroke={stroke} strokeWidth={1.3} strokeLinejoin="round" />
         ))}
+        {pins ? places.filter((p) => placePhotos[p.slug] && !p.sensitive).map((p) => { const { x, y } = project(p.lat, p.lng); return <Circle key={p.slug} cx={x} cy={y} r={4.5} fill={BLUE} stroke="#FFFFFF" strokeWidth={1.6} />; }) : null}
       </Svg>
       <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, fogStyle]}>
         <Svg width={width} height={height} viewBox={map.viewBox}>
