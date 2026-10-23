@@ -8,7 +8,8 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style="auto" />
-      <Stack screenOptions={{ headerShown: false }} />
+      {/* onboarding → Home fades in slowly; screens inside the app keep the native iOS push */}
+      <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 400 }} />
     </ThemeProvider>
   );
 }
