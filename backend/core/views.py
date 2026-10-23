@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions, status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.db import connection, transaction
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, permissions, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from . import models, serializers
 from .utils import haversine_m
@@ -14,6 +15,9 @@ from .utils import haversine_m
 def health(request):
     """Is the API up, and which database is it talking to (sqlite or postgresql)?"""
     return Response({'ok': True, 'database': connection.vendor})
+
+
+# ---------------------------------------------------------------- accounts
 
 
 class RegisterView(generics.CreateAPIView):
@@ -41,6 +45,18 @@ class MeView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
+class ProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = serializers.ProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self):
+        profile, _ = models.Profile.objects.get_or_create(user=self.request.user)
+        return profile
+
+
+# ---------------------------------------------------------------- places
+
+
 class RegionListView(generics.ListAPIView):
     queryset = models.Region.objects.all()
     serializer_class = serializers.RegionSerializer
@@ -50,44 +66,60 @@ class RegionListView(generics.ListAPIView):
 class MunicipalityListView(generics.ListAPIView):
     serializer_class = serializers.MunicipalitySerializer
     permission_classes = (permissions.AllowAny,)
+    pagination_class = None
 
     def get_queryset(self):
-        queryset = models.Municipality.objects.all().select_related('region')
+        queryset = models.Municipality.objects.select_related('region').order_by('name_en')
         region = self.request.query_params.get('region')
         if region:
             queryset = queryset.filter(region__slug=region)
-        return queryset.order_by('name_en')
+        return queryset
+
+
+class MunicipalityDetailView(generics.RetrieveAPIView):
+    queryset = models.Municipality.objects.select_related('region')
+    serializer_class = serializers.MunicipalitySerializer
+    permission_classes = (permissions.AllowAny,)
+    lookup_field = 'slug'
 
 
 class PlaceListView(generics.ListAPIView):
-    serializer_class = serializers.PlaceSerializer
+    serializer_class = serializers.PlaceListSerializer
     permission_classes = (permissions.AllowAny,)
 
     def get_queryset(self):
-        queryset = models.Place.objects.filter(is_active=True).select_related('municipality', 'municipality__region')
-        municipality = self.request.query_params.get('municipality')
+        queryset = models.Place.objects.filter(is_active=True).select_related('municipality')
+        params = self.request.query_params
+
+        municipality = params.get('municipality')
         if municipality:
             queryset = queryset.filter(municipality__slug=municipality)
-        category = self.request.query_params.get('category')
+
+        region = params.get('region')
+        if region:
+            queryset = queryset.filter(municipality__region__slug=region)
+
+        category = params.get('category')
         if category:
             queryset = queryset.filter(category=category)
+
+        search = params.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(name_sq__icontains=search) | Q(name_en__icontains=search)
+            )
+
         return queryset.order_by('name_en')
 
 
 class PlaceDetailView(generics.RetrieveAPIView):
-    queryset = models.Place.objects.filter(is_active=True)
+    queryset = models.Place.objects.filter(is_active=True).select_related('municipality')
     serializer_class = serializers.PlaceSerializer
     permission_classes = (permissions.AllowAny,)
     lookup_field = 'slug'
 
 
-class ProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = serializers.ProfileSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_object(self):
-        profile, _ = models.Profile.objects.get_or_create(user=self.request.user)
-        return profile
+# ---------------------------------------------------------------- passport & unlock
 
 
 class MyStampsView(generics.ListAPIView):
@@ -108,48 +140,46 @@ class UnlockCreateView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
 
-        try:
-            place = models.Place.objects.get(slug=data['place_slug'], is_active=True)
-        except models.Place.DoesNotExist:
+        place = models.Place.objects.filter(slug=data['place_slug'], is_active=True).first()
+        if place is None:
             return Response({'error': 'Place not found'}, status=status.HTTP_404_NOT_FOUND)
 
         if models.Unlock.objects.filter(user=request.user, place=place).exists():
             return Response({'error': 'Place already unlocked'}, status=status.HTTP_400_BAD_REQUEST)
 
-        lat = data['latitude']
-        lng = data['longitude']
-        acc = data.get('accuracy_m')
+        accuracy = data.get('accuracy_m')
+        if accuracy is not None and accuracy > 75:
+            return Response(
+                {'error': 'Location accuracy too low (max 75 m)'}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Basic validation
-        if acc is not None and acc > 75:
-            return Response({'error': 'Location accuracy too low (max 75m)'}, status=status.HTTP_400_BAD_REQUEST)
-
-        distance = haversine_m(lat, lng, place.latitude, place.longitude)
-        if distance > place.unlock_radius_m + 5:  # small tolerance
-            return Response({'error': 'Not close enough to unlock', 'distance_m': round(distance, 1)}, status=status.HTTP_400_BAD_REQUEST)
+        distance = haversine_m(data['lat'], data['lng'], place.lat, place.lng)
+        if distance > place.unlock_radius_m:
+            return Response(
+                {'error': 'Not close enough to unlock', 'distance_m': round(distance, 1),
+                 'radius_m': place.unlock_radius_m},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         unlock = models.Unlock.objects.create(
-            user=request.user,
-            place=place,
-            latitude=lat,
-            longitude=lng,
-            accuracy_m=acc,
+            user=request.user, place=place,
+            lat=data['lat'], lng=data['lng'], accuracy_m=accuracy,
         )
-        stamp = models.Stamp.objects.create(user=request.user, place=place, unlock=unlock)
+        models.Stamp.objects.get_or_create(user=request.user, place=place)
         models.Activity.objects.create(
-            user=request.user,
-            type='unlock',
-            place=place,
+            user=request.user, type='unlock', place=place,
             text_en=f'Unlocked {place.name_en}',
             text_sq=f'Zhbllokoi {place.name_sq}',
         )
 
         return Response({
             'success': True,
-            'unlock_id': unlock.id,
-            'stamp_id': stamp.id,
-            'place': serializers.PlaceSerializer(place).data,
+            'place': serializers.PlaceListSerializer(place).data,
+            'stamp': models.Stamp.objects.filter(user=request.user, place=place).count(),
         }, status=status.HTTP_201_CREATED)
+
+
+# ---------------------------------------------------------------- social
 
 
 class FriendshipListCreateView(generics.ListCreateAPIView):
@@ -163,12 +193,12 @@ class FriendshipListCreateView(generics.ListCreateAPIView):
         ).select_related('from_user', 'to_user')
 
     def create(self, request, *args, **kwargs):
-        to_username = request.data.get('to_username') or request.data.get('username')
-        if not to_username:
+        username = request.data.get('to_username') or request.data.get('username')
+        if not username:
             return Response({'error': 'to_username required'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            to_user = User.objects.get(username=to_username)
-        except User.DoesNotExist:
+
+        to_user = User.objects.filter(username=username).first()
+        if to_user is None:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         if to_user == request.user:
             return Response({'error': 'Cannot add yourself'}, status=status.HTTP_400_BAD_REQUEST)
@@ -176,48 +206,42 @@ class FriendshipListCreateView(generics.ListCreateAPIView):
             Q(from_user=request.user, to_user=to_user) | Q(from_user=to_user, to_user=request.user)
         ).exists():
             return Response({'error': 'Friendship already exists'}, status=status.HTTP_400_BAD_REQUEST)
-        friendship = models.Friendship.objects.create(from_user=request.user, to_user=to_user, status='pending')
-        return Response(serializers.FriendshipSerializer(friendship).data, status=status.HTTP_201_CREATED)
+
+        friendship = models.Friendship.objects.create(
+            from_user=request.user, to_user=to_user, status='pending'
+        )
+        return Response(
+            serializers.FriendshipSerializer(friendship).data, status=status.HTTP_201_CREATED
+        )
 
 
-class FriendshipActionView(generics.UpdateAPIView):
+class FriendshipActionView(generics.GenericAPIView):
     serializer_class = serializers.FriendshipSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    lookup_url_kwarg = 'pk'
 
-    def get_queryset(self):
-        return models.Friendship.objects.filter(to_user=self.request.user)
-
-    def post(self, request, *args, **kwargs):
-        return self.handle_action(request)
-
-    def update(self, request, *args, **kwargs):
-        return self.handle_action(request)
-
-    def handle_action(self, request, *args, **kwargs):
-        friendship = self.get_object()
+    def post(self, request, pk):
+        friendship = get_object_or_404(models.Friendship, pk=pk, to_user=request.user)
         action = request.data.get('action')
+
         if action == 'accept':
             friendship.status = 'accepted'
-            friendship.save()
-            models.Activity.objects.create(
-                user=friendship.to_user,
-                type='friend',
-                text_en=f'Became friends with {friendship.from_user.username}',
-                text_sq=f'U bënë miq me {friendship.from_user.username}',
-            )
-            models.Activity.objects.create(
-                user=friendship.from_user,
-                type='friend',
-                text_en=f'Became friends with {friendship.to_user.username}',
-                text_sq=f'U bënë miq me {friendship.to_user.username}',
-            )
-            return Response(serializers.FriendshipSerializer(friendship).data)
+            friendship.save(update_fields=['status', 'updated_at'])
+            for owner, other in (
+                (friendship.to_user, friendship.from_user),
+                (friendship.from_user, friendship.to_user),
+            ):
+                models.Activity.objects.create(
+                    user=owner, type='friend',
+                    text_en=f'Became friends with {other.username}',
+                    text_sq=f'U bënë miq me {other.username}',
+                )
         elif action == 'block':
             friendship.status = 'blocked'
-            friendship.save()
-            return Response(serializers.FriendshipSerializer(friendship).data)
-        return Response({'error': 'Invalid action'}, status=status.HTTP_400_BAD_REQUEST)
+            friendship.save(update_fields=['status', 'updated_at'])
+        else:
+            return Response({'error': "action must be 'accept' or 'block'"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializers.FriendshipSerializer(friendship).data)
 
 
 class ActivityFeedView(generics.ListAPIView):
@@ -226,19 +250,15 @@ class ActivityFeedView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        friends = models.Friendship.objects.filter(
-            status='accepted'
-        ).filter(
+        friends = models.Friendship.objects.filter(status='accepted').filter(
             Q(from_user=user) | Q(to_user=user)
         )
-        friend_ids = set()
-        for f in friends:
-            if f.from_user_id == user.id:
-                friend_ids.add(f.to_user_id)
-            else:
-                friend_ids.add(f.from_user_id)
-        friend_ids.add(user.id)
-        return models.Activity.objects.filter(user_id__in=friend_ids).select_related('place').order_by('-created_at')[:50]
+        user_ids = {user.id}
+        for friendship in friends:
+            user_ids.add(
+                friendship.to_user_id if friendship.from_user_id == user.id else friendship.from_user_id
+            )
+        return models.Activity.objects.filter(user_id__in=user_ids).select_related('place', 'user')
 
 
 class PostcardListCreateView(generics.ListCreateAPIView):
@@ -249,26 +269,28 @@ class PostcardListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         return models.Postcard.objects.filter(
             Q(sender=user) | Q(recipient=user)
-        ).select_related('sender', 'recipient', 'place').order_by('-created_at')
+        ).select_related('sender', 'recipient', 'place')
 
     def create(self, request, *args, **kwargs):
-        recipient_username = request.data.get('recipient_username')
-        place_slug = request.data.get('place_slug')
-        message = request.data.get('message', '')
-        if not recipient_username:
+        username = request.data.get('recipient_username')
+        if not username:
             return Response({'error': 'recipient_username required'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            recipient = User.objects.get(username=recipient_username)
-        except User.DoesNotExist:
+
+        recipient = User.objects.filter(username=username).first()
+        if recipient is None:
             return Response({'error': 'Recipient not found'}, status=status.HTTP_404_NOT_FOUND)
-        place = None
-        if place_slug:
-            try:
-                place = models.Place.objects.get(slug=place_slug)
-            except models.Place.DoesNotExist:
-                pass
-        postcard = models.Postcard.objects.create(sender=request.user, recipient=recipient, place=place, message=message)
-        return Response(serializers.PostcardSerializer(postcard).data, status=status.HTTP_201_CREATED)
+
+        place = models.Place.objects.filter(slug=request.data.get('place_slug')).first()
+        postcard = models.Postcard.objects.create(
+            sender=request.user, recipient=recipient, place=place,
+            message=request.data.get('message', ''),
+        )
+        return Response(
+            serializers.PostcardSerializer(postcard).data, status=status.HTTP_201_CREATED
+        )
+
+
+# ---------------------------------------------------------------- chat
 
 
 class ConversationListCreateView(generics.ListCreateAPIView):
@@ -276,92 +298,61 @@ class ConversationListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
-        return self.request.user.conversations.all().prefetch_related('participants', 'messages').order_by('-updated_at')
+        return self.request.user.conversations.prefetch_related('participants', 'messages')
 
     def create(self, request, *args, **kwargs):
-        other_username = request.data.get('username') or request.data.get('participant')
-        if not other_username:
+        username = request.data.get('username') or request.data.get('participant')
+        if not username:
             return Response({'error': 'username required'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            other = User.objects.get(username=other_username)
-        except User.DoesNotExist:
+
+        other = User.objects.filter(username=username).first()
+        if other is None:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         if other == request.user:
-            return Response({'error': 'Cannot create conversation with yourself'}, status=status.HTTP_400_BAD_REQUEST)
-        # check existing
-        for conv in request.user.conversations.all():
-            if conv.participants.filter(id=other.id).exists() and conv.participants.count() == 2:
-                return Response(serializers.ConversationSerializer(conv).data)
-        conv = models.Conversation.objects.create()
-        conv.participants.add(request.user, other)
-        return Response(serializers.ConversationSerializer(conv).data, status=status.HTTP_201_CREATED)
+            return Response(
+                {'error': 'Cannot create a conversation with yourself'}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        for conversation in request.user.conversations.all():
+            if conversation.participants.count() == 2 and conversation.participants.filter(id=other.id).exists():
+                return Response(serializers.ConversationSerializer(conversation).data)
+
+        conversation = models.Conversation.objects.create()
+        conversation.participants.add(request.user, other)
+        return Response(
+            serializers.ConversationSerializer(conversation).data, status=status.HTTP_201_CREATED
+        )
 
 
 class MessageListCreateView(generics.ListCreateAPIView):
     serializer_class = serializers.MessageSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
+    def get_conversation(self):
+        return get_object_or_404(
+            models.Conversation, pk=self.kwargs['pk'], participants=self.request.user
+        )
+
     def get_queryset(self):
-        conv_id = self.kwargs['pk']
-        conv = generics.get_object_or_404(models.Conversation, pk=conv_id, participants=self.request.user)
-        return conv.messages.all().select_related('sender').order_by('created_at')
+        return self.get_conversation().messages.select_related('sender')
 
     def create(self, request, *args, **kwargs):
-        conv_id = self.kwargs['pk']
-        conv = generics.get_object_or_404(models.Conversation, pk=conv_id, participants=self.request.user)
-        content = request.data.get('content', '').strip()
+        conversation = self.get_conversation()
+        content = (request.data.get('content') or '').strip()
         if not content:
             return Response({'error': 'content required'}, status=status.HTTP_400_BAD_REQUEST)
-        msg = models.Message.objects.create(conversation=conv, sender=request.user, content=content)
-        conv.updated_at = msg.created_at
-        conv.save(update_fields=['updated_at'])
-        return Response(serializers.MessageSerializer(msg).data, status=status.HTTP_201_CREATED)
+
+        message = models.Message.objects.create(
+            conversation=conversation, sender=request.user, content=content
+        )
+        conversation.updated_at = message.created_at
+        conversation.save(update_fields=['updated_at'])
+        return Response(
+            serializers.MessageSerializer(message).data, status=status.HTTP_201_CREATED
+        )
 
 
-class AskKosovoView(generics.GenericAPIView):
-    serializer_class = serializers.AskKosovoSerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        question = serializer.validated_data['question'].lower()
-
-        places = models.Place.objects.filter(is_active=True).select_related('municipality')[:10]
-        results = []
-        for p in places:
-            if any(word in question for word in p.name_en.lower().split() + p.municipality.name_en.lower().split()):
-                results.append(serializers.PlaceSerializer(p).data)
-        if not results:
-            results = [serializers.PlaceSerializer(p).data for p in places[:5]]
-
-        return Response({
-            'answer_en': 'Here are some real places from our database you can explore in Kosovo.',
-            'answer_sq': "Këtu janë disa vende reale nga databaza jonë që mund t'i eksplorosh në Kosovë.",
-            'places': results,
-        })
-
-
-class PlanMyDayView(generics.GenericAPIView):
-    serializer_class = serializers.PlanMyDaySerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        hours = serializer.validated_data.get('hours', 4)
-        municipality_slug = serializer.validated_data.get('municipality_slug')
-
-        qs = models.Place.objects.filter(is_active=True).select_related('municipality')
-        if municipality_slug:
-            qs = qs.filter(municipality__slug=municipality_slug)
-        places = list(qs[: max(3, hours)])
-
-        return Response({
-            'plan_en': f'A {hours}-hour plan using only places from our database.',
-            'plan_sq': f'Një plan {hours}-orësh duke përdorur vetëm vende nga databaza jonë.',
-            'stops': [serializers.PlaceSerializer(p).data for p in places],
-        })
+# ---------------------------------------------------------------- trips, challenges, streak
 
 
 class TripListCreateView(generics.ListCreateAPIView):
@@ -370,10 +361,9 @@ class TripListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return models.Trip.objects.filter(Q(owner=user) | Q(participants=user)).distinct().order_by('-created_at').prefetch_related('participants', 'places').order_by('-created_at')
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        return models.Trip.objects.filter(
+            Q(owner=user) | Q(participants=user)
+        ).distinct().prefetch_related('participants', 'places')
 
 
 class TripDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -382,13 +372,15 @@ class TripDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return models.Trip.objects.filter(Q(owner=user) | Q(participants=user)).distinct().order_by('-created_at')
+        return models.Trip.objects.filter(Q(owner=user) | Q(participants=user)).distinct()
 
 
 class ChallengeListView(generics.ListAPIView):
     serializer_class = serializers.ChallengeSerializer
     permission_classes = (permissions.AllowAny,)
-    queryset = models.Challenge.objects.filter(is_active=True).order_by('-start_date')
+
+    def get_queryset(self):
+        return models.Challenge.objects.filter(is_active=True)
 
 
 class MyStreakView(generics.RetrieveAPIView):
@@ -398,3 +390,98 @@ class MyStreakView(generics.RetrieveAPIView):
     def get_object(self):
         streak, _ = models.Streak.objects.get_or_create(user=self.request.user)
         return streak
+
+
+# ---------------------------------------------------------------- events & waitlist
+
+
+class EventListView(generics.ListAPIView):
+    serializer_class = serializers.EventSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get_queryset(self):
+        queryset = models.Event.objects.select_related('municipality')
+        municipality = self.request.query_params.get('municipality')
+        if municipality:
+            queryset = queryset.filter(municipality__slug=municipality)
+        return queryset
+
+
+class WaitlistCreateView(generics.CreateAPIView):
+    serializer_class = serializers.WaitlistSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email'].lower().strip()
+        entry, created = models.WaitlistEntry.objects.get_or_create(
+            email=email, defaults={'source': serializer.validated_data.get('source', '')}
+        )
+        return Response(
+            serializers.WaitlistSerializer(entry).data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
+
+
+# ---------------------------------------------------------------- AI
+
+
+class AskKosovoView(generics.GenericAPIView):
+    """Answers only with places that exist in our database."""
+
+    serializer_class = serializers.AskKosovoSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        question = serializer.validated_data['question'].lower()
+        language = serializer.validated_data['language']
+
+        places = models.Place.objects.filter(is_active=True).select_related('municipality')
+        matches = places.filter(
+            Q(name_sq__icontains=question) | Q(name_en__icontains=question)
+        )
+        if not matches.exists():
+            matches = places.filter(
+                Q(municipality__name_sq__icontains=question)
+                | Q(municipality__name_en__icontains=question)
+            )
+        results = list((matches if matches.exists() else places)[:8])
+
+        answer = (
+            'Këto vende reale nga databaza jonë të mund t\'i vizitosh në Kosovë.'
+            if language == 'sq'
+            else 'These are real places from our database you can visit in Kosovo.'
+        )
+        return Response({
+            'answer': answer,
+            'places': serializers.PlaceListSerializer(results, many=True).data,
+        })
+
+
+class PlanMyDayView(generics.GenericAPIView):
+    """Builds a day plan from real places only."""
+
+    serializer_class = serializers.PlanMyDaySerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        hours = serializer.validated_data['hours']
+        interest = serializer.validated_data.get('interests') or []
+
+        queryset = models.Place.objects.filter(is_active=True).select_related('municipality')
+        municipality = serializer.validated_data.get('municipality')
+        if municipality:
+            queryset = queryset.filter(municipality__slug=municipality)
+        if interest:
+            queryset = queryset.filter(category__in=interest)
+
+        stops = list(queryset.order_by('-score')[:hours])
+        return Response({
+            'hours': hours,
+            'stops': serializers.PlaceListSerializer(stops, many=True).data,
+        })
