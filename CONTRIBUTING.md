@@ -67,23 +67,31 @@ Every onboarding screen already exists as its own file with a placeholder, so no
 
 | Branch | What it is |
 | --- | --- |
-| **your branch** `feat/<your-name>-<what>` | Where you work and push, e.g. `feat/artiola-welcome` |
-| **`staging`** | The shared working branch (default). Your work arrives here through a pull request. |
+| **your branch** | Where you work and push. **Already created for you** (see below). |
+| **`staging`** | The shared working branch (default). Your work arrives here through a pull request. Never work on it directly. |
 | `develop` / `main` | Weekly and end-of-sprint copies that run. Pull request + 1 approval. |
 
+| Who | Card | Branch |
+| --- | --- | --- |
+| Rinor | #136 | `feat/rinor-components` |
+| Elios | #137, then #143 | `feat/elios-places-api`, then `feat/elios-website` |
+| Krenare | #138, then #142 | `feat/krenare-database`, then `feat/krenare-website-landing` |
+| Artiola | #139 | `feat/artiola-welcome` |
+| Erleta | #140 | `feat/erleta-language` |
+| Elvina | #141 | `feat/elvina-avatar` |
+
 ```bash
-git switch staging
-git pull                                  # get everyone's latest work
-git switch -c feat/artiola-welcome        # your branch (once)
+git fetch
+git switch feat/artiola-welcome           # your branch: the first time and every day
 # ... work ...
 git add -A
-git commit -m "feat(onboarding): welcome screen (#12)"
-git push -u origin feat/artiola-welcome   # later pushes: just git push
+git commit -m "feat(onboarding): welcome screen (#139)"
+git push
 ```
 
-Then open GitHub → **Compare & pull request** → base **`staging`**, write `Closes #12`, and ask Rinor to review. When it is merged, your card moves to Done by itself.
+Every 2 to 3 days, bring in the others' work: `git pull origin staging`. Check which branch you are on with `git branch` (the one with `*`).
 
-Every few days, bring in the others' work: `git switch staging && git pull && git switch - && git merge staging`.
+When the card is done: on GitHub → **Compare & pull request** → base **`staging`**, write `Closes #139`, and add **rinorze** as reviewer. When it is merged, your card moves to Done by itself. Prefer buttons? [GitHub Desktop](https://desktop.github.com) does the same steps.
 
 ## 4. Rules
 
