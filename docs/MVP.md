@@ -33,9 +33,10 @@ Të gjitha veçoritë (mbi 100), secila me pamje të ekranit, janë në **[Featu
 
 | Pjesa | Zgjedhja |
 | --- | --- |
-| **Aplikacioni** (`app/`) | React Native me Expo, TypeScript, Mapbox (harta 2D/3D), Expo Camera dhe Location |
+| **Aplikacioni** (`app/`) | React Native me Expo, TypeScript, Apple Maps (harta 2D/3D), Expo Camera dhe Location |
+| **Faqja e internetit** (`website/`) | React me TypeScript (Vite) |
 | **Backend** (`backend/`) | **Python**: Django, Django REST Framework, GeoDjango, Django Channels (chat dhe lokacion në kohë reale) |
-| **Databaza** | **PostgreSQL** me PostGIS (pikat e vendeve, poligonet e komunave), Redis |
+| **Databaza** | **PostgreSQL** në Docker (`docker compose up`), më vonë PostGIS për distancat |
 | **AI** | Modele gjuhe dhe imazhi, të thirrura vetëm nga backend-i |
 | **Dizajni** | Figma, FigJam |
 
@@ -45,12 +46,12 @@ Puna ndahet sipas vështirësisë: anëtarët që sapo kanë filluar programimin
 
 | Anëtari | Roli | Puna kryesore |
 | --- | --- | --- |
-| **Rinor Zeqiri** | Product Designer + frontend i vështirë | Dizajni i të gjitha ekraneve, komponentet e përbashkëta, harta 2D/3D, kamera e zhbllokimit, animacionet |
-| **Elios Mernica** | Backend Lead (Python) | Django, PostgreSQL/PostGIS, autentifikimi, verifikimi i zhbllokimit, miqtë, chat-i dhe lokacioni në kohë reale, AI |
-| **Krenare Veseli** | Ekrane · përmbajtja · Scrum Master | Miqtë, kartolinat, udhëtimet, *streak*; përmbajtja për Prishtinën dhe Mitrovicën; raportet e sprinteve |
-| **Artiola Ferizi** | Ekrane | Mirëseardhja dhe llogaria, profili, cilësimet; përmbajtja për Prizrenin |
-| **Erleta Qerimi** | Ekrane | Qytetet, kërkimi, eventet, *Plan my day*; përmbajtja për Pejën dhe Gjakovën |
-| **Elvina Sinani** | Ekrane | Faqja e vendit, koleksioni, chat-i, *Ask Kosovo*; përmbajtja për Ferizajn dhe Gjilanin |
+| **Rinor Zeqiri** | Product Designer + frontend i vështirë | Dizajni i të gjitha ekraneve, komponentet e përbashkëta, Ballina, harta, kamera e zhbllokimit, animacionet; Docker dhe databaza |
+| **Elios Mernica** | Backend Lead (Python) | Django API, autentifikimi, verifikimi i zhbllokimit, miqtë, chat-i dhe lokacioni në kohë reale, AI |
+| **Krenare Veseli** | Faqja e internetit · Scrum Master | Faqja kryesore, lista e pritjes, faqja e aplikacionit; raportet e sprinteve; më vonë miqtë, kartolinat, udhëtimet |
+| **Artiola Ferizi** | Ekrane | Onboarding: mirëseardhja, shiko përreth, vendi, gjuha, hyrja; më vonë profili dhe cilësimet |
+| **Erleta Qerimi** | Ekrane | Onboarding: ku je sot, Kthimi, interesat, ruaje pasaportën, privatësia; më vonë qytetet, kërkimi, eventet |
+| **Elvina Sinani** | Ekrane | Onboarding: krijuesi i avatarit, sendet, një shok, kilometri i parë; më vonë faqja e vendit, koleksioni, chat-i |
 
 ## 5. Plani javor
 

@@ -10,7 +10,9 @@ Find places on a 2D and 3D map, go there, unlock them with your camera, and expl
 ![Expo](https://img.shields.io/badge/Expo-React_Native-000020?logo=expo&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-Django-092E20?logo=django&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-PostGIS-336791?logo=postgresql&logoColor=white)
-![Mapbox](https://img.shields.io/badge/Maps-2D_%26_3D-000000?logo=mapbox&logoColor=white)
+![Apple Maps](https://img.shields.io/badge/Maps-2D_%26_3D-000000?logo=apple&logoColor=white)
+![React](https://img.shields.io/badge/Website-React-20232A?logo=react&logoColor=61DAFB)
+![Docker](https://img.shields.io/badge/Docker-PostgreSQL-2496ED?logo=docker&logoColor=white)
 
 [Feature Atlas (every screen)](https://claude.ai/artifact/Fh1ASH9JErhpenqCUmFxGw) · [Project board](https://github.com/users/rinorze/projects/1) · [Plan](docs/PLAN.md) · [MVP (Shqip)](docs/MVP.md) · [How we work](CONTRIBUTING.md)
 
