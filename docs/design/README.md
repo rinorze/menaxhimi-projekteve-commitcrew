@@ -1,23 +1,23 @@
 # Design
 
-The final design of Discover Kosovo: **one version of every screen**, in light mode (Home also in dark mode). Onboarding is shown in Albanian, the language the app opens in. The app is **in Albanian first**, then English; German and French can be chosen on the Language screen.
+The final design of Discover Kosovo: **one version of every screen**, in the order a user meets the app (the same numbers as the canvas: 1.1, 1.2 …), in light mode (Home also in dark mode). Onboarding is shown in Albanian, the language the app opens in. The app is **in Albanian first**, then English; German and French can be chosen on the Language screen.
 
 ## Folders
 
 | Folder | What is inside |
 | --- | --- |
 | [kit/](kit) | **Start here.** [Colours](kit/colors.png) (light and dark, with codes), [typography](kit/typography.png), [spacing, corners, buttons, shadows](kit/spacing-corners-buttons.png) |
-| [screens/01-design-system](screens/01-design-system) | The component kit and the motion spec (timings and haptics) |
-| [screens/02-home](screens/02-home) | Home (full scroll), Home in dark mode, loading, widgets |
-| [screens/03-map](screens/03-map) | Places & Pins: Kosovo zoom, city zoom, pin card front and back, 3D, location primer, layers |
-| [screens/04-places](screens/04-places) | Place, city, collection, search, events, municipality complete |
-| [screens/05-unlock-passport](screens/05-unlock-passport) | Camera (in range / too far), photo rejected, stamp, stamp detail, passport, postcard |
-| [screens/06-friends-chat](screens/06-friends-chat) | Friends, add a friend, friend added, friend profile, Together stamp, chats, notifications |
-| [screens/07-plan-play](screens/07-plan-play) | Trips, trip plan, new trip, Ask Kosovo, challenges |
-| [screens/08-onboarding](screens/08-onboarding) | The 14 onboarding screens, numbered in the order the user sees them |
-| [screens/09-stay-eat-safety](screens/09-stay-eat-safety) | Stay, eat, dish, emergency, offline packs |
-| [screens/10-profile-settings](screens/10-profile-settings) | Profile, settings |
-| [screens/11-website](screens/11-website) | Landing page, waiting list, app page |
+| [screens/01-onboarding](screens/01-onboarding) | The 14 onboarding screens, numbered in the order the user sees them (1.1 Welcome … 1.14 Sign in) |
+| [screens/02-home](screens/02-home) | Home (full scroll), Home in dark mode, loading, notifications, widgets |
+| [screens/03-map](screens/03-map) | Places & Pins: Kosovo zoom, city zoom, pin card front and back, location primer, 3D, layers |
+| [screens/04-places](screens/04-places) | Search, search results, city, place, collection, events, municipality complete |
+| [screens/05-unlock-passport](screens/05-unlock-passport) | Camera (in range / too far), photo rejected, stamp, stamp detail, postcard, passport |
+| [screens/06-friends-chat](screens/06-friends-chat) | Friends, add a friend, friend added, friend profile, Together stamp, chats |
+| [screens/07-plan-play](screens/07-plan-play) | Trips, new trip, trip plan, Ask Kosovo, challenges |
+| [screens/08-stay-eat-safety](screens/08-stay-eat-safety) | Stay, eat, dish, emergency, offline packs |
+| [screens/09-profile-settings](screens/09-profile-settings) | Profile, settings |
+| [screens/10-website](screens/10-website) | Landing page, waiting list, app page |
+| [screens/11-design-system](screens/11-design-system) | The component kit and the motion spec (timings and haptics) |
 | [assets/photos](assets/photos) | The place photos used in the design ([credits](assets/photos/CREDITS.md): keep them) |
 | [assets/avatars](assets/avatars) | The avatars (SVG). Made with [DiceBear Micah](https://www.dicebear.com/styles/micah/), CC BY 4.0, credit Micah Lanier |
 

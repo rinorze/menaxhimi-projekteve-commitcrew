@@ -32,7 +32,7 @@ python manage.py runserver      # open http://127.0.0.1:8000/api/health/
 
 Without a `DATABASE_URL` the backend uses a local SQLite file, so you can start right away. The app and the backend are **not connected yet**: that comes later.
 
-**Or with Docker (PostgreSQL included, easiest):** install [Docker Desktop](https://www.docker.com/products/docker-desktop/), then in the repo folder:
+**Or with Docker (PostgreSQL included, easiest):** install [Docker Desktop](https://www.docker.com/products/docker-desktop/), open it once and wait for “Engine running”, then open a **new** terminal (the old one does not know `docker` yet) and in the repo folder:
 
 ```bash
 docker compose up          # database + backend; Ctrl+C to stop
