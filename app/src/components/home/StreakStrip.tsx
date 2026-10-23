@@ -16,7 +16,7 @@ export function StreakStrip({ weeks, doneDays }: { weeks: number; doneDays: bool
   const sub = weeks ? t({ sq: 'seri', en: 'streak' }) : t({ sq: '1 vulë në javë', en: '1 stamp a week' });
   return (
     <Press accessibilityLabel={`${title}, ${sub}`} style={[styles.card, { backgroundColor: c.card }]}>
-      <Txt style={{ fontSize: 26 }}>{weeks ? '🔥' : '✨'}</Txt>
+      <Icon name="flame.fill" size={26} tone={weeks ? 'blue' : 'label3'} />
       <View style={{ width: 92 }}>
         <Txt variant="headline" weight="800" numberOfLines={1}>
           {title}
