@@ -40,7 +40,7 @@ export function KosovoMap({ width, visited, current, pins }: { width: number; vi
         {map.municipalities.map((m) => (
           <Path key={m.slug} d={m.d} fill={m.slug === current ? BLUE : visited.has(m.slug) ? inkFill : fogFill} stroke={stroke} strokeWidth={1.3} strokeLinejoin="round" />
         ))}
-        {pins ? places.filter((p) => placePhotos[p.slug] && !p.sensitive).map((p) => { const { x, y } = project(p.lat, p.lng); return <Circle key={p.slug} cx={x} cy={y} r={4.5} fill={BLUE} stroke="#FFFFFF" strokeWidth={1.6} />; }) : null}
+        {pins ? places.filter((p) => placePhotos[p.slug]).map((p) => { const { x, y } = project(p.lat, p.lng); return <Circle key={p.slug} cx={x} cy={y} r={4.5} fill={BLUE} stroke="#FFFFFF" strokeWidth={1.6} />; }) : null}
       </Svg>
       <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, fogStyle]}>
         <Svg width={width} height={height} viewBox={map.viewBox}>
