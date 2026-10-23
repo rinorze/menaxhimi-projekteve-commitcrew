@@ -33,7 +33,8 @@ export function ScreenPlaceholder({ title, owner, design, next, nextLabel = 'Vaz
       </View>
       {next ? (
         <Link href={next} asChild>
-          <Pressable accessibilityRole="button" style={[styles.button, { backgroundColor: c.tint }]}>
+          {/* Link asChild needs one style object, not an array */}
+          <Pressable accessibilityRole="button" style={StyleSheet.flatten([styles.button, { backgroundColor: c.tint }])}>
             <Text style={[text.headline, { color: c.onTint }]}>{nextLabel}</Text>
           </Pressable>
         </Link>
