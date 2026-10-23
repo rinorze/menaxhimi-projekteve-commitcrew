@@ -67,22 +67,22 @@ Every onboarding screen already exists as its own file with a placeholder, so no
 
 | Branch | What it is |
 | --- | --- |
-| **your branch** | Where you work and push. **Already created for you** (see below). |
+| **your branch** (`feat/` + your first name) | Where you work and push, for all your cards. **Already created for you** (see below). |
 | **`staging`** | The shared working branch (default). Your work arrives here through a pull request. Never work on it directly. |
 | `develop` / `main` | Weekly and end-of-sprint copies that run. Pull request + 1 approval. |
 
 | Who | Card | Branch |
 | --- | --- | --- |
-| Rinor | Card 1 (#136), Card 3 (#138) | `feat/rinor-components`, `feat/rinor-docker` |
-| Elios | Card 2 (#137) | `feat/elios-places-api` |
-| Krenare | Card 7 (#142), then Card 8 (#143) | `feat/krenare-website-landing`, then `feat/krenare-website-pages` |
-| Artiola | Card 4 (#139) | `feat/artiola-welcome` |
-| Erleta | Card 5 (#140) | `feat/erleta-language` |
-| Elvina | Card 6 (#141) | `feat/elvina-avatar` |
+| Rinor | Card 1 (#136), Card 3 (#138) | `feat/rinor` |
+| Elios | Card 2 (#137) | `feat/elios` |
+| Krenare | Card 7 (#142), then Card 8 (#143) | `feat/krenare` |
+| Artiola | Card 4 (#139) | `feat/artiola` |
+| Erleta | Card 5 (#140) | `feat/erleta` |
+| Elvina | Card 6 (#141) | `feat/elvina` |
 
 ```bash
 git fetch
-git switch feat/artiola-welcome           # your branch: the first time and every day
+git switch feat/artiola                   # your branch (feat/ + your name): the first time and every day
 # ... work ...
 git add -A
 git commit -m "feat(onboarding): welcome screen (#139)"
