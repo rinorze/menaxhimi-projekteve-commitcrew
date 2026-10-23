@@ -45,15 +45,15 @@ API at http://localhost:8000/api/health/ (it says `"database": "postgresql"`), a
 | Who | What | Where in the code | Design |
 | --- | --- | --- | --- |
 | **Rinor** @rinorze | Design, Home, map, camera unlock, shared components, reviews every pull request | `frontend/src/app/home.tsx`, `frontend/src/components/` | `HomeLive`, `PinsMap`, `PinsZoom`, `PinsCard`, `Unlock`, `Stamp` |
-| **Elios** @eliosmernica15 | Backend: models and the API | `backend/` | — |
+| **Elios** @eliosmernica15 | Backend: models and the API + **website waiting list and app page** | `backend/`, `website/waitlist.html`, `website/app.html` | `WebWaitlist`, `WebApp` |
 | **Krenare** @krenareveselii | PostgreSQL database + Scrum Master (the board every week) + **website landing page** | `docker-compose.yml`, `backend/.env`, `website/index.html` | `WebLanding` |
 | **Artiola** @artiolaferizi | Onboarding: Welcome, Look around, Guest place, Sign in | `frontend/src/app/(onboarding)/` | `Welcome2`, `GuestMap`, `GuestPlace`, `SignIn` |
-| **Erleta** @erletaqerimi-oss | Onboarding: Language, Where are you today, Kthimi, Interests + **website waiting list and app page** | `frontend/src/app/(onboarding)/`, `website/waitlist.html`, `website/app.html` | `Language4`, `WhereToday`, `Kthimi`, `Interests`, `WebWaitlist`, `WebApp` |
+| **Erleta** @erletaqerimi-oss | Onboarding: Language, Where are you today, Kthimi, Interests | `frontend/src/app/(onboarding)/` | `Language4`, `WhereToday`, `Kthimi`, `Interests` |
 | **Elvina** @elvinasinani-netizen | Onboarding: Avatar, Save passport, Privacy, One friend, First km | `frontend/src/app/(onboarding)/` | `Avatar`, `AvatarRewards`, `SavePassport`, `Privacy`, `OneFriend`, `FirstKm` |
 
 **Website (`website/`)**: plain HTML and CSS, no install. Open `website/index.html` in your browser (or run `npx serve website` and open the link). Shared colours and the font are in `website/styles.css`. Later it goes online for free with GitHub Pages; the waiting-list form gets connected to the backend after that.
 
-Every onboarding screen already exists as its own file with a placeholder, so nobody edits someone else's file. Each placeholder says who builds it and which design to follow. All designs are pictures in **[docs/design/screens](docs/design/screens)** (light and dark).
+Every onboarding screen already exists as its own file with a placeholder, so nobody edits someone else's file. Each placeholder says who builds it and which design to follow. All designs are pictures in **[docs/design](docs/design)**, sorted by area, with the colours, fonts, photos and links in its README.
 
 ## 3. Where to push
 
@@ -81,6 +81,7 @@ Every few days, bring in the others' work: `git switch staging && git pull && gi
 
 - Use the colours and sizes from `frontend/src/theme/tokens.ts` (`useColors()`), never hard-coded hex, so light and dark mode both work.
 - Tap targets at least 44 pt. Real data only, no fake numbers. Gold only for rewards.
+- **Albanian first.** The app opens in Shqip; English is the second language, then Deutsch and Français. Write every text in Albanian and English. The designs show the Albanian text.
 - Commit messages: `type(scope): what you did (#card)`. Types: `feat` · `fix` · `design` · `docs` · `chore`.
 - Never commit `.env`, keys, `node_modules/` or `.venv/`.
 - Stuck for more than an hour? Write in the group and add the `blocked` label to your card.
