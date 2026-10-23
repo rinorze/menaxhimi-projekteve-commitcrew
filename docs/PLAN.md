@@ -46,7 +46,7 @@ Research was done with Claude, ChatGPT (Codex), Grok 4.7 and Cursor Composer, th
 **Key decisions**
 - **Backend: Python with Django** (+ Django REST Framework, GeoDjango, Django Channels). The built-in admin is our content and moderation panel, GeoDjango + PostGIS does the distance checks, and Channels gives real-time chat and location.
 - **Database: PostgreSQL + PostGIS**, plus **Redis** for real time.
-- **Maps: Mapbox** (`@rnmapbox/maps`) for a real **2D ↔ 3D** toggle with terrain. MapLibre still has no 3D terrain on mobile. Both need an Expo development build.
+- **Maps: Apple Maps** through `react-native-maps` (MapKit): 2D, a tilted 3D satellite view, and it runs in Expo Go, so the whole team can test without a development build. Mapbox stays the option if we later need 3D terrain.
 - **AI runs only on the backend**, and only recommends places that exist in our database. The Gemini free tier is not available in Kosovo, so we budget a small paid key or student credit.
 - **Friends on the map:** off by default, friends only, ghost mode, precision (city / ~1 km / exact), timed sharing (1 hour, tonight, until off), no history, no strangers.
 
@@ -95,12 +95,12 @@ Three members have little coding experience, so the work is split by difficulty:
 
 | Member | Role | Level |
 | --- | --- | --- |
-| **Rinor Zeqiri** | Product Designer + hard frontend: designs every screen one week ahead, builds the shared components, the map (2D/3D), the camera unlock and the animations | Hard |
-| **Elios Mernica** | Backend lead: Django, PostgreSQL/PostGIS, sign-in, unlock checks, friends, real-time chat and location, AI, notifications, deploys | Hard |
-| **Artiola Ferizi** | Screens: welcome & account, profile, settings and privacy | Easy |
-| **Erleta Qerimi** | Screens: cities, city page, places, search, events, Plan my day | Easy |
-| **Elvina Sinani** | Screens: permissions, place page, collection, chat, notifications, Ask Kosovo, challenges | Easy |
-| **Krenare Veseli** | Screens: friends, postcards, trips, streaks, leaderboard · content · Scrum Master | Easy |
+| **Rinor Zeqiri** | Product Designer + hard frontend: designs every screen, builds the shared components, Home, the map, the camera unlock and the animations; Docker and the database; reviews every pull request | Hard |
+| **Elios Mernica** | Backend lead: Django API, sign-in, unlock checks, friends, real-time chat and location, AI, notifications, deploys | Hard |
+| **Artiola Ferizi** | Screens: onboarding (welcome, look around, guest place, language, sign in), then profile and settings | Easy |
+| **Erleta Qerimi** | Screens: onboarding (where are you today, Kthimi, interests, save passport, privacy), then cities, search, events | Easy |
+| **Elvina Sinani** | Screens: onboarding (avatar creator, avatar items, one friend, first km), then place page, collection, chat | Easy |
+| **Krenare Veseli** | The website (landing page, waiting list, app page) · Scrum Master · then friends, postcards and trips screens | Easy |
 
 **How beginners work:** build each screen with Rinor's components and **mock data** first (it looks finished on day 1), then connect it to Elios's API together with him.
 
@@ -139,16 +139,16 @@ flowchart LR
   API --> S[(Photo storage)]
   API --> AI["AI APIs"]
   Admin["🛠️ Django admin (web)"] --> DB
-  App --> MB["Mapbox 2D / 3D"]
+  App --> MB["Apple Maps 2D / 3D"]
 ```
 
 | Layer | Choice |
 | --- | --- |
-| App (`app/`) | Expo SDK 58 · React Native · TypeScript · Expo Router · `@rnmapbox/maps` · `expo-camera` · `expo-location` · TanStack Query · i18next (sq/en) · Reanimated |
+| App (`app/`) | Expo SDK 58 · React Native · TypeScript · Expo Router · `react-native-maps` (Apple Maps) · `expo-camera` · `expo-location` · TanStack Query · i18next (sq/en) · Reanimated |
 | Backend (`backend/`) | Python 3.12+ · Django 6.1 · Django REST Framework · GeoDjango · Channels + Redis · SimpleJWT · drf-spectacular · Celery |
 | Data | `Region`, `Municipality` (polygon), `Place` (point, unlock radius), `Unlock`, `Stamp`, `Friendship`, `Activity` (automatic), `Postcard`, `Conversation`, `Message`, `LocationShare`, `Trip`, `Challenge`, `Streak`, `Event`, `Report` |
 | Unlock check | In-app photo + GPS → `POST /api/unlocks/` → PostGIS distance ≤ radius, accuracy ≤ 75 m, no fake GPS, rate limit → stamp + activity |
-| Hosting (demo) | Docker locally · Render / Railway / Fly.io · Neon or Supabase Postgres with PostGIS · Upstash Redis · Cloudflare R2 for photos |
+| Hosting (demo) | Docker locally (`docker compose up`: PostgreSQL 17 + backend) · later Render / Railway / Fly.io with a hosted PostgreSQL + PostGIS · Cloudflare R2 for photos |
 
 ---
 
