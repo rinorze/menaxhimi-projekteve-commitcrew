@@ -17,8 +17,8 @@ GoogleService-Info.plist
 dist/
 web-build/
 expo-env.d.ts
-frontend/android/
-frontend/ios/
+app/android/
+app/ios/
 *.apk
 *.aab
 *.ipa
