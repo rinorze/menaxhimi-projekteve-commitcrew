@@ -161,3 +161,51 @@ class Report(models.Model):
     details = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     resolved = models.BooleanField(default=False)
+
+
+class Trip(models.Model):
+    name = models.CharField(max_length=200)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trips')
+    participants = models.ManyToManyField(User, related_name='trips_joined', blank=True)
+    municipality = models.ForeignKey(Municipality, on_delete=models.SET_NULL, null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    places = models.ManyToManyField(Place, related_name='trips', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Challenge(models.Model):
+    title_sq = models.CharField(max_length=200)
+    title_en = models.CharField(max_length=200)
+    description_sq = models.TextField(blank=True)
+    description_en = models.TextField(blank=True)
+    points = models.IntegerField(default=10)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title_en
+
+
+class Streak(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='streak')
+    current = models.IntegerField(default=0)
+    longest = models.IntegerField(default=0)
+    last_unlock_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}: {self.current}"
+
+
+class LocationShare(models.Model):
+    PRECISION_CHOICES = [('city', 'City'), ('km', '1 km'), ('exact', 'Exact')]
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='location_shares')
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    precision = models.CharField(max_length=10, choices=PRECISION_CHOICES, default='city')
+    expires_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
