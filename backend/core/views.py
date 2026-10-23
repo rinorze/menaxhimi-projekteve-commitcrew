@@ -269,3 +269,50 @@ class PostcardListCreateView(generics.ListCreateAPIView):
                 pass
         postcard = models.Postcard.objects.create(sender=request.user, recipient=recipient, place=place, message=message)
         return Response(serializers.PostcardSerializer(postcard).data, status=status.HTTP_201_CREATED)
+
+
+class ConversationListCreateView(generics.ListCreateAPIView):
+    serializer_class = serializers.ConversationSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return self.request.user.conversations.all().prefetch_related('participants', 'messages').order_by('-updated_at')
+
+    def create(self, request, *args, **kwargs):
+        other_username = request.data.get('username') or request.data.get('participant')
+        if not other_username:
+            return Response({'error': 'username required'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            other = User.objects.get(username=other_username)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        if other == request.user:
+            return Response({'error': 'Cannot create conversation with yourself'}, status=status.HTTP_400_BAD_REQUEST)
+        # check existing
+        for conv in request.user.conversations.all():
+            if conv.participants.filter(id=other.id).exists() and conv.participants.count() == 2:
+                return Response(serializers.ConversationSerializer(conv).data)
+        conv = models.Conversation.objects.create()
+        conv.participants.add(request.user, other)
+        return Response(serializers.ConversationSerializer(conv).data, status=status.HTTP_201_CREATED)
+
+
+class MessageListCreateView(generics.ListCreateAPIView):
+    serializer_class = serializers.MessageSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        conv_id = self.kwargs['pk']
+        conv = generics.get_object_or_404(models.Conversation, pk=conv_id, participants=self.request.user)
+        return conv.messages.all().select_related('sender').order_by('created_at')
+
+    def create(self, request, *args, **kwargs):
+        conv_id = self.kwargs['pk']
+        conv = generics.get_object_or_404(models.Conversation, pk=conv_id, participants=self.request.user)
+        content = request.data.get('content', '').strip()
+        if not content:
+            return Response({'error': 'content required'}, status=status.HTTP_400_BAD_REQUEST)
+        msg = models.Message.objects.create(conversation=conv, sender=request.user, content=content)
+        conv.updated_at = msg.created_at
+        conv.save(update_fields=['updated_at'])
+        return Response(serializers.MessageSerializer(msg).data, status=status.HTTP_201_CREATED)

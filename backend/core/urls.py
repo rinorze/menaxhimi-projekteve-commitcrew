@@ -20,4 +20,6 @@ urlpatterns = [
     path('friends/<int:pk>/', views.FriendshipActionView.as_view(), name='friend-action'),
     path('activity/', views.ActivityFeedView.as_view(), name='activity-feed'),
     path('postcards/', views.PostcardListCreateView.as_view(), name='postcards'),
+    path('conversations/', views.ConversationListCreateView.as_view(), name='conversations'),
+    path('conversations/<int:pk>/messages/', views.MessageListCreateView.as_view(), name='conversation-messages'),
 ]

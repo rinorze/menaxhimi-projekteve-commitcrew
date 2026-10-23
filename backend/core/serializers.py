@@ -111,3 +111,27 @@ class PostcardSerializer(serializers.ModelSerializer):
         model = models.Postcard
         fields = '__all__'
         read_only_fields = ('sender', 'created_at')
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+
+    class Meta:
+        model = models.Message
+        fields = '__all__'
+        read_only_fields = ('sender', 'created_at', 'read')
+
+
+class ConversationSerializer(serializers.ModelSerializer):
+    participants = UserSerializer(many=True, read_only=True)
+    last_message = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Conversation
+        fields = ('id', 'participants', 'created_at', 'updated_at', 'last_message')
+
+    def get_last_message(self, obj):
+        msg = obj.messages.order_by('-created_at').first()
+        if msg:
+            return MessageSerializer(msg).data
+        return None
