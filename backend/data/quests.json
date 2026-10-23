@@ -1,0 +1,133 @@
+[
+ {
+  "slug": "waterfalls",
+  "kind": "category",
+  "criteria": {
+   "category": "waterfall"
+  },
+  "target": 3,
+  "xp": 300,
+  "title_en": "Chase three waterfalls",
+  "title_sq": "Ndiq tri ujëvara",
+  "description_en": "Mirusha, the White Drin and more: unlock any three waterfalls.",
+  "description_sq": "Mirusha, Drini i Bardhë e të tjera: hap çfarëdo tri ujëvara.",
+  "starts_at": null,
+  "ends_at": null
+ },
+ {
+  "slug": "three-summits",
+  "kind": "category",
+  "criteria": {
+   "category": "peak"
+  },
+  "target": 3,
+  "xp": 450,
+  "title_en": "Three summits",
+  "title_sq": "Tri maja",
+  "description_en": "Stand on three peaks of Kosovo. Check the weather and tell someone your route.",
+  "description_sq": "Ngjitu në tri maja të Kosovës. Shiko motin dhe tregoji dikujt rrugën.",
+  "starts_at": null,
+  "ends_at": null
+ },
+ {
+  "slug": "underground",
+  "kind": "category",
+  "criteria": {
+   "category": "cave"
+  },
+  "target": 2,
+  "xp": 240,
+  "title_en": "Underground",
+  "title_sq": "Nën tokë",
+  "description_en": "Two caves, from Gadime's marble halls to the Rugova karst.",
+  "description_sq": "Dy shpella, nga salla e mermertë e Gadimes te karsti i Rugovës.",
+  "starts_at": null,
+  "ends_at": null
+ },
+ {
+  "slug": "prizren-old-town",
+  "kind": "places",
+  "target": 4,
+  "xp": 250,
+  "criteria": {
+   "places": [
+    "kalaja-e-prizrenit",
+    "ura-e-gurit",
+    "sheshi-shadervan",
+    "kompleksi-i-lidhjes-se-prizrenit"
+   ]
+  },
+  "title_en": "Prizren old town",
+  "title_sq": "Qyteti i vjetër i Prizrenit",
+  "description_en": "Fortress, Stone Bridge, Shadërvan and the League of Prizren in one walk.",
+  "description_sq": "Kalaja, Ura e Gurit, Shadërvani dhe Lidhja e Prizrenit në një shëtitje.",
+  "starts_at": null,
+  "ends_at": null
+ },
+ {
+  "slug": "prishtina-icons",
+  "kind": "places",
+  "target": 4,
+  "xp": 220,
+  "criteria": {
+   "places": [
+    "newborn",
+    "biblioteka-kombetare-e-kosoves-pjeter-bogdani",
+    "sheshi-gjergj-kastrioti-skenderbeu",
+    "muzeu-etnologjik-emin-gjiku",
+    "parku-i-germise"
+   ]
+  },
+  "title_en": "Prishtina icons",
+  "title_sq": "Ikonat e Prishtinës",
+  "description_en": "Four of Newborn, the National Library, Skanderbeg Square, Emin Gjiku and Gërmia.",
+  "description_sq": "Katër nga Newborn, Biblioteka Kombëtare, Sheshi Skënderbeu, Emin Gjiku dhe Gërmia.",
+  "starts_at": null,
+  "ends_at": null
+ },
+ {
+  "slug": "rugova-weekend",
+  "kind": "places",
+  "target": 3,
+  "xp": 300,
+  "criteria": {
+   "places": [
+    "gryka-e-rugoves",
+    "ujevara-e-drinit-te-bardhe",
+    "qarshia-e-vjeter"
+   ]
+  },
+  "title_en": "A weekend in Rugova",
+  "title_sq": "Një fundjavë në Rugovë",
+  "description_en": "The canyon, the White Drin waterfall and coffee in Peja's old bazaar.",
+  "description_sq": "Kanioni, ujëvara e Drinit të Bardhë dhe një kafe në çarshinë e Pejës.",
+  "starts_at": null,
+  "ends_at": null
+ },
+ {
+  "slug": "seven-cities",
+  "kind": "distinct_municipalities",
+  "criteria": {},
+  "target": 7,
+  "xp": 400,
+  "title_en": "Seven cities",
+  "title_sq": "Shtatë qytete",
+  "description_en": "Collect a stamp in seven different municipalities.",
+  "description_sq": "Mblidh një vulë në shtatë komuna të ndryshme.",
+  "starts_at": null,
+  "ends_at": null
+ },
+ {
+  "slug": "all-of-kosovo",
+  "kind": "distinct_municipalities",
+  "criteria": {},
+  "target": 38,
+  "xp": 3800,
+  "title_en": "All 38",
+  "title_sq": "Të 38-at",
+  "description_en": "One stamp in every municipality of Kosovo, from Prishtinë to Partesh.",
+  "description_sq": "Një vulë në çdo komunë të Kosovës, nga Prishtina te Parteshi.",
+  "starts_at": null,
+  "ends_at": null
+ }
+]
