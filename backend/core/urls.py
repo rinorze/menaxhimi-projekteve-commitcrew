@@ -22,4 +22,6 @@ urlpatterns = [
     path('postcards/', views.PostcardListCreateView.as_view(), name='postcards'),
     path('conversations/', views.ConversationListCreateView.as_view(), name='conversations'),
     path('conversations/<int:pk>/messages/', views.MessageListCreateView.as_view(), name='conversation-messages'),
+    path('ai/ask/', views.AskKosovoView.as_view(), name='ask-kosovo'),
+    path('ai/plan/', views.PlanMyDayView.as_view(), name='plan-my-day'),
 ]

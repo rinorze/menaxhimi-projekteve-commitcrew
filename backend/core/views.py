@@ -316,3 +316,49 @@ class MessageListCreateView(generics.ListCreateAPIView):
         conv.updated_at = msg.created_at
         conv.save(update_fields=['updated_at'])
         return Response(serializers.MessageSerializer(msg).data, status=status.HTTP_201_CREATED)
+
+
+class AskKosovoView(generics.GenericAPIView):
+    serializer_class = serializers.AskKosovoSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        question = serializer.validated_data['question'].lower()
+
+        places = models.Place.objects.filter(is_active=True).select_related('municipality')[:10]
+        results = []
+        for p in places:
+            if any(word in question for word in p.name_en.lower().split() + p.municipality.name_en.lower().split()):
+                results.append(serializers.PlaceSerializer(p).data)
+        if not results:
+            results = [serializers.PlaceSerializer(p).data for p in places[:5]]
+
+        return Response({
+            'answer_en': 'Here are some real places from our database you can explore in Kosovo.',
+            'answer_sq': "Këtu janë disa vende reale nga databaza jonë që mund t'i eksplorosh në Kosovë.",
+            'places': results,
+        })
+
+
+class PlanMyDayView(generics.GenericAPIView):
+    serializer_class = serializers.PlanMyDaySerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        hours = serializer.validated_data.get('hours', 4)
+        municipality_slug = serializer.validated_data.get('municipality_slug')
+
+        qs = models.Place.objects.filter(is_active=True).select_related('municipality')
+        if municipality_slug:
+            qs = qs.filter(municipality__slug=municipality_slug)
+        places = list(qs[: max(3, hours)])
+
+        return Response({
+            'plan_en': f'A {hours}-hour plan using only places from our database.',
+            'plan_sq': f'Një plan {hours}-orësh duke përdorur vetëm vende nga databaza jonë.',
+            'stops': [serializers.PlaceSerializer(p).data for p in places],
+        })
