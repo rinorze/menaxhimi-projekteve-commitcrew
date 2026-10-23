@@ -10,10 +10,10 @@ cd menaxhimi-projekteve-commitcrew
 git switch staging
 ```
 
-**App (`frontend/`)**: Expo SDK 58, React Native, TypeScript, Expo Router.
+**App (`app/`)**: Expo SDK 58, React Native, TypeScript, Expo Router.
 
 ```bash
-cd frontend
+cd app
 npm install
 npx expo start          # scan the QR code with Expo Go (phone and laptop on the same Wi-Fi)
 ```
@@ -40,18 +40,26 @@ docker compose up          # database + backend; Ctrl+C to stop
 
 API at http://localhost:8000/api/health/ (it says `"database": "postgresql"`), and the database itself at http://localhost:8080 (Adminer: System **PostgreSQL**, server **db**, user **postgres**, password **postgres**). Run Django commands inside it with `docker compose exec backend python manage.py createsuperuser`.
 
+**Website (`website/`)**: React with TypeScript, built with Vite.
+
+```bash
+cd website
+npm install
+npm run dev             # open the link it prints (http://localhost:5173)
+```
+
+Pages are in `website/src/pages/`, the shared top bar, footer, email box and iPhone frame in `website/src/components/`, colours and the font in `website/src/styles/theme.css`. Every text is written `t({ sq: '…', en: '…' })` (Albanian first). Later it goes online for free with GitHub Pages (`npm run build`), and the waiting-list form gets connected to the backend.
+
 ## 2. Who does what
 
-| Who | What | Where in the code | Design |
+| Who | What | Where in the code | Design (in `docs/design/screens`) |
 | --- | --- | --- | --- |
-| **Rinor** @rinorze | Design, Home, map, camera unlock, shared components, reviews every pull request | `frontend/src/app/home.tsx`, `frontend/src/components/` | `HomeLive`, `PinsMap`, `PinsZoom`, `PinsCard`, `Unlock`, `Stamp` |
-| **Elios** @eliosmernica15 | Backend: models and the API + **website waiting list and app page** | `backend/`, `website/waitlist.html`, `website/app.html` | `WebWaitlist`, `WebApp` |
-| **Krenare** @krenareveselii | PostgreSQL database + Scrum Master (the board every week) + **website landing page** | `docker-compose.yml`, `backend/.env`, `website/index.html` | `WebLanding` |
-| **Artiola** @artiolaferizi | Onboarding: Welcome, Look around, Guest place, Sign in | `frontend/src/app/(onboarding)/` | `Welcome2`, `GuestMap`, `GuestPlace`, `SignIn` |
-| **Erleta** @erletaqerimi-oss | Onboarding: Language, Where are you today, Kthimi, Interests | `frontend/src/app/(onboarding)/` | `Language4`, `WhereToday`, `Kthimi`, `Interests` |
-| **Elvina** @elvinasinani-netizen | Onboarding: Avatar, Save passport, Privacy, One friend, First km | `frontend/src/app/(onboarding)/` | `Avatar`, `AvatarRewards`, `SavePassport`, `Privacy`, `OneFriend`, `FirstKm` |
-
-**Website (`website/`)**: plain HTML and CSS, no install. Open `website/index.html` in your browser (or run `npx serve website` and open the link). Shared colours and the font are in `website/styles.css`. Later it goes online for free with GitHub Pages; the waiting-list form gets connected to the backend after that.
+| **Rinor** @rinorze | Design, shared components, Home, map, reviews every pull request | `app/src/components/`, `app/src/app/home.tsx` | `02-home`, `03-map` |
+| **Elios** @eliosmernica15 | Backend: models and the API + **website waiting list and app page** | `backend/`, `website/src/pages/Waitlist.tsx`, `website/src/pages/AppPage.tsx` | `10-website/02`, `10-website/03` |
+| **Krenare** @krenareveselii | PostgreSQL with Docker + Scrum Master + **website landing page** | `docker-compose.yml`, `website/src/pages/Landing.tsx` | `10-website/01` |
+| **Artiola** @artiolaferizi | Onboarding 1.1 to 1.3 and 1.14: Welcome, Look around, Guest place, Sign in | `app/src/app/(onboarding)/` | `01-onboarding/01–03, 14` |
+| **Erleta** @erletaqerimi-oss | Onboarding 1.4 to 1.7: Language, Where are you today, Kthimi, Interests | `app/src/app/(onboarding)/` | `01-onboarding/04–07` |
+| **Elvina** @elvinasinani-netizen | Onboarding 1.8 to 1.13: Avatar, Avatar items, Save passport, Privacy, One friend, First km | `app/src/app/(onboarding)/` | `01-onboarding/08–13` |
 
 Every onboarding screen already exists as its own file with a placeholder, so nobody edits someone else's file. Each placeholder says who builds it and which design to follow. All designs are pictures in **[docs/design](docs/design)**, sorted by area, with the colours, fonts, photos and links in its README.
 
@@ -79,7 +87,7 @@ Every few days, bring in the others' work: `git switch staging && git pull && gi
 
 ## 4. Rules
 
-- Use the colours and sizes from `frontend/src/theme/tokens.ts` (`useColors()`), never hard-coded hex, so light and dark mode both work.
+- Use the colours and sizes from `app/src/theme/tokens.ts` (`useColors()`), never hard-coded hex, so light and dark mode both work.
 - Tap targets at least 44 pt. Real data only, no fake numbers. Gold only for rewards.
 - **Albanian first.** The app opens in Shqip; English is the second language, then Deutsch and Français. Write every text in Albanian and English. The designs show the Albanian text.
 - Commit messages: `type(scope): what you did (#card)`. Types: `feat` · `fix` · `design` · `docs` · `chore`.

@@ -1,7 +1,7 @@
 # Database + backend with one command:   docker compose up
 #   API:       http://localhost:8000/api/health/   (should say "database": "postgresql")
 #   Database:  http://localhost:8080  (Adminer; System PostgreSQL, server db, user postgres, password postgres)
-# The Expo app runs outside Docker (npx expo start in frontend/), so Expo Go on your phone can reach it.
+# The Expo app runs outside Docker (npx expo start in app/), so Expo Go on your phone can reach it.
 
 services:
   db:

@@ -131,7 +131,7 @@ Krenare → Prishtinë region (8) and Mitrovicë region (7) · Artiola → Prizr
 
 ```mermaid
 flowchart LR
-  App["📱 frontend/<br/>Expo · React Native"] -- REST (JWT) --> API["🐍 backend/<br/>Django + DRF"]
+  App["📱 app/<br/>Expo · React Native"] -- REST (JWT) --> API["🐍 backend/<br/>Django + DRF"]
   App -- WebSocket --> WS["Django Channels<br/>chat · live location"]
   API --> DB[("PostgreSQL + PostGIS")]
   WS --> R[(Redis)]
@@ -144,7 +144,7 @@ flowchart LR
 
 | Layer | Choice |
 | --- | --- |
-| Frontend (`frontend/`) | Expo SDK 58 · React Native · TypeScript · Expo Router · `@rnmapbox/maps` · `expo-camera` · `expo-location` · TanStack Query · i18next (sq/en) · Reanimated |
+| App (`app/`) | Expo SDK 58 · React Native · TypeScript · Expo Router · `@rnmapbox/maps` · `expo-camera` · `expo-location` · TanStack Query · i18next (sq/en) · Reanimated |
 | Backend (`backend/`) | Python 3.12+ · Django 6.1 · Django REST Framework · GeoDjango · Channels + Redis · SimpleJWT · drf-spectacular · Celery |
 | Data | `Region`, `Municipality` (polygon), `Place` (point, unlock radius), `Unlock`, `Stamp`, `Friendship`, `Activity` (automatic), `Postcard`, `Conversation`, `Message`, `LocationShare`, `Trip`, `Challenge`, `Streak`, `Event`, `Report` |
 | Unlock check | In-app photo + GPS → `POST /api/unlocks/` → PostGIS distance ≤ radius, accuracy ≤ 75 m, no fake GPS, rate limit → stamp + activity |

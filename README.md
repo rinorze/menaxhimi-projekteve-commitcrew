@@ -71,21 +71,22 @@ More than 100 features: see every one, with a screen mockup, in the **[Feature A
 
 | | |
 | --- | --- |
-| **Frontend** (`frontend/`) | React Native with Expo · TypeScript · Expo Router · Mapbox (2D/3D) · Expo Camera and Location |
+| **App** (`app/`) | React Native with Expo SDK 58 · TypeScript · Expo Router · Apple Maps (2D/3D) · Expo Camera and Location |
 | **Backend** (`backend/`) | Python · Django and Django REST Framework · GeoDjango · Django Channels (chat and live location) |
-| **Database** | PostgreSQL with PostGIS · Redis |
+| **Website** (`website/`) | React · TypeScript · Vite · landing page, waiting list, app page |
+| **Database** | PostgreSQL 17 in Docker (`docker compose up`) · PostGIS later |
 | **AI** | Language and vision models, called only from the backend |
-| **Design** | Figma · FigJam |
+| **Design** | [docs/design](docs/design): every screen in order, colours, type, photos |
 
 ## Team: CommitCrew
 
 | Member | Role |
 | --- | --- |
-| Rinor Zeqiri · [@rinorze](https://github.com/rinorze) | Product Designer: designs every screen; builds the map, camera unlock and animations |
-| Elios Mernica · [@eliosmernica15](https://github.com/eliosmernica15) | Backend Lead: Python, database, unlock checks, real time, AI |
-| Krenare Veseli · [@krenareveselii](https://github.com/krenareveselii) | Screens: friends, postcards and trips · content · Scrum Master |
-| Artiola Ferizi · [@artiolaferizi](https://github.com/artiolaferizi) | Screens: welcome and account, profile, settings |
-| Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Screens: cities, search, events, Plan my day |
-| Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Screens: place page, collection, chat, Ask Kosovo |
+| Rinor Zeqiri · [@rinorze](https://github.com/rinorze) | Product Designer: designs every screen; builds the shared components, Home, map and camera unlock; reviews every pull request |
+| Elios Mernica · [@eliosmernica15](https://github.com/eliosmernica15) | Backend Lead: Django API, unlock checks, real time, AI; website waiting list and app page |
+| Krenare Veseli · [@krenareveselii](https://github.com/krenareveselii) | Database (PostgreSQL in Docker) · Scrum Master · website landing page |
+| Artiola Ferizi · [@artiolaferizi](https://github.com/artiolaferizi) | Onboarding: welcome, look around, guest place, sign in |
+| Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Onboarding: language, where are you today, Kthimi, interests |
+| Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Onboarding: avatar, save passport, privacy, one friend, first km |
 
-Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has one card per week on the [project board](https://github.com/users/rinorze/projects/1), and everyone pushes to the `staging` branch.
+Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has cards on the [project board](https://github.com/users/rinorze/projects/1); work goes on your own branch and into `staging` through a pull request (see [CONTRIBUTING](CONTRIBUTING.md)).

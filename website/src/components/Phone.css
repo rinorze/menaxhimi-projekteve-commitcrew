@@ -1,0 +1,5 @@
+/* iPhone 17 Pro: titanium edge, black bezel, Dynamic Island. The screen keeps the 390 x 844 ratio. */
+.phone { position: relative; padding: 4px; border-radius: 17%/8%; background: linear-gradient(135deg, #e4e1db 0%, #8f8c86 22%, #f2efe9 48%, #7d7a74 74%, #cfccc6 100%); box-shadow: 0 50px 100px rgba(16, 24, 48, 0.28), 0 10px 24px rgba(16, 24, 48, 0.16); flex: none; }
+.phone-screen { position: relative; aspect-ratio: 390 / 844; border: 10px solid #050506; border-radius: 15.5%/7.2%; overflow: hidden; background: #000; }
+.phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.phone-island { position: absolute; left: 50%; top: 1.3%; width: 32%; height: 4.3%; transform: translateX(-50%); border-radius: 999px; background: #000; }

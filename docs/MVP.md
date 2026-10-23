@@ -33,7 +33,7 @@ Të gjitha veçoritë (mbi 100), secila me pamje të ekranit, janë në **[Featu
 
 | Pjesa | Zgjedhja |
 | --- | --- |
-| **Frontend** (`frontend/`) | React Native me Expo, TypeScript, Mapbox (harta 2D/3D), Expo Camera dhe Location |
+| **Aplikacioni** (`app/`) | React Native me Expo, TypeScript, Mapbox (harta 2D/3D), Expo Camera dhe Location |
 | **Backend** (`backend/`) | **Python**: Django, Django REST Framework, GeoDjango, Django Channels (chat dhe lokacion në kohë reale) |
 | **Databaza** | **PostgreSQL** me PostGIS (pikat e vendeve, poligonet e komunave), Redis |
 | **AI** | Modele gjuhe dhe imazhi, të thirrura vetëm nga backend-i |
@@ -56,7 +56,7 @@ Puna ndahet sipas vështirësisë: anëtarët që sapo kanë filluar programimin
 
 | Sprinti | Datat | Çka ndërtojmë |
 | --- | --- | --- |
-| 1 | 19–25 tetor | MVP-ja, hulumtimi, skeleti i `frontend/` dhe `backend/`, mësimi i React Native |
+| 1 | 19–25 tetor | MVP-ja, hulumtimi, skeleti i `app/` dhe `backend/`, mësimi i React Native |
 | 2 | 26 tetor – 1 nëntor | **Mirëseardhja:** regjistrimi, kyçja, profili; rrjeti i 38 qyteteve; API e autentifikimit |
 | 3 | 2–8 nëntor | Faqja e qytetit dhe e vendit; API e vendeve; përmbajtja e komunave |
 | 4 | 9–15 nëntor | **Harta 2D/3D**; API e zhbllokimit; koleksioni; përmbajtja |

@@ -1,0 +1,56 @@
+/* Discover Kosovo website: colours, font and sizes from the final design (docs/design/screens/10-website). */
+:root {
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --ink: #101114;
+  --ink-2: rgba(16, 17, 20, 0.66);
+  --ink-3: rgba(16, 17, 20, 0.42);
+  --line: rgba(16, 17, 20, 0.1);
+  --soft: #eceae3;
+  --blue: #2f62f5;
+  --green: #34c759;
+  --gold: #f4b62a; /* rewards only (the stamp) */
+  --tint-blue: #e7ecf8;
+  --tint-sand: #f1ece2;
+  --tint-green: #e6f1ea;
+  --radius-card: 36px;
+  --radius-big: 44px;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, system-ui, sans-serif;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --card: #1c1c1e;
+    --ink: #ffffff;
+    --ink-2: rgba(235, 235, 245, 0.7);
+    --ink-3: rgba(235, 235, 245, 0.45);
+    --line: rgba(255, 255, 255, 0.12);
+    --soft: #2c2c2e;
+    --tint-blue: #141a2c;
+    --tint-sand: #221e17;
+    --tint-green: #13201a;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 17px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.03em; line-height: 1.05; }
+
+.wrap { max-width: 1312px; margin: 0 auto; padding: 0 24px; }
+.kicker { font-size: 15px; font-weight: 650; color: var(--blue); letter-spacing: 0.02em; text-transform: uppercase; }
+.h2 { font-size: clamp(36px, 5vw, 60px); margin-top: 10px; }
+.muted { color: var(--ink-2); }
+.section { padding: 120px 0 0; }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border-radius: 999px; border: 0; background: var(--ink); color: var(--bg); font: 650 16px var(--font); cursor: pointer; }
+.btn:focus-visible, .pill:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-card); padding: 32px; }
+.pill { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid var(--line); background: var(--card); font-size: 14px; font-weight: 600; }
+
+/* placeholder for sections that are not built yet */
+.todo { border: 2px dashed var(--line); border-radius: var(--radius-card); padding: 40px; color: var(--ink-2); }
+.todo b { color: var(--ink); }
