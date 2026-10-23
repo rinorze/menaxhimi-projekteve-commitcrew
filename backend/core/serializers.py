@@ -90,3 +90,24 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Activity
         fields = '__all__'
+
+
+class FriendshipSerializer(serializers.ModelSerializer):
+    from_user = UserSerializer(read_only=True)
+    to_user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = models.Friendship
+        fields = '__all__'
+        read_only_fields = ('from_user', 'status', 'created_at', 'updated_at')
+
+
+class PostcardSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+    recipient = UserSerializer(read_only=True)
+    place = PlaceSerializer(read_only=True)
+
+    class Meta:
+        model = models.Postcard
+        fields = '__all__'
+        read_only_fields = ('sender', 'created_at')

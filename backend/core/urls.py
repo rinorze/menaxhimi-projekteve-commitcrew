@@ -16,4 +16,8 @@ urlpatterns = [
     path('places/<slug:slug>/', views.PlaceDetailView.as_view(), name='place-detail'),
     path('stamps/', views.MyStampsView.as_view(), name='my-stamps'),
     path('unlocks/', views.UnlockCreateView.as_view(), name='unlock-create'),
+    path('friends/', views.FriendshipListCreateView.as_view(), name='friends'),
+    path('friends/<int:pk>/', views.FriendshipActionView.as_view(), name='friend-action'),
+    path('activity/', views.ActivityFeedView.as_view(), name='activity-feed'),
+    path('postcards/', views.PostcardListCreateView.as_view(), name='postcards'),
 ]
