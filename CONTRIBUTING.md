@@ -30,7 +30,15 @@ python manage.py migrate
 python manage.py runserver      # open http://127.0.0.1:8000/api/health/
 ```
 
-Without a `DATABASE_URL` the backend uses a local SQLite file, so you can start right away. Krenare sets up PostgreSQL (see her card). The app and the backend are **not connected yet**: that comes later.
+Without a `DATABASE_URL` the backend uses a local SQLite file, so you can start right away. The app and the backend are **not connected yet**: that comes later.
+
+**Or with Docker (PostgreSQL included, easiest):** install [Docker Desktop](https://www.docker.com/products/docker-desktop/), then in the repo folder:
+
+```bash
+docker compose up          # database + backend; Ctrl+C to stop
+```
+
+API at http://localhost:8000/api/health/ (it says `"database": "postgresql"`), and the database itself at http://localhost:8080 (Adminer: System **PostgreSQL**, server **db**, user **postgres**, password **postgres**). Run Django commands inside it with `docker compose exec backend python manage.py createsuperuser`.
 
 ## 2. Who does what
 
