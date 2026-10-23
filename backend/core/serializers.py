@@ -135,3 +135,13 @@ class ConversationSerializer(serializers.ModelSerializer):
         if msg:
             return MessageSerializer(msg).data
         return None
+
+
+class AskKosovoSerializer(serializers.Serializer):
+    question = serializers.CharField()
+
+
+class PlanMyDaySerializer(serializers.Serializer):
+    hours = serializers.IntegerField(default=4, min_value=1, max_value=12)
+    interests = serializers.ListField(child=serializers.CharField(), required=False)
+    municipality_slug = serializers.SlugField(required=False)
