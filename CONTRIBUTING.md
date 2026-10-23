@@ -1,47 +1,76 @@
 # How we work
 
-## Branches
+## 1. Set up once
 
-| Branch | What it is | Who can push |
-| --- | --- | --- |
-| **`staging`** | **Our working branch** (the default). Everyone pushes their work here. | Everyone, directly |
-| `develop` | A safe copy of work that runs. Updated from `staging` every week through a pull request. | Pull request + 1 approval |
-| `main` | The stable version, updated once per sprint (what we show in class). | Pull request + 1 approval |
+You need: [Node.js 22+](https://nodejs.org), [Python 3.12+](https://www.python.org/downloads/), Git, and **Expo Go** on your phone (App Store / Play Store).
 
-If something breaks on `staging`, `develop` and `main` still have the last working version. Nobody can delete `staging` or rewrite its history (force-push), so no work gets lost.
+```bash
+git clone https://github.com/rinorze/menaxhimi-projekteve-commitcrew.git
+cd menaxhimi-projekteve-commitcrew
+git switch staging
+```
 
-## Every day
+**App (`frontend/`)**: Expo SDK 58, React Native, TypeScript, Expo Router.
+
+```bash
+cd frontend
+npm install
+npx expo start          # scan the QR code with Expo Go (phone and laptop on the same Wi-Fi)
+```
+
+**Backend (`backend/`)**: Python, Django, Django REST Framework.
+
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate          # Windows   (macOS: source .venv/bin/activate)
+pip install -r requirements.txt
+copy .env.example .env          # macOS: cp .env.example .env
+python manage.py migrate
+python manage.py runserver      # open http://127.0.0.1:8000/api/health/
+```
+
+Without a `DATABASE_URL` the backend uses a local SQLite file, so you can start right away. Krenare sets up PostgreSQL (see her card). The app and the backend are **not connected yet**: that comes later.
+
+## 2. Who does what
+
+| Who | What | Where in the code | Design |
+| --- | --- | --- | --- |
+| **Rinor** @rinorze | Design, Home, map, camera unlock, shared components, reviews every pull request | `frontend/src/app/home.tsx`, `frontend/src/components/` | `HomeLive`, `MapCountry`, `MapPlace`, `Unlock`, `Stamp` |
+| **Elios** @eliosmernica15 | Backend: models and the API | `backend/` | — |
+| **Krenare** @krenareveselii | PostgreSQL database + Scrum Master (the board every week) | `backend/.env`, `backend/config/settings.py` | — |
+| **Artiola** @artiolaferizi | Onboarding: Welcome, Look around, Guest place, Sign in | `frontend/src/app/(onboarding)/` | `Welcome2`, `GuestMap`, `GuestPlace`, `SignIn` |
+| **Erleta** @erletaqerimi-oss | Onboarding: Language, Where are you today, Kthimi, Interests | `frontend/src/app/(onboarding)/` | `Language4`, `WhereToday`, `Kthimi`, `Interests` |
+| **Elvina** @elvinasinani-netizen | Onboarding: Avatar, Save passport, Privacy, One friend, First km | `frontend/src/app/(onboarding)/` | `Avatar`, `AvatarRewards`, `SavePassport`, `Privacy`, `OneFriend`, `FirstKm` |
+
+Every onboarding screen already exists as its own file with a placeholder, so nobody edits someone else's file. Each placeholder says who builds it and which design to follow. All designs are pictures in **[docs/design/screens](docs/design/screens)** (light and dark).
+
+## 3. Where to push
+
+| Branch | What it is |
+| --- | --- |
+| **your branch** `feat/<your-name>-<what>` | Where you work and push, e.g. `feat/artiola-welcome` |
+| **`staging`** | The shared working branch (default). Your work arrives here through a pull request. |
+| `develop` / `main` | Weekly and end-of-sprint copies that run. Pull request + 1 approval. |
 
 ```bash
 git switch staging
-git pull                                   # get your teammates' work first
-# ... work on your card ...
+git pull                                  # get everyone's latest work
+git switch -c feat/artiola-welcome        # your branch (once)
+# ... work ...
 git add -A
-git commit -m "feat(explore): cities grid (#12)"
-git pull                                   # again, in case someone pushed meanwhile
-git push
+git commit -m "feat(onboarding): welcome screen (#12)"
+git push -u origin feat/artiola-welcome   # later pushes: just git push
 ```
 
-- Put your card number in every commit: `(#12)`. In the last commit for that card, write `Closes #12` and the card moves to **Done** by itself.
-- For a bigger change you can use your own branch (`feat/12-cities-grid`) and open a pull request into `staging`, so someone can look at it first.
-- If `git pull` shows a conflict, open the file, keep the right lines, then `git add -A`, `git commit` and `git push`. Ask in the group if you're unsure.
+Then open GitHub → **Compare & pull request** → base **`staging`**, write `Closes #12`, and ask Rinor to review. When it is merged, your card moves to Done by itself.
 
-## The board
+Every few days, bring in the others' work: `git switch staging && git pull && git switch - && git merge staging`.
 
-- Open **This week** on the [project board](https://github.com/users/rinorze/projects/1). You have **one card per week** with a checklist inside.
-- Move your card: **Todo → In Progress → In Review → Done**, and tick the checklist as you go.
-- Stuck? Add the `blocked` label and write why in a comment.
+## 4. Rules
 
-## Every Friday / end of sprint
-
-1. Elios (or Rinor) checks that the app and backend run on `staging`, then opens a pull request **`staging` → `develop`**.
-2. At the end of the sprint: a pull request **`develop` → `main`**, then the tag `sprint-NN`.
-
-## Commit messages
-
-`type(scope): what you did (#card)`. Types: `feat` · `fix` · `design` · `docs` · `chore`.
-Example: `fix(auth): show error when password is wrong (#20)`
-
-## Never commit
-
-`.env` files or keys · `node_modules/` · `venv/` · photos of people without their permission.
+- Use the colours and sizes from `frontend/src/theme/tokens.ts` (`useColors()`), never hard-coded hex, so light and dark mode both work.
+- Tap targets at least 44 pt. Real data only, no fake numbers. Gold only for rewards.
+- Commit messages: `type(scope): what you did (#card)`. Types: `feat` · `fix` · `design` · `docs` · `chore`.
+- Never commit `.env`, keys, `node_modules/` or `.venv/`.
+- Stuck for more than an hour? Write in the group and add the `blocked` label to your card.

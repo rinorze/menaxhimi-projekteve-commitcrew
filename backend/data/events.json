@@ -1,0 +1,86 @@
+[
+ {
+  "slug": "prishtina-jazz-festival-2026",
+  "title_en": "Prishtina Jazz Festival",
+  "title_sq": "Prishtina Jazz Festival",
+  "municipality": "prishtine",
+  "venue": "Prishtinë",
+  "category": "music",
+  "starts_at": "2026-11-14T19:00:00+01:00",
+  "ends_at": "2026-11-19T23:00:00+01:00",
+  "tentative": true,
+  "url": "https://if-kosovo.com/en/events/"
+ },
+ {
+  "slug": "dita-e-flamurit-2026",
+  "title_en": "Albanian Flag Day",
+  "title_sq": "Dita e Flamurit",
+  "municipality": "prishtine",
+  "venue": "Sheshi Skënderbeu",
+  "category": "celebration",
+  "starts_at": "2026-11-28T10:00:00+01:00",
+  "ends_at": "2026-11-28T23:00:00+01:00",
+  "tentative": false,
+  "url": null
+ },
+ {
+  "slug": "independence-day-2027",
+  "title_en": "Independence Day",
+  "title_sq": "Dita e Pavarësisë",
+  "municipality": "prishtine",
+  "venue": "Newborn",
+  "category": "celebration",
+  "starts_at": "2027-02-17T10:00:00+01:00",
+  "ends_at": "2027-02-17T23:00:00+01:00",
+  "tentative": false,
+  "url": null
+ },
+ {
+  "slug": "anibar-2027",
+  "title_en": "Anibar Animation Festival",
+  "title_sq": "Festivali i Animacionit Anibar",
+  "municipality": "peje",
+  "venue": "Kino Jusuf Gërvalla",
+  "category": "film",
+  "starts_at": "2027-07-12T18:00:00+02:00",
+  "ends_at": "2027-07-18T23:00:00+02:00",
+  "tentative": true,
+  "url": "https://anibar.org"
+ },
+ {
+  "slug": "sunny-hill-2027",
+  "title_en": "Sunny Hill Festival",
+  "title_sq": "Sunny Hill Festival",
+  "municipality": "prishtine",
+  "venue": "Prishtinë",
+  "category": "music",
+  "starts_at": "2027-07-30T18:00:00+02:00",
+  "ends_at": "2027-08-01T23:59:00+02:00",
+  "tentative": true,
+  "url": null
+ },
+ {
+  "slug": "dokufest-2027",
+  "title_en": "DokuFest",
+  "title_sq": "DokuFest",
+  "municipality": "prizren",
+  "venue": "Prizren old town",
+  "category": "film",
+  "starts_at": "2027-08-06T18:00:00+02:00",
+  "ends_at": "2027-08-14T23:59:00+02:00",
+  "tentative": true,
+  "url": "https://dokufest.com"
+ },
+ {
+  "slug": "hardh-fest-2027",
+  "title_en": "Hardh Fest (grape harvest)",
+  "title_sq": "Hardh Fest",
+  "municipality": "rahovec",
+  "venue": "Rahovec",
+  "category": "food",
+  "starts_at": "2027-09-03T11:00:00+02:00",
+  "ends_at": "2027-09-05T23:59:00+02:00",
+  "tentative": true,
+  "url": "https://visitkosovo.rks-gov.net/event/hardh-fest"
+ }
+]
