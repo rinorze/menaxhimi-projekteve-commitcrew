@@ -155,9 +155,9 @@ flowchart LR
 ## 8. How we work
 
 - **Scrum with 1-week sprints:** planning after class, a stand-up in the group chat (Mon / Wed / Fri: *done · next · blocked*), and a review in class.
-- **Board:** one card per person per week with a checklist. Columns: Todo → In Progress → In Review → Done.
-- **Git:** everyone pushes to **`staging`**. Work that runs goes to `develop` every week and to `main` at the end of each sprint (both protected). Details are in [CONTRIBUTING.md](../CONTRIBUTING.md).
-- **Definition of Done:** the checklist is ticked, the work is pushed with `Closes #card`, there is a screenshot for screens, the text is in sq and en, and the card is in Done.
+- **Board:** a card per person (or per area) with a checklist, numbered Card 1, Card 2…, each with a design link, a deadline and the branch to use. Columns: Todo → In Progress → In Review → Done.
+- **Git:** everyone works on **their own branch** (`feat/<name>`) and opens a pull request into **`staging`**, which Rinor reviews. Work that runs goes from `staging` to `develop` every week and to `main` at the end of each sprint (`develop` and `main` are protected). Details are in [CONTRIBUTING.md](../CONTRIBUTING.md).
+- **Definition of Done:** the checklist is ticked, the pull request says `Closes #card` and is merged, there is a screenshot for screens, the text is in Albanian and English (Albanian first), it works in light and dark mode, and the card is in Done.
 
 ---
 

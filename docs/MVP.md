@@ -72,8 +72,8 @@ Puna ndahet sipas vështirësisë: anëtarët që sapo kanë filluar programimin
 ## 6. Mënyra e punës
 
 - **Scrum me sprinte javore:** planifikimi pas orës, *stand-up* tri herë në javë në grup dhe rishikimi në klasë.
-- **GitHub Projects:** një kartelë për çdo anëtar për çdo javë (66 kartela), me listë detyrash brenda.
-- **Degët:** të gjithë punojnë në **`staging`**. Puna e testuar kalon në `develop`, ndërsa në fund të çdo sprinti në `main`. `develop` dhe `main` janë të mbrojtura, kështu që gjithmonë kemi një kopje të sigurt.
+- **GitHub Projects:** kartela të numëruara (Card 1, Card 2…) për çdo anëtar, secila me lidhjen e dizajnit, afatin dhe degën, me listë detyrash brenda.
+- **Degët:** secili punon në degën e vet (`feat/emri`) dhe hap *pull request* te **`staging`**, që e shqyrton Rinori. Puna e testuar kalon nga `staging` në `develop`, ndërsa në fund të çdo sprinti në `main`. `develop` dhe `main` janë të mbrojtura, kështu që gjithmonë kemi një kopje të sigurt.
 
 ## 7. Demo finale
 
