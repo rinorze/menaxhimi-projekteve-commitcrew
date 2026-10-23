@@ -40,7 +40,7 @@ docker compose up          # database + backend; Ctrl+C to stop
 
 API at http://localhost:8000/api/health/ (it says `"database": "postgresql"`), and the database itself at http://localhost:8080 (Adminer: System **PostgreSQL**, server **db**, user **postgres**, password **postgres**). Run Django commands inside it with `docker compose exec backend python manage.py createsuperuser`.
 
-**Website (`website/`)**: React with TypeScript, built with Vite.
+**Website (`website/`)**: React with TypeScript, built with Vite (Krenare).
 
 ```bash
 cd website
@@ -54,12 +54,12 @@ Pages are in `website/src/pages/`, the shared top bar, footer, email box and iPh
 
 | Who | What | Where in the code | Design (in `docs/design/screens`) |
 | --- | --- | --- | --- |
-| **Rinor** @rinorze | Design, shared components, Home, map, reviews every pull request | `app/src/components/`, `app/src/app/home.tsx` | `02-home`, `03-map` |
-| **Elios** @eliosmernica15 | Backend: models and the API + **website waiting list and app page** | `backend/`, `website/src/pages/Waitlist.tsx`, `website/src/pages/AppPage.tsx` | `10-website/02`, `10-website/03` |
-| **Krenare** @krenareveselii | PostgreSQL with Docker + Scrum Master + **website landing page** | `docker-compose.yml`, `website/src/pages/Landing.tsx` | `10-website/01` |
-| **Artiola** @artiolaferizi | Onboarding 1.1 to 1.3 and 1.14: Welcome, Look around, Guest place, Sign in | `app/src/app/(onboarding)/` | `01-onboarding/01–03, 14` |
-| **Erleta** @erletaqerimi-oss | Onboarding 1.4 to 1.7: Language, Where are you today, Kthimi, Interests | `app/src/app/(onboarding)/` | `01-onboarding/04–07` |
-| **Elvina** @elvinasinani-netizen | Onboarding 1.8 to 1.13: Avatar, Avatar items, Save passport, Privacy, One friend, First km | `app/src/app/(onboarding)/` | `01-onboarding/08–13` |
+| **Rinor** @rinorze | Card 1: design, shared components, Home, map, reviews every pull request · Card 3: Docker + PostgreSQL | `app/src/components/`, `app/src/app/home.tsx`, `docker-compose.yml` | `02-home`, `03-map` |
+| **Elios** @eliosmernica15 | Card 2: backend, models and the API | `backend/` | — |
+| **Krenare** @krenareveselii | Cards 7 and 8: the whole website · Scrum Master | `website/src/pages/` | `10-website` |
+| **Artiola** @artiolaferizi | Card 4: onboarding 1.1 to 1.4 and 1.14 (Welcome, Look around, Guest place, Language, Sign in) | `app/src/app/(onboarding)/` | `01-onboarding/01–04, 14` |
+| **Erleta** @erletaqerimi-oss | Card 5: onboarding 1.5, 1.6, 1.7, 1.10, 1.11 (Where are you today, Kthimi, Interests, Save passport, Privacy) | `app/src/app/(onboarding)/` | `01-onboarding/05–07, 10, 11` |
+| **Elvina** @elvinasinani-netizen | Card 6: onboarding 1.8, 1.9, 1.12, 1.13 (Avatar creator, Avatar items, One friend, First km) | `app/src/app/(onboarding)/` | `01-onboarding/08, 09, 12, 13` |
 
 Every onboarding screen already exists as its own file with a placeholder, so nobody edits someone else's file. Each placeholder says who builds it and which design to follow. All designs are pictures in **[docs/design](docs/design)**, sorted by area, with the colours, fonts, photos and links in its README.
 
@@ -73,12 +73,12 @@ Every onboarding screen already exists as its own file with a placeholder, so no
 
 | Who | Card | Branch |
 | --- | --- | --- |
-| Rinor | #136 | `feat/rinor-components` |
-| Elios | #137, then #143 | `feat/elios-places-api`, then `feat/elios-website` |
-| Krenare | #138, then #142 | `feat/krenare-database`, then `feat/krenare-website-landing` |
-| Artiola | #139 | `feat/artiola-welcome` |
-| Erleta | #140 | `feat/erleta-language` |
-| Elvina | #141 | `feat/elvina-avatar` |
+| Rinor | Card 1 (#136), Card 3 (#138) | `feat/rinor-components`, `feat/rinor-docker` |
+| Elios | Card 2 (#137) | `feat/elios-places-api` |
+| Krenare | Card 7 (#142), then Card 8 (#143) | `feat/krenare-website-landing`, then `feat/krenare-website-pages` |
+| Artiola | Card 4 (#139) | `feat/artiola-welcome` |
+| Erleta | Card 5 (#140) | `feat/erleta-language` |
+| Elvina | Card 6 (#141) | `feat/elvina-avatar` |
 
 ```bash
 git fetch

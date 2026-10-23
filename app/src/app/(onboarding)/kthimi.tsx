@@ -1,6 +1,15 @@
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 
-// Diaspora: country, home municipality, month and year of the visit.
+// 1.6 · Erleta · Country, family municipality (all 38), month; the ticket card at the bottom.
 export default function Kthimi() {
-  return <ScreenPlaceholder title="Kthimi" owner="Erleta" design="01-onboarding/06-kthimi-diaspora.png" next="/interests" nextLabel="Vazhdo" />;
+  return (
+    <ScreenPlaceholder
+      step="1.6"
+      title="Kthimi"
+      owner="Erleta"
+      design="01-onboarding/06-kthimi-diaspora.png"
+      next="/interests"
+      nextLabel="Vazhdo"
+    />
+  );
 }

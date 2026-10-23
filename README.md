@@ -82,11 +82,11 @@ More than 100 features: see every one, with a screen mockup, in the **[Feature A
 
 | Member | Role |
 | --- | --- |
-| Rinor Zeqiri · [@rinorze](https://github.com/rinorze) | Product Designer: designs every screen; builds the shared components, Home, map and camera unlock; reviews every pull request |
-| Elios Mernica · [@eliosmernica15](https://github.com/eliosmernica15) | Backend Lead: Django API, unlock checks, real time, AI; website waiting list and app page |
-| Krenare Veseli · [@krenareveselii](https://github.com/krenareveselii) | Database (PostgreSQL in Docker) · Scrum Master · website landing page |
-| Artiola Ferizi · [@artiolaferizi](https://github.com/artiolaferizi) | Onboarding: welcome, look around, guest place, sign in |
-| Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Onboarding: language, where are you today, Kthimi, interests |
-| Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Onboarding: avatar, save passport, privacy, one friend, first km |
+| Rinor Zeqiri · [@rinorze](https://github.com/rinorze) | Product Designer: designs every screen; builds the shared components, Home and map; Docker and the database; reviews every pull request |
+| Elios Mernica · [@eliosmernica15](https://github.com/eliosmernica15) | Backend Lead: Django API, unlock checks, real time, AI |
+| Krenare Veseli · [@krenareveselii](https://github.com/krenareveselii) | The website (landing page, waiting list, app page) · Scrum Master |
+| Artiola Ferizi · [@artiolaferizi](https://github.com/artiolaferizi) | Onboarding: welcome, look around, guest place, language, sign in |
+| Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Onboarding: where are you today, Kthimi, interests, save passport, privacy |
+| Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Onboarding: avatar creator, avatar items, one friend, first km |
 
 Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has cards on the [project board](https://github.com/users/rinorze/projects/1); work goes on your own branch and into `staging` through a pull request (see [CONTRIBUTING](CONTRIBUTING.md)).
