@@ -56,7 +56,7 @@ class MunicipalityListView(generics.ListAPIView):
         region = self.request.query_params.get('region')
         if region:
             queryset = queryset.filter(region__slug=region)
-        return queryset
+        return queryset.order_by('name_en')
 
 
 class PlaceListView(generics.ListAPIView):
@@ -71,7 +71,7 @@ class PlaceListView(generics.ListAPIView):
         category = self.request.query_params.get('category')
         if category:
             queryset = queryset.filter(category=category)
-        return queryset
+        return queryset.order_by('name_en')
 
 
 class PlaceDetailView(generics.RetrieveAPIView):
