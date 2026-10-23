@@ -3,9 +3,10 @@ from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.db import connection
+from django.db import connection, transaction
 
 from . import models, serializers
+from .utils import haversine_m
 
 
 @api_view(['GET'])
@@ -94,3 +95,57 @@ class MyStampsView(generics.ListAPIView):
 
     def get_queryset(self):
         return models.Stamp.objects.filter(user=self.request.user).select_related('place')
+
+
+class UnlockCreateView(generics.CreateAPIView):
+    serializer_class = serializers.UnlockCreateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        try:
+            place = models.Place.objects.get(slug=data['place_slug'], is_active=True)
+        except models.Place.DoesNotExist:
+            return Response({'error': 'Place not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if models.Unlock.objects.filter(user=request.user, place=place).exists():
+            return Response({'error': 'Place already unlocked'}, status=status.HTTP_400_BAD_REQUEST)
+
+        lat = data['latitude']
+        lng = data['longitude']
+        acc = data.get('accuracy_m')
+
+        # Basic validation
+        if acc is not None and acc > 75:
+            return Response({'error': 'Location accuracy too low (max 75m)'}, status=status.HTTP_400_BAD_REQUEST)
+
+        distance = haversine_m(lat, lng, place.latitude, place.longitude)
+        if distance > place.unlock_radius_m + 5:  # small tolerance
+            return Response({'error': 'Not close enough to unlock', 'distance_m': round(distance, 1)}, status=status.HTTP_400_BAD_REQUEST)
+
+        unlock = models.Unlock.objects.create(
+            user=request.user,
+            place=place,
+            latitude=lat,
+            longitude=lng,
+            accuracy_m=acc,
+        )
+        stamp = models.Stamp.objects.create(user=request.user, place=place, unlock=unlock)
+        models.Activity.objects.create(
+            user=request.user,
+            type='unlock',
+            place=place,
+            text_en=f'Unlocked {place.name_en}',
+            text_sq=f'Zhbllokoi {place.name_sq}',
+        )
+
+        return Response({
+            'success': True,
+            'unlock_id': unlock.id,
+            'stamp_id': stamp.id,
+            'place': serializers.PlaceSerializer(place).data,
+        }, status=status.HTTP_201_CREATED)

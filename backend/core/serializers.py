@@ -69,6 +69,13 @@ class UnlockSerializer(serializers.ModelSerializer):
         read_only_fields = ('user', 'unlocked_at')
 
 
+class UnlockCreateSerializer(serializers.Serializer):
+    place_slug = serializers.SlugField()
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+    accuracy_m = serializers.FloatField(required=False, allow_null=True)
+
+
 class StampSerializer(serializers.ModelSerializer):
     place = PlaceSerializer(read_only=True)
 
