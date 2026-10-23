@@ -1,6 +1,15 @@
 import { ScreenPlaceholder } from '@/components/screen-placeholder';
 
-// Guest map, no account needed. Each pin opens /guest-place with that place.
+// 1.2 · Artiola · Guest map, no account needed. The pin you tap opens that place.
 export default function LookAround() {
-  return <ScreenPlaceholder title="Shiko përreth" owner="Artiola" design="01-onboarding/02-look-around-guest-map.png" next="/guest-place" nextLabel="Hap një vend" />;
+  return (
+    <ScreenPlaceholder
+      step="1.2"
+      title="Shiko përreth"
+      owner="Artiola"
+      design="01-onboarding/02-look-around-guest-map.png"
+      next="/guest-place"
+      nextLabel="Hap Kalanë e Novobërdës"
+    />
+  );
 }

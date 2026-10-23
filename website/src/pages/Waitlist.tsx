@@ -1,6 +1,6 @@
 import { useT } from '../i18n';
 
-// Elios builds this page (#143). Design: docs/design/screens/10-website/02-waiting-list.png
+// Krenare builds this page (Card 8, #143). Design: docs/design/screens/10-website/02-waiting-list.png
 export default function Waitlist() {
   const t = useT();
   return (

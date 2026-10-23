@@ -3,7 +3,7 @@ import { Phone } from '../components/Phone';
 import { useT } from '../i18n';
 import './Landing.css';
 
-// Krenare builds this page (#142). Design: docs/design/screens/10-website/01-landing-page.png
+// Krenare builds this page (Card 7, #142). Design: docs/design/screens/10-website/01-landing-page.png
 // The hero below is a working example of the shared parts; replace each "todo" box with the real section.
 export default function Landing() {
   const t = useT();
