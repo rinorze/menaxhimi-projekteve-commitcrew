@@ -2,6 +2,7 @@
 export { Button } from './Button';
 export { Chip } from './Chip';
 export { Glass } from './Glass';
+export { GlassIconButton } from './GlassIconButton';
 export { Icon } from './Icon';
 export { Press } from './Press';
 export { ProgressDots } from './ProgressDots';
