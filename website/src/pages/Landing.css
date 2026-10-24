@@ -11,3 +11,404 @@
   .hero { grid-template-columns: 1fr; }
   .hero-visual { height: 640px; }
 }
+.how { text-align: center; }
+
+.how-eyebrow {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--blue);
+}
+
+.how-title {
+  margin: 0 auto 56px;
+  font-size: clamp(34px, 5.5vw, 64px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.how-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  text-align: left;
+}
+
+.how-step { min-width: 0; }
+
+.how-panel {
+  height: 420px;
+  padding-top: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+  border-radius: var(--radius-big);
+}
+.how-panel--blue  { background: var(--tint-blue); }
+.how-panel--sand  { background: var(--tint-sand); }
+.how-panel--green { background: var(--tint-green); }
+
+.how-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 28px;
+}
+.how-num {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  opacity: 0.5;
+  font-variant-numeric: tabular-nums;
+}
+.how-caption h3 {
+  margin: 0;
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.how-text {
+  margin: 10px 0 0;
+  max-width: 34ch;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.feat-eyebrow {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--blue);
+}
+
+.feat-title {
+  max-width: 14em;
+  margin: 0 0 48px;
+  font-size: clamp(34px, 5.5vw, 64px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.feat-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: var(--radius-big);
+}
+
+.feat-tile h3 {
+  margin: 20px 0 8px;
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.feat-tile p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 34ch;
+}
+
+.feat-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+
+.feat-tile--light {
+  background: var(--card, #fff);
+  color: var(--ink);
+}
+.feat-tile--light .feat-icon {
+  background: var(--bg, #f5f4f0);
+}
+
+.feat-tile--map {
+  grid-column: span 2;
+  flex-direction: row;
+  background: #0f1115;
+  color: #fff;
+}
+.feat-tile--map .feat-icon { background: rgba(255, 255, 255, 0.1); }
+.feat-tile--map p { color: rgba(255, 255, 255, 0.75); }
+.feat-map-text { flex: 1; }
+.feat-map-phone {
+  align-self: flex-end;        /* ngjitet poshtë */
+  flex: 0 0 auto;
+  height: 460px;               /* sa pjesë e telefonit shfaqet (rregulloje) */
+  margin: 0 -8px -32px 24px;   /* -32px anulon padding-in e pllakës poshtë */
+  padding-top: 0;
+  overflow: hidden;
+}
+
+.feat-tile--photo {
+  justify-content: flex-end;
+  color: #fff;
+  padding: 0;
+}
+.feat-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.feat-photo-text {
+  position: relative;
+  padding: 24px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+}
+.feat-photo-text p { color: rgba(255, 255, 255, 0.9); }
+
+.feat-avatars {
+  display: flex;
+  margin-top: auto;
+}
+.feat-avatars img {
+  height: 56px;
+  width: 56px; ;
+  border-radius: 50%;
+  border: 3px solid var(--card, #fff);
+  margin-left: -10px;
+  object-fit: cover;
+}
+.feat-avatars img:first-child { margin-left: 0; }
+
+.feat-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--bg, #f5f4f0);
+  font-weight: 600;
+}
+.feat-switch {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  border-radius: 15px;
+  background: var(--green);
+}
+.feat-knob {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+}
+/* ---------- Harta ---------- */
+.map-card {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  padding: 48px;
+  border-radius: var(--radius-big);
+  background: var(--card, #fff);
+}
+.map-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.map-eyebrow,
+.faq-eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--blue);
+}
+.map-text h2,
+.faq-head h2 {
+  margin: 0 0 16px;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.map-text p.muted { margin: 0 0 24px; max-width: 44ch; line-height: 1.5; }
+
+.map-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+.map-chips li {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--bg, #f5f4f0);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--muted, inherit);
+}
+.map-legend li { display: flex; align-items: center; gap: 6px; }
+.map-dot { width: 10px; height: 10px; border-radius: 2px; }
+.map-dot--visited { background: var(--ink); }
+.map-dot--here    { background: var(--blue); }
+.map-dot--fog     { background: #e4e4ea; }
+
+/* ---------- Pyetjet ---------- */
+.faq {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 48px;
+  align-items: start;
+}
+.faq-head h2 { max-width: 6em; margin: 0; }
+
+.faq-list { border-top: 1px solid var(--line, rgba(0, 0, 0, 0.12)); }
+.faq-item { border-bottom: 1px solid var(--line, rgba(0, 0, 0, 0.12)); }
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 20px 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.faq-a {
+  margin: 0;
+  padding: 0 0 20px;
+  max-width: 60ch;
+  line-height: 1.5;
+}
+.cta {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 560px;
+  padding: 48px 24px;
+  overflow: hidden;
+  border-radius: var(--radius-big);
+  color: #fff;
+  text-align: center;
+}
+.cta-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cta-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+.cta-content {
+  position: relative;         
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 640px;
+}
+.cta-content h2 {
+  margin: 0;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+.cta-content p {
+  margin: 0 0 8px;
+  font-size: clamp(16px, 2vw, 20px);
+  color: rgba(255, 255, 255, 0.9);
+}
+.hero-stats {
+  display: flex;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 32px;
+  border-left: 1px solid var(--line, rgba(0, 0, 0, 0.12));
+}
+.hero-stats li:first-child {
+  padding-left: 0;
+  border-left: 0;     /* i pari pa vijë */
+}
+.hero-stats b {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.hero-stats span {
+  font-size: 18px;
+}
+
+@media (max-width: 900px) {
+  .how-grid { grid-template-columns: 1fr; gap: 40px; }
+  .how-title { margin-bottom: 36px; }
+  .how-panel { height: 380px; }
+
+  .feat-grid { grid-template-columns: 1fr; }
+  .feat-tile--map { grid-column: auto; flex-direction: column; }
+  .feat-map-phone { align-self: center; height: 300px; margin: 24px 0 -24px; }
+  .feat-tile--photo { min-height: 320px; }
+  .feat-avatars, .feat-toggle { margin-top: 28px; }
+
+  .map-card { grid-template-columns: 1fr; padding: 28px; gap: 28px; }
+
+  .faq { grid-template-columns: 1fr; gap: 24px; }
+  .faq-head h2 { max-width: none; }
+
+  .cta { min-height: 440px; padding: 32px 16px; }
+}
