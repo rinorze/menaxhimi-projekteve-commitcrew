@@ -46,7 +46,8 @@ class Municipality(models.Model):
     area_km2 = models.FloatField(null=True, blank=True)
     website = models.URLField(blank=True)
     wikidata = models.CharField(max_length=40, blank=True)
-    image = models.CharField(max_length=255, blank=True)
+    # {file, url, credit, license, source_url} of the Wikimedia Commons photo; keep the credit with the picture
+    image = models.JSONField(default=dict, blank=True)
 
     class Meta:
         verbose_name_plural = 'municipalities'
@@ -57,29 +58,33 @@ class Municipality(models.Model):
 
 
 class Place(models.Model):
+    # the same keys as backend/data/places.json; the app collections use them (peak, waterfall, fortress, cave)
     CATEGORY_CHOICES = [
         ('bridge', 'Bridge'),
-        ('castle', 'Castle'),
-        ('church', 'Church'),
-        ('monastery', 'Monastery'),
-        ('mosque', 'Mosque'),
-        ('museum', 'Museum'),
-        ('nature', 'Nature'),
-        ('waterfall', 'Waterfall'),
-        ('lake', 'Lake'),
-        ('cave', 'Cave'),
-        ('mountain', 'Mountain'),
-        ('park', 'Park'),
+        ('religious', 'Place of worship'),
         ('monument', 'Monument'),
+        ('memorial', 'Memorial'),
+        ('square', 'Square'),
+        ('old_bazaar', 'Old bazaar'),
+        ('kulla', 'Kulla (stone tower house)'),
+        ('fortress', 'Fortress'),
+        ('museum', 'Museum'),
         ('archaeology', 'Archaeology'),
+        ('peak', 'Peak'),
+        ('lake', 'Lake'),
+        ('waterfall', 'Waterfall'),
+        ('canyon', 'Canyon'),
+        ('cave', 'Cave'),
+        ('spring', 'Spring'),
+        ('nature_park', 'Nature park'),
         ('viewpoint', 'Viewpoint'),
-        ('restaurant', 'Restaurant'),
-        ('accommodation', 'Accommodation'),
-        ('festival', 'Festival'),
+        ('ski', 'Ski'),
+        ('winery', 'Winery'),
+        ('spa', 'Spa'),
         ('other', 'Other'),
     ]
 
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=255, unique=True)
     municipality = models.ForeignKey(Municipality, on_delete=models.PROTECT, related_name='places')
     name_sq = models.CharField(max_length=200)
     name_en = models.CharField(max_length=200)
@@ -118,7 +123,8 @@ class Place(models.Model):
     checked_at = models.DateField(null=True, blank=True)
 
     photos = models.JSONField(default=list, blank=True)
-    image = models.CharField(max_length=255, blank=True)
+    # {file, url, credit, license, source_url} of the Wikimedia Commons photo; keep the credit with the picture
+    image = models.JSONField(default=dict, blank=True)
     xp = models.IntegerField(default=0)
     score = models.FloatField(default=0)
     is_active = models.BooleanField(default=True)
