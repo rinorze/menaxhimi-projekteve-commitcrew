@@ -84,7 +84,7 @@ class Command(BaseCommand):
                     'area_km2': row.get('area_km2'),
                     'website': text(row.get('website')),
                     'wikidata': text(row.get('wikidata')),
-                    'image': text(row.get('image')),
+                    'image': row.get('image') or {},
                 },
             )
         self.stdout.write(f'  municipalities: {models.Municipality.objects.count()}')
@@ -99,6 +99,7 @@ class Command(BaseCommand):
 
             category = (row.get('category') or 'other').lower()
             if category not in catalogue:
+                self.stderr.write(f'  {row.get("slug")}: unknown category {category!r}, stored as other')
                 category = 'other'
 
             models.Place.objects.update_or_create(
@@ -137,7 +138,7 @@ class Command(BaseCommand):
                     'wikidata': text(row.get('wikidata')),
                     'checked_at': parse_date(row.get('checked_at')),
                     'photos': row.get('photos') or [],
-                    'image': text(row.get('image')),
+                    'image': row.get('image') or {},
                     'xp': row.get('xp') or 0,
                     'score': row.get('score') or 0,
                 },

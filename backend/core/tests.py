@@ -215,3 +215,28 @@ class WaitlistTests(TestCase):
         res = client.post('/api/waitlist/', {'email': 'test@example.com'}, format='json')
         self.assertIn(res.status_code, [200, 201])
         self.assertTrue(models.WaitlistEntry.objects.filter(email='test@example.com').exists())
+
+
+class ImportPlacesTests(TestCase):
+    """The real import of backend/data/*.json (fails on PostgreSQL if a field is too short for the data)."""
+
+    def test_import_all_places(self):
+        from django.core.management import call_command
+
+        call_command('import_places', verbosity=0)
+        self.assertEqual(models.Municipality.objects.count(), 38)
+        self.assertEqual(models.Place.objects.count(), 318)
+        # categories come through as they are in the data, not all collapsed into "other"
+        self.assertGreater(models.Place.objects.filter(category='peak').count(), 50)
+        self.assertLess(models.Place.objects.filter(category='other').count(), 20)
+        # the photo keeps its credit and licence
+        bridge = models.Place.objects.get(slug='ura-e-gurit')
+        self.assertTrue(bridge.image.get('url', '').startswith('https://'))
+        self.assertTrue(bridge.image.get('credit'))
+
+    def test_import_twice_is_safe(self):
+        from django.core.management import call_command
+
+        call_command('import_places', verbosity=0)
+        call_command('import_places', verbosity=0)
+        self.assertEqual(models.Place.objects.count(), 318)
