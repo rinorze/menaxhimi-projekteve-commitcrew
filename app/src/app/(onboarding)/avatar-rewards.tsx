@@ -8,7 +8,7 @@ export default function AvatarRewards() {
       title="Sende që i fiton"
       owner="Elvina"
       design="01-onboarding/09-avatar-items-you-earn.png"
-      next="/avatar"
+      next="/save-passport"
       nextLabel="Kthehu te avatari"
     />
   );
