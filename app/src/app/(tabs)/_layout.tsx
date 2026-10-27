@@ -1,7 +1,12 @@
+import { DynamicColorIOS, Platform } from 'react-native';
 import { NativeTabs } from 'expo-router/native-tabs';
 
 import { useT } from '@/lib/i18n';
-import { useColors } from '@/theme/tokens';
+import { palette } from '@/theme/tokens';
+
+// One ice blue for the selected tab in light and dark mode (palette.ice); the other tabs stay quiet and follow the mode.
+const ICE = palette.light.ice;
+const IDLE = Platform.OS === 'ios' ? DynamicColorIOS({ light: 'rgba(60,60,67,0.6)', dark: 'rgba(235,235,245,0.6)' }) : 'rgba(60,60,67,0.6)';
 
 /**
  * The tab bar: the native iPhone tab bar with Liquid Glass on iOS 26 (UITabBarController, no custom drawing).
@@ -9,9 +14,8 @@ import { useColors } from '@/theme/tokens';
  */
 export default function TabsLayout() {
   const t = useT();
-  const c = useColors();
   return (
-    <NativeTabs minimizeBehavior="onScrollDown" tintColor={c.label}>
+    <NativeTabs minimizeBehavior="onScrollDown" tintColor={ICE} iconColor={{ default: IDLE, selected: ICE }} indicatorColor={ICE}>
       <NativeTabs.Trigger name="home">
         <NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} />
         <NativeTabs.Trigger.Label>{t({ sq: 'Ballina', en: 'Home' })}</NativeTabs.Trigger.Label>

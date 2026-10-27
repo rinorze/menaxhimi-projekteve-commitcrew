@@ -3,7 +3,7 @@ import { Text, type TextProps } from 'react-native';
 import { text, useColors, type Palette } from '@/theme/tokens';
 
 type Variant = keyof typeof text;
-type Tone = 'label' | 'label2' | 'label3' | 'blue' | 'red' | 'green' | 'onTint' | 'stone' | 'gold' | 'goldInk';
+type Tone = 'iceInk' | 'label' | 'label2' | 'label3' | 'blue' | 'red' | 'green' | 'onTint' | 'stone' | 'gold' | 'goldInk';
 
 type Props = TextProps & {
   /** the size from the iOS type ramp (see docs/design/kit/typography.png) */
