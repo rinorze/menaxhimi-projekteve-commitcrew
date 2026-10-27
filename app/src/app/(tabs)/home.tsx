@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { Button, Txt } from '@/components';
-import { Chips, ComingUpList, Header, Komunat, Popular, Quests, SearchPill, Section, Today, YourKosovo, type Filter } from '@/components/home/Blocks';
+import { Chips, ComingUpList, Header, Komunat, NearYou, Popular, Quests, SearchPill, Section, Today, YourKosovo, type Filter } from '@/components/home/Blocks';
 import { places, stamps } from '@/data';
 import { placePhotos } from '@/data/photos';
 import { useT } from '@/lib/i18n';
@@ -37,6 +37,10 @@ export default function Home() {
 
         <Section title={t({ sq: 'Në fokus sot', en: 'In focus today' })} first>
           <Today place={today} />
+        </Section>
+
+        <Section title={t({ sq: 'Pranë teje', en: 'Near you' })}>
+          <NearYou />
         </Section>
 
         <Section title={t({ sq: 'Më të njohurat në Kosovë', en: 'Popular in Kosovo' })} to="/search">
