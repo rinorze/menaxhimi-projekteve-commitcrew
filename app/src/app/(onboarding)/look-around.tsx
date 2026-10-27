@@ -66,10 +66,12 @@ export default function LookAround() {
     <View style={[s.app, { backgroundColor: c.bg }]}>
       {/* Sfondi i hartës (fiks) */}
       <Image
-        source={require('../../../assets/images/map-bg.png')}
+        source={require('../../../assets/images/guest-map.jpg')}
         style={StyleSheet.absoluteFill}
         resizeMode="cover"
       />
+      {/* quiet the terrain like the design: a soft wash, stronger at the edges so pins and panel read well */}
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: dark ? 'rgba(30,31,29,0.55)' : 'rgba(236,234,227,0.5)' }]} pointerEvents="none" />
 
       {/* Pikat pozicionohen sipas përmasave të ekranit. */}
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">

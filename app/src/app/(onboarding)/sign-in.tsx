@@ -48,7 +48,7 @@ export default function SignInScreen() {
       </View>
 
       {/* Apple button (visual only) */}
-      <Pressable style={styles.pillBtnBlack}>
+      <Pressable onPress={() => router.replace('/home')} style={styles.pillBtnBlack}>
         <Ionicons name="logo-apple" size={22} color="#FFFFFF" style={styles.appleIcon} />
         <Text style={styles.pillBtnText}>Hyr me Apple</Text>
       </Pressable>
@@ -86,13 +86,16 @@ export default function SignInScreen() {
       </Pressable>
 
       {/* Login button (visual only) */}
-      <Pressable style={[styles.pillBtnBlack, styles.loginBtn]}>
+      <Pressable onPress={() => router.replace('/home')} style={[styles.pillBtnBlack, styles.loginBtn]}>
         <Text style={styles.pillBtnText}>Hyr</Text>
       </Pressable>
 
       {/* Footer (visual only) */}
       <Text style={styles.footer}>
-        I ri këtu? <Text style={styles.footerLink}>Krijo llogari</Text>
+        I ri këtu?{' '}
+        <Text style={styles.footerLink} onPress={() => router.replace('/language')}>
+          Krijo llogari
+        </Text>
       </Text>
     </SafeAreaView>
   );

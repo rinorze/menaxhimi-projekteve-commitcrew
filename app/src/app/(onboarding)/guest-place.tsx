@@ -25,19 +25,42 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import { Href, useRouter } from 'expo-router';
+import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-// VERIFIKO: rruga e fotos reale të Kalasë së Novobërdës në assets.
-const NOVOBERDE_IMAGE: ImageSourcePropType = require('../../../assets/images/kalaja-e-novo-berdes.jpg');
+const PLACES: Record<string, { image: ImageSourcePropType; label: string; name: string; text: string; short: string }> = {
+  kalaja: {
+    image: require('../../../assets/images/kalaja-e-novo-berdes.jpg'),
+    label: 'NOVOBËRDË · KALA',
+    name: 'Kalaja e Novobërdës',
+    short: 'Novobërdën',
+    text: 'Qytet minierash mesjetar dhe kala mbi një kodër vullkanike në lindje të Kosovës.',
+  },
+  ujevarat: {
+    image: require('../../../assets/images/ujevarat-e-mirushes.jpg'),
+    label: 'MALISHEVË · UJËVARË',
+    name: 'Ujëvarat e Mirushës',
+    short: 'Mirushën',
+    text: 'Një varg ujëvarash dhe pellgjesh në kanionin e lumit Mirusha, pranë Malishevës.',
+  },
+  gjeravica: {
+    image: require('../../../assets/images/gjeravica.jpg'),
+    label: 'DEÇAN · MAL',
+    name: 'Gjeravica',
+    short: 'Gjeravicën',
+    text: 'Maja më e lartë e Kosovës, 2.656 m, në Bjeshkët e Nemuna.',
+  },
+};
 
 const IMAGE_RATIO = 0.47; // foto zë ~47% të ekranit
 const OVERLAP = 0.01; // paneli fillon ~46%
 
 export default function GuestPlace() {
   const router = useRouter();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const place = PLACES[id ?? 'kalaja'] ?? PLACES.kalaja;
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
 
@@ -56,7 +79,7 @@ export default function GuestPlace() {
   // VERIFIKO: nëse /save-passport pret parametra (p.sh. id e vendit),
   // shtoji këtu, p.ex. router.push({ pathname: '/save-passport', params: { place: 'novoberde' } })
   const onSaveToPassport = () => {
-    router.push('/save-passport' as Href);
+    router.push({ pathname: '/save-passport', params: { place: id ?? 'kalaja' } } as Href);
   };
 
   return (
@@ -64,7 +87,7 @@ export default function GuestPlace() {
       <StatusBar style="light" />
 
       <Image
-        source={NOVOBERDE_IMAGE}
+        source={place.image}
         resizeMode="cover"
         style={[styles.image, { height: imageHeight }]}
       />
@@ -95,11 +118,9 @@ export default function GuestPlace() {
             },
           ]}
         >
-          <Text style={styles.label}>NOVOBËRDË · KALA</Text>
-          <Text style={styles.title}>Kalaja e Novobërdës</Text>
-          <Text style={styles.description}>
-            Qytet minierash mesjetar dhe kala mbi një kodër vullkanike në lindje të Kosovës.
-          </Text>
+          <Text style={styles.label}>{place.label}</Text>
+          <Text style={styles.title}>{place.name}</Text>
+          <Text style={styles.description}>{place.text}</Text>
           <Text style={styles.source}>Nga Wikipedia · foto nga Wikimedia Commons</Text>
 
           <View style={styles.stampCard}>
@@ -119,7 +140,7 @@ export default function GuestPlace() {
             accessibilityRole="button"
             style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}
           >
-            <Text style={styles.primaryText}>Ruaje Novobërdën në pasaportë</Text>
+            <Text style={styles.primaryText}>Ruaje {place.short} në pasaportë</Text>
           </Pressable>
 
           <Pressable
