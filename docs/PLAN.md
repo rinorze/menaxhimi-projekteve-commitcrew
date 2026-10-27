@@ -2,7 +2,6 @@
 
 > **Team:** CommitCrew · **Course:** Menaxhimi i Projekteve (Prof. Lorent Sinani) · **Board:** [GitHub Project](https://github.com/users/rinorze/projects/1)
 > **Timeline:** 11 weekly sprints, 19 Oct 2026 → 10 Jan 2027 (holiday break 28 Dec – 3 Jan)
-> **Every feature with a screen mockup:** [Feature Atlas](https://claude.ai/artifact/Fh1ASH9JErhpenqCUmFxGw)
 
 This plan describes **what** we build and **who builds what each week**. Every cell in section 6 is one card on the board: **one card per person per week**.
 
@@ -62,8 +61,6 @@ Research was done with Claude, ChatGPT (Codex), Grok 4.7 and Cursor Composer, th
 ---
 
 ## 3. Features
-
-The **[Feature Atlas](https://claude.ai/artifact/Fh1ASH9JErhpenqCUmFxGw)** lists every feature, from the splash screen to the admin panel, with a mockup, difficulty (Easy / Medium / Hard), phase (MVP / Later) and owner. You can filter it by person.
 
 | Module | MVP (final demo) | Later |
 | --- | --- | --- |
