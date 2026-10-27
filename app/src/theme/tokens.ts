@@ -23,6 +23,8 @@ export const palette = {
     gold: '#F4B62A',
     goldInk: '#6B4A00',
     stone: '#8E8778',
+    ice: '#8CC4FF',
+    iceInk: '#FFFFFF', // text and icons on ice-blue buttons: white
   },
   dark: {
     bg: '#000000',
@@ -43,6 +45,8 @@ export const palette = {
     gold: '#F6C343',
     goldInk: '#F6C343',
     stone: '#A39B8B',
+    ice: '#8CC4FF',
+    iceInk: '#FFFFFF', // text and icons on ice-blue buttons: white
   },
 } as const;
 
