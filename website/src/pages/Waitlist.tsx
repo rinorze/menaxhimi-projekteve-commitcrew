@@ -45,55 +45,22 @@ async function copy() {
   }
 }
   return (
-    <main className="wrap section wl">
-      <div style={{ textAlign: 'center' }}>
-        <div className="kicker">{t({ sq: 'Lista e pritjes', en: 'Waiting list' })}</div>
-        <h1 className="h2">{t({ sq: 'Merr betën i pari.', en: 'Get the beta first.' })}</h1>
+    <main className="wrap wl">
+      <div className="wl-head">
+        <div className="eyebrow">{t({ sq: 'Lista e pritjes', en: 'Waiting list' })}</div>
+        <h1>{t({ sq: 'Merr betën i pari.', en: 'Get the beta first.' })}</h1>
+        <p>{t({
+          sq: 'Të shkruajmë vetëm një herë, kur hapet beta në TestFlight këtë dimër.',
+          en: 'We write once, when the beta opens on TestFlight this winter.',
+        })}</p>
       </div>
     {!joined ? (
   <form className="wl-card" onSubmit={submit} noValidate>
-    {joined && (
-  <section className="wl-after" aria-live="polite">
-    <div className="wl-divider" role="presentation">
-      <span>{t({ sq: 'Pas regjistrimit', en: 'After signing up' })}</span>
-    </div>
-
-    <div className="wl-done">
-      <div className="wl-check">
-        <Check size={32} strokeWidth={3} aria-hidden="true" />
-      </div>
-      <h2>
-        {name
-          ? t({ sq: `Je në listë, ${name}.`, en: `You're on the list, ${name}.` })
-          : t({ sq: 'Je në listë.', en: "You're on the list." })}
-      </h2>
-      <p>
-        {t({
-          sq: 'Konfirmoje emailin. Të shkruajmë kur hapet beta.',
-          en: "Confirm your email. We'll write when the beta opens.",
-        })}
-      </p>
-      <div className="wl-share">
-        <input readOnly value={link} aria-label={t({ sq: 'Lidhja jote', en: 'Your link' })} />
-        <button type="button" onClick={copy}>
-          {copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
-          {copied ? t({ sq: 'U kopjua', en: 'Copied' }) : t({ sq: 'Kopjo lidhjen', en: 'Copy link' })}
-        </button>
-      </div>
-      <small>
-        {t({
-          sq: 'Pa renditje: të gjithë në listë e marrin betën njëkohësisht.',
-          en: 'No ranking: everyone on the list gets the beta at the same time.',
-        })}
-      </small>
-    </div>
-  </section>
-)}
     <label className="wl-label" htmlFor="wl-email">
       {t({ sq: 'Emaili', en: 'Email' })}
     </label>
     <div className={`wl-input${invalid ? ' is-invalid' : ''}`}>
-      <Mail size={18} aria-hidden="true" />
+      <Mail size={22} aria-hidden="true" />
       <input
         id="wl-email"
         type="email"
@@ -130,7 +97,7 @@ async function copy() {
 
     <button type="submit" className="wl-submit">
       {t({ sq: 'Më fut në listë', en: 'Add me to the list' })}
-      <ArrowRight size={16} aria-hidden="true" />
+      <ArrowRight size={18} strokeWidth={2.2} aria-hidden="true" />
     </button>
 
     <p className="wl-fine">

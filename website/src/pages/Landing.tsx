@@ -1,13 +1,11 @@
 import { EmailForm } from "../components/EmailForm";
 import { Phone } from "../components/Phone";
-import { useT } from "../i18n";
+import { useLang, useT } from "../i18n";
 import "./Landing.css";
-import { Ghost, MapPin, Send, Users, WifiOff } from "lucide-react";
+import { Ghost, MapPin, Medal, Minus, Plus, Send, Users, WifiOff } from "lucide-react";
 import { useState } from "react";
-import { Minus, Plus } from "lucide-react";
 
-// Krenare builds this page (Card 7, #142). Design: docs/design/screens/10-website/01-landing-page.png
-// The hero below is a working example of the shared parts; replace each "todo" box with the real section.
+// Design: docs/design/screens/10-website/01-landing-page.png
 const steps = [
   {
     n: "01",
@@ -93,6 +91,10 @@ const faqs = [
     },
   },
 ] as const;
+const heroLines = {
+  sq: ["Kosova,", "një vulë", "në një kohë."],
+  en: ["Kosovo,", "one stamp", "at a time."],
+} as const;
 const stats = [
   { n: "318", label: { sq: "vende", en: "places" } },
   { n: "38", label: { sq: "komuna", en: "municipalities" } },
@@ -100,6 +102,7 @@ const stats = [
 ] as const;
 export default function Landing() {
   const t = useT();
+  const { lang } = useLang();
   const [open, setOpen] = useState<number | null>(0);
   return (
     <main>
@@ -113,19 +116,18 @@ export default function Landing() {
             })}
           </span>
           <h1>
-            {t({
-              sq: "Kosova, një vulë në një kohë.",
-              en: "Kosovo, one stamp at a time.",
-            })}
+            {heroLines[lang].map((l) => (
+              <span key={l}>{l}</span>
+            ))}
           </h1>
-          <p className="muted">
+          <p className="lead muted">
             {t({
               sq: "Gjej vende të vërteta në një hartë të gjallë. Shko atje, bëj foton në aplikacion dhe mblidh vulën në pasaportën tënde. Me shokët, pa postime dhe pa pëlqime.",
               en: "Find real places on a living map. Go there, take the photo in the app and collect the stamp in your passport. With friends, no posts and no likes.",
             })}
           </p>
           <EmailForm onJoin={() => {}} />
-          <small className="muted">
+          <small className="hero-note">
             {t({
               sq: "Vetëm emaili. Të shkruajmë një herë, kur hapet beta.",
               en: "Only your email. We write once, when the beta opens.",
@@ -146,25 +148,37 @@ export default function Landing() {
             src={`${import.meta.env.BASE_URL}photos/gjeravica.jpg`}
             alt="Gjeravica"
           />
+          <span className="hero-shade" />
+          <span className="hero-caption">Gjeravica · 2 656 m</span>
           <div className="hero-phone">
             <Phone
               screen="home.png"
-              width={340}
+              width={362}
               alt={t({
                 sq: "Ballina e aplikacionit",
                 en: "The app home screen",
               })}
             />
           </div>
+          <div className="hero-stamp">
+            <span className="hero-stamp-icon">
+              <Medal size={30} strokeWidth={1.6} color="#3d2a00" />
+            </span>
+            <span>
+              <b>Ura e Gurit</b>
+              <small>
+                {t({ sq: "Vula 14 · Prizren", en: "Stamp 14 · Prizren" })}
+              </small>
+            </span>
+          </div>
         </div>
       </section>
 
-     
         <section id="si-funksionon" className="wrap section how">
-          <p className="how-eyebrow">
+          <p className="eyebrow">
             {t({ sq: "SI FUNKSIONON", en: "HOW IT WORKS" })}
           </p>
-          <h2 className="how-title">
+          <h2 className="title">
             {t({
               sq: "Tre hapa. Një pasaportë.",
               en: "Three steps. One passport.",
@@ -175,7 +189,7 @@ export default function Landing() {
             {steps.map((s) => (
               <li key={s.n} className="how-step">
                 <div className={`how-panel how-panel--${s.tint}`}>
-                  <Phone screen={s.screen} width={260} alt={t(s.alt)} />
+                  <Phone screen={s.screen} width={261} alt={t(s.alt)} />
                 </div>
                 <div className="how-caption">
                   <span className="how-num">{s.n}</span>
@@ -187,10 +201,10 @@ export default function Landing() {
           </ol>
       </section>
         <section id="vecorite" className="wrap section feat">
-          <p className="feat-eyebrow">
+          <p className="eyebrow">
             {t({ sq: "VEÇORITË", en: "FEATURES" })}
           </p>
-          <h2 className="feat-title">
+          <h2 className="title title--feat">
             {t({
               sq: "Gjithçka për të eksploruar Kosovën me shokët.",
               en: "Everything to explore Kosovo with your friends.",
@@ -201,7 +215,7 @@ export default function Landing() {
             <article className="feat-tile feat-tile--map">
               <div className="feat-map-text">
                 <span className="feat-icon">
-                  <MapPin size={22} />
+                  <MapPin size={24} strokeWidth={1.8} />
                 </span>
                 <h3>
                   {t({
@@ -219,15 +233,15 @@ export default function Landing() {
               <div className="feat-map-phone">
                 <Phone
                   screen="03-pin-grows-into-its-card.png"
-                  width={320}
+                  width={253}
                   alt={t({ sq: "Karta e vendit", en: "The place card" })}
                 />
               </div>
             </article>
 
-            <article className="feat-tile feat-tile--light">
+            <article className="feat-tile">
               <span className="feat-icon">
-                <Users size={22} />
+                <Users size={24} strokeWidth={1.8} />
               </span>
               <h3>{t({ sq: "Shokë, pa feed", en: "Friends, no feed" })}</h3>
               <p className="muted">
@@ -251,9 +265,9 @@ export default function Landing() {
                 ))}
               </div>
             </article>
-            <article className="feat-tile feat-tile--light">
+            <article className="feat-tile">
               <span className="feat-icon">
-                <Ghost size={22} />
+                <Ghost size={24} strokeWidth={1.8} />
               </span>
               <h3>
                 {t({ sq: "Fantazmë si parazgjedhje", en: "Ghost by default" })}
@@ -280,8 +294,11 @@ export default function Landing() {
                 src={`${import.meta.env.BASE_URL}photos/municipality-prizren.jpg`}
                 alt={t({ sq: "Prizreni nga lart", en: "Prizren from above" })}
               />
+              <span className="feat-photo-shade" />
               <div className="feat-photo-text">
-                <Send size={22} />
+                <span className="feat-icon">
+                  <Send size={24} strokeWidth={1.8} />
+                </span>
                 <h3>{t({ sq: "Kthimi", en: "The Return" })}</h3>
                 <p>
                   {t({
@@ -292,9 +309,9 @@ export default function Landing() {
               </div>
             </article>
 
-            <article className="feat-tile feat-tile--light">
+            <article className="feat-tile">
               <span className="feat-icon">
-                <WifiOff size={22} />
+                <WifiOff size={24} strokeWidth={1.8} />
               </span>
               <h3>{t({ sq: "Edhe pa sinjal", en: "Even without signal" })}</h3>
               <p className="muted">
@@ -307,7 +324,6 @@ export default function Landing() {
           </div>
       </section>
       <section className="wrap section">
-        <section className="wrap section">
           <div className="map-card">
             <div className="map-visual">
               <img
@@ -319,10 +335,10 @@ export default function Landing() {
               />
             </div>
             <div className="map-text">
-              <p className="map-eyebrow">
+              <p className="eyebrow">
                 {t({ sq: "TË GJITHA KOMUNAT", en: "ALL MUNICIPALITIES" })}
               </p>
-              <h2>
+              <h2 className="title">
                 {t({
                   sq: "Nga Gjeravica në Partesh.",
                   en: "From Gjeravica to Partesh.",
@@ -355,12 +371,11 @@ export default function Landing() {
               </ul>
             </div>
           </div>
-        </section>{" "}
       </section>
         <section id="pyetje" className="wrap section faq">
           <div className="faq-head">
-            <p className="faq-eyebrow">{t({ sq: "PYETJE", en: "FAQ" })}</p>
-            <h2>
+            <p className="eyebrow">{t({ sq: "PYETJE", en: "FAQ" })}</p>
+            <h2 className="title">
               {t({
                 sq: "Pyetjet më të shpeshta.",
                 en: "Frequently asked questions.",
@@ -379,7 +394,7 @@ export default function Landing() {
                     onClick={() => setOpen(isOpen ? null : i)}
                   >
                     <span>{t(f.q)}</span>
-                    {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                    {isOpen ? <Minus size={22} strokeWidth={2} /> : <Plus size={22} strokeWidth={2} />}
                   </button>
                   {isOpen && <p className="faq-a muted">{t(f.a)}</p>}
                 </div>
