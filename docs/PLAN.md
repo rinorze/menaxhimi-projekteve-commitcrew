@@ -156,7 +156,7 @@ flowchart LR
 
 - **Scrum with 1-week sprints:** planning after class, a stand-up in the group chat (Mon / Wed / Fri: *done · next · blocked*), and a review in class.
 - **Board:** one card per person per week with a checklist. Columns: Todo → In Progress → In Review → Done.
-- **Git:** everyone pushes to **`staging`**. Work that runs goes to `develop` every week and to `main` at the end of each sprint (both protected). Details are in [CONTRIBUTING.md](../CONTRIBUTING.md).
+- **Git:** everyone pushes to **`staging`**. Work that runs goes to `develop` every week and to `main` at the end of each sprint (both protected).
 - **Definition of Done:** the checklist is ticked, the work is pushed with `Closes #card`, there is a screenshot for screens, the text is in sq and en, and the card is in Done.
 
 ---

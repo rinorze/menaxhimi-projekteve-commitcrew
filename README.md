@@ -14,7 +14,7 @@ Find places on a 2D and 3D map, go there, unlock them with your camera, and expl
 ![React](https://img.shields.io/badge/Website-React-20232A?logo=react&logoColor=61DAFB)
 ![Docker](https://img.shields.io/badge/Docker-PostgreSQL-2496ED?logo=docker&logoColor=white)
 
-[Feature Atlas (every screen)](https://claude.ai/artifact/Fh1ASH9JErhpenqCUmFxGw) · [Project board](https://github.com/users/rinorze/projects/1) · [Plan](docs/PLAN.md) · [MVP (Shqip)](docs/MVP.md) · [How we work](CONTRIBUTING.md)
+[Project board](https://github.com/users/rinorze/projects/1) · [Plan](docs/PLAN.md)
 
 </div>
 
@@ -40,8 +40,6 @@ At the same time, the people who would love these places are everywhere. **More 
 | Browse all 38 municipalities as big photo cards and open a city to see its best places and events. | Explore the map in 2D, or tilt to 3D to see Rugova, Sharr and Bjeshkët e Nemuna in real terrain. | Inside the place's radius the camera opens. The server checks GPS, accuracy and fake-GPS. | The stamp lands in your collection, your friends see it in their activity, and your streak grows. |
 
 ## What's inside
-
-More than 100 features: see every one, with a screen mockup, in the **[Feature Atlas](https://claude.ai/artifact/Fh1ASH9JErhpenqCUmFxGw)**.
 
 **🧭 Explore:** all 38 municipalities and 7 regions, city pages, place pages with stories in Albanian and English, search, categories, saved places, events and festivals.
 
@@ -69,17 +67,6 @@ More than 100 features: see every one, with a screen mockup, in the **[Feature A
 | **Gjilan** | Gjilan · Kamenicë · Viti · Kllokot · Ranillug · Partesh |
 | **Gjakovë** | Gjakovë · Rahovec · Deçan · Junik |
 
-## Built with
-
-| | |
-| --- | --- |
-| **App** (`app/`) | React Native with Expo SDK 58 · TypeScript · Expo Router · Apple Maps (2D/3D) · Expo Camera and Location |
-| **Backend** (`backend/`) | Python · Django and Django REST Framework · GeoDjango · Django Channels (chat and live location) |
-| **Website** (`website/`) | React · TypeScript · Vite · landing page, waiting list, app page |
-| **Database** | PostgreSQL 17 in Docker (`docker compose up`) · PostGIS later |
-| **AI** | Language and vision models, called only from the backend |
-| **Design** | [docs/design](docs/design): every screen in order, colours, type, photos |
-
 ## Team: CommitCrew
 
 | Member | Role |
@@ -91,4 +78,4 @@ More than 100 features: see every one, with a screen mockup, in the **[Feature A
 | Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Onboarding: where are you today, Kthimi, interests, save passport, privacy |
 | Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Onboarding: avatar creator, avatar items, one friend, first km |
 
-Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has cards on the [project board](https://github.com/users/rinorze/projects/1); work goes on your own branch and into `staging` through a pull request (see [CONTRIBUTING](CONTRIBUTING.md)).
+Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has cards on the [project board](https://github.com/users/rinorze/projects/1); work goes on your own branch and into `staging` through a pull request.
