@@ -79,7 +79,7 @@ export default function GuestPlace() {
   // VERIFIKO: nëse /save-passport pret parametra (p.sh. id e vendit),
   // shtoji këtu, p.ex. router.push({ pathname: '/save-passport', params: { place: 'novoberde' } })
   const onSaveToPassport = () => {
-    router.push({ pathname: '/save-passport', params: { place: id ?? 'kalaja' } } as Href);
+    router.push({ pathname: '/language', params: { place: id ?? 'kalaja' } } as Href);
   };
 
   return (
