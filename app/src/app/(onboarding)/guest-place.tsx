@@ -1,19 +1,3 @@
-// import { ScreenPlaceholder } from '@/components/screen-placeholder';
-
-// // 1.3 · Artiola · The place the guest tapped; “Ruaje …” names it on the next screen.
-// export default function GuestPlace() {
-//   return (
-//     <ScreenPlaceholder
-//       step="1.3"
-//       title="Kalaja e Novobërdës"
-//       owner="Artiola"
-//       design="01-onboarding/03-guest-place.png"
-//       next="/save-passport"
-//       nextLabel="Ruaje Novobërdën në pasaportë"
-//       also={[{ href: '/look-around', label: 'Vazhdo të shikosh' }]}
-//     />
-//   );
-// }
 import React from 'react';
 import {
   Image,
@@ -28,7 +12,7 @@ import {
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { SymbolView } from 'expo-symbols';
 
 import { useT, type Text as I18nText } from '@/lib/i18n';
 import { useColors } from '@/theme/tokens';
@@ -115,7 +99,7 @@ export default function GuestPlace() {
         accessibilityLabel={t({ sq: 'Kthehu', en: 'Back' })}
         style={[styles.backButton, { top: insets.top + 10 }]}
       >
-        <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+        <SymbolView name="chevron.left" size={22} weight="semibold" tintColor="#FFFFFF" />
       </Pressable>
 
       <ScrollView
@@ -145,7 +129,7 @@ export default function GuestPlace() {
 
           <View style={[styles.stampCard, { backgroundColor: c.fill }]}>
             <View style={[styles.badge, { borderColor: c.label3 }]}>
-              <Ionicons name="shield" size={22} color={c.label3} />
+              <SymbolView name="shield.fill" size={22} tintColor={c.label3} />
             </View>
             <View style={styles.stampTextWrap}>
               <Text style={[styles.stampTitle, { color: c.label }]}>{t({ sq: 'Këtu të pret një vulë', en: 'A stamp is waiting here' })}</Text>

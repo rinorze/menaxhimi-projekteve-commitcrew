@@ -1,18 +1,3 @@
-// import { ScreenPlaceholder } from '@/components/screen-placeholder';
-
-// // 1.2 · Artiola · Guest map, no account needed. The pin you tap opens that place.
-// export default function LookAround() {
-//   return (
-//     <ScreenPlaceholder
-//       step="1.2"
-//       title="Shiko përreth"
-//       owner="Artiola"
-//       design="01-onboarding/02-look-around-guest-map.png"
-//       next="/guest-place"
-//       nextLabel="Hap Kalanë e Novobërdës"
-//     />
-//   );
-// }
 import { useRef, useState } from 'react';
 import {
   View, Text, TextInput, Pressable, ScrollView, Animated, Image,
@@ -20,7 +5,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { SymbolView } from 'expo-symbols';
 
 import { useT } from '@/lib/i18n';
 
@@ -31,9 +16,9 @@ const PLACES = [
 ];
 
 const PINS = [
-  { id: 'ujevarat', x: 0.336, y: 0.306, icon: 'water', big: false },
-  { id: 'gjeravica', x: 0.69, y: 0.274, icon: 'image-filter-hdr', big: false },
-  { id: 'kalaja', x: 0.526, y: 0.383, icon: 'shield', big: true },
+  { id: 'ujevarat', x: 0.336, y: 0.306, icon: 'drop.fill', big: false },
+  { id: 'gjeravica', x: 0.69, y: 0.274, icon: 'mountain.2.fill', big: false },
+  { id: 'kalaja', x: 0.526, y: 0.383, icon: 'shield.fill', big: true },
 ] as const;
 
 export default function LookAround() {
@@ -99,7 +84,7 @@ export default function LookAround() {
                 },
               ]}
             >
-              <MaterialCommunityIcons name={p.icon} size={20} color={on ? '#fff' : '#111'} />
+              <SymbolView name={p.icon} size={20} tintColor={on ? '#fff' : '#111'} />
             </Pressable>
           );
         })}
@@ -108,7 +93,7 @@ export default function LookAround() {
       {/* Sipër: kërkimi + "Si mysafir" (vetëm pamje) */}
       <SafeAreaView edges={['top']} style={s.top} pointerEvents="box-none">
         <View style={[s.search, { backgroundColor: c.chip }]}>
-          <Ionicons name="search" size={17} color={c.muted} />
+          <SymbolView name="magnifyingglass" size={17} tintColor={c.muted} />
           <TextInput
             style={[s.input, { color: c.ink }]}
             placeholder={t({ sq: 'Provo “Pejë” ose “ujëvara”', en: 'Try “Pejë” or “waterfall”' })}
@@ -117,7 +102,7 @@ export default function LookAround() {
           />
         </View>
         <View style={[s.guest, { backgroundColor: c.chip }]}>
-          <Ionicons name="alert-circle-outline" size={14} color={c.ink} />
+          <SymbolView name="exclamationmark.circle" size={14} tintColor={c.ink} />
           <Text style={[s.guestText, { color: c.ink }]}>{t({ sq: 'Si mysafir · asgjë nuk ruhet', en: 'As a guest · nothing is saved' })}</Text>
         </View>
       </SafeAreaView>
