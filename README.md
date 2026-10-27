@@ -67,17 +67,37 @@ At the same time, the people who would love these places are everywhere. **More 
 | **Gjilan** | Gjilan · Kamenicë · Viti · Kllokot · Ranillug · Partesh |
 | **Gjakovë** | Gjakovë · Rahovec · Deçan · Junik |
 
-## Get started
+## Run it
 
 ```bash
 git clone https://github.com/rinorze/menaxhimi-projekteve-commitcrew.git
 cd menaxhimi-projekteve-commitcrew
-docker compose up                        # PostgreSQL + backend: http://localhost:8000/api/health/
-cd app && npm install && npx expo start  # the iPhone app: scan the QR code with Expo Go
-cd website && npm install && npm run dev # the website
+git switch feat/<your name>               # your own branch; open a pull request into staging
+docker compose up                         # PostgreSQL + backend, loads the 318 places
+cd app && npm install && npx expo start   # the iPhone app: scan the QR code with Expo Go
+cd website && npm install && npm run dev  # the website
 ```
 
-Every screen of the app, in order, with colours, type and photos: **[docs/design](docs/design)**.
+| What | Where | Login |
+| --- | --- | --- |
+| API health | http://localhost:8000/api/health/ | says `"database": "postgresql"` |
+| API docs | http://localhost:8000/api/docs/ | |
+| Django admin | http://localhost:8000/admin/ | `admin` / `admin` (local only, created automatically) |
+| Adminer (look inside the database) | http://localhost:8080 | System **PostgreSQL**, server `db`, user `postgres`, password `postgres`, database `discover_kosovo` |
+
+Everyone has their own database on their own laptop; the data lives in a Docker volume and survives `docker compose down`.
+
+| I want to… | Run |
+| --- | --- |
+| stop it, keep the data | `docker compose down` |
+| **delete all data and start clean** | `docker compose down -v` |
+| run a Django command | `docker compose exec backend python manage.py <command>` (`makemigrations`, `migrate`, `test`, `import_places`) |
+| open a SQL prompt | `docker compose exec db psql -U postgres -d discover_kosovo` |
+| make a backup | `docker compose exec -T db pg_dump -U postgres discover_kosovo > backup.sql` |
+| restore a backup | `docker compose exec -T db psql -U postgres -d discover_kosovo < backup.sql` (on an empty database) |
+| see what is wrong | `docker compose logs backend` or `docker compose logs db` |
+
+Port already in use (5432, 8000, 8080)? Close the other program, or change the left number in `docker-compose.yml`. `docker` not recognised? Open a new terminal after installing Docker Desktop and wait for "Engine running". After you change a model, run `makemigrations` and `migrate` and commit the new file in `backend/core/migrations/`.
 
 ## Team: CommitCrew
 

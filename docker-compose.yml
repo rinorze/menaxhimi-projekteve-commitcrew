@@ -31,8 +31,8 @@ services:
       DJANGO_SUPERUSER_USERNAME: admin
       DJANGO_SUPERUSER_PASSWORD: admin
       DJANGO_SUPERUSER_EMAIL: admin@example.com
-    # migrate, make a local admin user if it does not exist yet, then run the server
-    command: sh -c "python manage.py migrate && (python manage.py createsuperuser --noinput || true) && python manage.py runserver 0.0.0.0:8000"
+    # migrate, make a local admin user if it does not exist yet, load the 318 places and 38 municipalities (safe to repeat), then run the server
+    command: sh -c "python manage.py migrate && (python manage.py createsuperuser --noinput || true) && python manage.py import_places && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
