@@ -27,39 +27,46 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
+import { useT } from '@/lib/i18n';
+import { useColors } from '@/theme/tokens';
+
 export default function SignInScreen() {
   const router = useRouter();
+  const c = useColors();
+  const t = useT();
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: c.grouped }]} edges={['top']}>
       {/* Cancel */}
       <Pressable
         onPress={() => router.replace('/welcome')}
         style={styles.cancelBtn}
         hitSlop={8}
       >
-        <Text style={styles.cancelText}>Anulo</Text>
+        <Text style={[styles.cancelText, { color: c.blue }]}>{t({ sq: 'Anulo', en: 'Cancel' })}</Text>
       </Pressable>
 
       {/* Heading */}
       <View style={styles.headingWrap}>
-        <Text style={styles.heading}>Mirë se u ktheve</Text>
-        <Text style={styles.subtitle}>Pasaporta dhe shokët të presin.</Text>
+        <Text style={[styles.heading, { color: c.label }]}>{t({ sq: 'Mirë se u ktheve', en: 'Welcome back' })}</Text>
+        <Text style={[styles.subtitle, { color: c.label2 }]}>
+          {t({ sq: 'Pasaporta dhe shokët të presin.', en: 'Your passport and friends are waiting.' })}
+        </Text>
       </View>
 
       {/* Apple button (visual only) */}
-      <Pressable onPress={() => router.replace('/home')} style={styles.pillBtnBlack}>
-        <Ionicons name="logo-apple" size={22} color="#FFFFFF" style={styles.appleIcon} />
-        <Text style={styles.pillBtnText}>Hyr me Apple</Text>
+      <Pressable onPress={() => router.replace('/home')} style={[styles.pillBtnBlack, { backgroundColor: c.tint }]}>
+        <Ionicons name="logo-apple" size={22} color={c.onTint} style={styles.appleIcon} />
+        <Text style={[styles.pillBtnText, { color: c.onTint }]}>{t({ sq: 'Hyr me Apple', en: 'Sign in with Apple' })}</Text>
       </Pressable>
 
       {/* Separator */}
-      <Text style={styles.or}>ose</Text>
+      <Text style={[styles.or, { color: c.label2 }]}>{t({ sq: 'ose', en: 'or' })}</Text>
 
       {/* Credentials */}
-      <View style={styles.card}>
+      <View style={[styles.card, { backgroundColor: c.card }]}>
         <View style={styles.row}>
-          <Text style={styles.label}>Përdoruesi</Text>
+          <Text style={[styles.label, { color: c.label }]}>{t({ sq: 'Përdoruesi', en: 'Username' })}</Text>
           <TextInput
             style={styles.value}
             defaultValue="rinor"
@@ -67,13 +74,13 @@ export default function SignInScreen() {
             autoCorrect={false}
           />
         </View>
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: c.separator }]} />
         <View style={styles.row}>
-          <Text style={styles.label}>Fjalëkalimi</Text>
+          <Text style={[styles.label, { color: c.label }]}>{t({ sq: 'Fjalëkalimi', en: 'Password' })}</Text>
           <TextInput
             style={styles.value}
-            defaultValue="••••••••••"
-            secureTextEntry={false}
+            defaultValue="fjalekalimi"
+            secureTextEntry
             autoCapitalize="none"
             autoCorrect={false}
           />
@@ -82,19 +89,19 @@ export default function SignInScreen() {
 
       {/* Forgot password (visual only) */}
       <Pressable style={styles.forgotWrap}>
-        <Text style={styles.forgotText}>Harrove fjalëkalimin?</Text>
+        <Text style={[styles.forgotText, { color: c.blue }]}>{t({ sq: 'Harrove fjalëkalimin?', en: 'Forgot your password?' })}</Text>
       </Pressable>
 
       {/* Login button (visual only) */}
-      <Pressable onPress={() => router.replace('/home')} style={[styles.pillBtnBlack, styles.loginBtn]}>
-        <Text style={styles.pillBtnText}>Hyr</Text>
+      <Pressable onPress={() => router.replace('/home')} style={[styles.pillBtnBlack, styles.loginBtn, { backgroundColor: c.tint }]}>
+        <Text style={[styles.pillBtnText, { color: c.onTint }]}>{t({ sq: 'Hyr', en: 'Sign in' })}</Text>
       </Pressable>
 
       {/* Footer (visual only) */}
-      <Text style={styles.footer}>
-        I ri këtu?{' '}
-        <Text style={styles.footerLink} onPress={() => router.replace('/language')}>
-          Krijo llogari
+      <Text style={[styles.footer, { color: c.label2 }]}>
+        {t({ sq: 'I ri këtu?', en: 'New here?' })}{' '}
+        <Text style={[styles.footerLink, { color: c.blue }]} onPress={() => router.replace('/language')}>
+          {t({ sq: 'Krijo llogari', en: 'Create account' })}
         </Text>
       </Text>
     </SafeAreaView>

@@ -22,10 +22,12 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
+import { useT } from '@/lib/i18n';
+
 const PLACES = [
-  { id: 'kalaja', name: 'Kalaja e Novobërdës', image: require('../../../assets/images/kalaja-e-novo-berdes.jpg') },
-  { id: 'ujevarat', name: 'Ujëvarat e Mirushës', image: require('../../../assets/images/ujevarat-e-mirushes.jpg') },
-  { id: 'gjeravica', name: 'Gjeravica', image: require('../../../assets/images/gjeravica.jpg') },
+  { id: 'kalaja', name: { sq: 'Kalaja e Novobërdës', en: 'Novo Brdo Fortress' }, image: require('../../../assets/images/kalaja-e-novo-berdes.jpg') },
+  { id: 'ujevarat', name: { sq: 'Ujëvarat e Mirushës', en: 'Mirusha Waterfalls' }, image: require('../../../assets/images/ujevarat-e-mirushes.jpg') },
+  { id: 'gjeravica', name: { sq: 'Gjeravica', en: 'Gjeravica' }, image: require('../../../assets/images/gjeravica.jpg') },
 ];
 
 const PINS = [
@@ -36,6 +38,7 @@ const PINS = [
 
 export default function LookAround() {
   const router = useRouter();
+  const t = useT();
   const { width, height } = useWindowDimensions();
   const dark = useColorScheme() === 'dark';
   const c = dark
@@ -81,7 +84,7 @@ export default function LookAround() {
           return (
             <Pressable
               key={p.id}
-              accessibilityLabel={PLACES.find((x) => x.id === p.id)?.name}
+              accessibilityLabel={t(PLACES.find((x) => x.id === p.id)!.name)}
               onPress={() => openPlace(p.id)}
               style={[
                 s.pin,
@@ -108,14 +111,14 @@ export default function LookAround() {
           <Ionicons name="search" size={17} color={c.muted} />
           <TextInput
             style={[s.input, { color: c.ink }]}
-            placeholder="Provo “Pejë” ose “ujëvara”"
+            placeholder={t({ sq: 'Provo “Pejë” ose “ujëvara”', en: 'Try “Pejë” or “waterfall”' })}
             placeholderTextColor={c.muted}
-            accessibilityLabel="Kërko"
+            accessibilityLabel={t({ sq: 'Kërko', en: 'Search' })}
           />
         </View>
         <View style={[s.guest, { backgroundColor: c.chip }]}>
           <Ionicons name="alert-circle-outline" size={14} color={c.ink} />
-          <Text style={[s.guestText, { color: c.ink }]}>Si mysafir · asgjë nuk ruhet</Text>
+          <Text style={[s.guestText, { color: c.ink }]}>{t({ sq: 'Si mysafir · asgjë nuk ruhet', en: 'As a guest · nothing is saved' })}</Text>
         </View>
       </SafeAreaView>
 
@@ -130,12 +133,14 @@ export default function LookAround() {
       >
         <SafeAreaView edges={['bottom']}>
           <View style={[s.sheet, { backgroundColor: c.card }]}>
-            <Pressable onPress={toggleSheet} hitSlop={16} accessibilityLabel="Hap ose mbyll panelin">
+            <Pressable onPress={toggleSheet} hitSlop={16} accessibilityLabel={t({ sq: 'Hap ose mbyll panelin', en: 'Open or close the panel' })}>
               <View style={s.grab} />
             </Pressable>
 
-            <Text style={[s.h1, { color: c.ink }]}>38 komuna. Fillo me një.</Text>
-            <Text style={[s.p, { color: c.muted }]}>Prek një pikë. 318 vende deri tani, pa llogari.</Text>
+            <Text style={[s.h1, { color: c.ink }]}>{t({ sq: '38 komuna. Fillo me një.', en: '38 municipalities. Start with one.' })}</Text>
+            <Text style={[s.p, { color: c.muted }]}>
+              {t({ sq: 'Prek një pikë. 318 vende deri tani, pa llogari.', en: 'Tap a pin. 318 places so far, no account needed.' })}
+            </Text>
 
             <ScrollView
               horizontal
@@ -153,7 +158,7 @@ export default function LookAround() {
                       active === p.id && { borderWidth: 3, borderColor: dark ? '#fff' : '#111' },
                     ]}
                   />
-                  <Text style={[s.placeName, { color: c.ink }]}>{p.name}</Text>
+                  <Text style={[s.placeName, { color: c.ink }]}>{t(p.name)}</Text>
                 </Pressable>
               ))}
             </ScrollView>
