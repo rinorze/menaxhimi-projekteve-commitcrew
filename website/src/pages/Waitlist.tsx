@@ -19,19 +19,40 @@ const [lang, setLang] = useState<EmailLang>('sq');
 const [joined, setJoined] = useState(false);
 const [copied, setCopied] = useState(false);
 const [invalid, setInvalid] = useState(false);
+const [failed, setFailed] = useState(false);
+const [sending, setSending] = useState(false);
 
 const local = email.split('@')[0].split(/[._+-]/)[0];
 const name = local ? local.charAt(0).toUpperCase() + local.slice(1) : '';
 const link = `discoverkosovo.app/?nga=${name.toLowerCase()}`;
 
-function submit(e: FormEvent) {
+async function submit(e: FormEvent) {
   e.preventDefault();
   if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
     setInvalid(true);
     return;
   }
   setInvalid(false);
-  // TODO: POST /api/waitlist/ kur Elios e shton
+  setFailed(false);
+  // POST /api/waitlist/ (Elios). Set VITE_API_URL (for example http://localhost:8000) to send for real;
+  // without it the page only shows the confirmation, because the online site has no server yet.
+  const api = import.meta.env.VITE_API_URL;
+  if (api) {
+    setSending(true);
+    try {
+      const res = await fetch(`${api}/api/waitlist/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), source: 'website' }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+    } catch {
+      setFailed(true);
+      setSending(false);
+      return;
+    }
+    setSending(false);
+  }
   setJoined(true);
 }
 
@@ -76,6 +97,11 @@ async function copy() {
         {t({ sq: 'Shkruaj një email të vlefshëm.', en: 'Enter a valid email address.' })}
       </p>
     )}
+    {failed && (
+      <p className="wl-error" role="alert">
+        {t({ sq: "Nuk u dërgua. Provo përsëri pas pak.", en: "It could not be sent. Please try again in a moment." })}
+      </p>
+    )}
 
     <span className="wl-label" id="wl-lang-label">
       {t({ sq: 'Gjuha e emailit', en: 'Email language' })}
@@ -95,7 +121,7 @@ async function copy() {
       ))}
     </div>
 
-    <button type="submit" className="wl-submit">
+    <button type="submit" className="wl-submit" disabled={sending}>
       {t({ sq: 'Më fut në listë', en: 'Add me to the list' })}
       <ArrowRight size={18} strokeWidth={2.2} aria-hidden="true" />
     </button>
