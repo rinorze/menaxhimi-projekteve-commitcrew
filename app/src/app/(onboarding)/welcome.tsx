@@ -19,7 +19,7 @@
 
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -27,6 +27,7 @@ const HERO = require('../../../assets/images/gjeravica.jpg');
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   return (
     <View style={styles.root}>
@@ -46,9 +47,10 @@ export default function WelcomeScreen() {
       />
 
       <View style={[styles.brand, { top: insets.top + 20 }]}>
-        <View style={styles.logo}>
+        {/* long-press: the list of every onboarding screen, for reviewing the flow */}
+        <Pressable onLongPress={() => router.push('/screens')} delayLongPress={600} style={styles.logo}>
           <View style={styles.logoGlyph} />
-        </View>
+        </Pressable>
         <Text style={styles.brandText}>DISCOVER KOSOVO</Text>
       </View>
 
@@ -58,24 +60,18 @@ export default function WelcomeScreen() {
           {'Të 38 komunat, nga Gjeravica në Partesh.\nNë 4 gjuhë.'}
         </Text>
 
-        <Link href="/look-around" asChild>
-          <Pressable style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
+        <Pressable onPress={() => router.push('/look-around')} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
             <Text style={styles.primaryText}>Shiko përreth fillimisht</Text>
             <Text style={styles.primaryArrow}>→</Text>
           </Pressable>
-        </Link>
 
-        <Link href="/language" asChild>
-          <Pressable style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}>
+        <Pressable onPress={() => router.push('/language')} style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}>
             <Text style={styles.secondaryText}>Krijo pasaportën time</Text>
           </Pressable>
-        </Link>
 
-        <Link href="/sign-in" asChild>
-          <Pressable hitSlop={12} style={styles.loginLink}>
+        <Pressable onPress={() => router.push('/sign-in')} hitSlop={12} style={styles.loginLink}>
             <Text style={styles.loginText}>Kam llogari</Text>
           </Pressable>
-        </Link>
       </View>
     </View>
   );
