@@ -23,11 +23,14 @@ import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useT } from '@/lib/i18n';
+
 const HERO = require('../../../assets/images/gjeravica.jpg');
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const t = useT();
 
   return (
     <View style={styles.root}>
@@ -55,22 +58,22 @@ export default function WelcomeScreen() {
       </View>
 
       <View style={[styles.content, { paddingBottom: Math.max(insets.bottom, 20) + 24 }]}>
-        <Text style={styles.title}>{'Shiko.\nFotografo.\nHape.'}</Text>
+        <Text style={styles.title}>{t({ sq: 'Shiko.\nFotografo.\nHape.', en: 'See.\nSnap.\nUnlock.' })}</Text>
         <Text style={styles.subtitle}>
-          {'Të 38 komunat, nga Gjeravica në Partesh.\nNë 4 gjuhë.'}
+          {t({ sq: 'Të 38 komunat, nga Gjeravica në Partesh.\nNë 4 gjuhë.', en: 'All 38 municipalities, from Gjeravica to Partesh.\nIn 4 languages.' })}
         </Text>
 
         <Pressable onPress={() => router.push('/look-around')} style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
-            <Text style={styles.primaryText}>Shiko përreth fillimisht</Text>
+            <Text style={styles.primaryText}>{t({ sq: 'Shiko përreth fillimisht', en: 'Look around first' })}</Text>
             <Text style={styles.primaryArrow}>→</Text>
           </Pressable>
 
         <Pressable onPress={() => router.push('/language')} style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}>
-            <Text style={styles.secondaryText}>Krijo pasaportën time</Text>
+            <Text style={styles.secondaryText}>{t({ sq: 'Krijo pasaportën time', en: 'Create my passport' })}</Text>
           </Pressable>
 
         <Pressable onPress={() => router.push('/sign-in')} hitSlop={12} style={styles.loginLink}>
-            <Text style={styles.loginText}>Kam llogari</Text>
+            <Text style={styles.loginText}>{t({ sq: 'Kam llogari', en: 'I have an account' })}</Text>
           </Pressable>
       </View>
     </View>

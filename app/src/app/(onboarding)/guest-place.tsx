@@ -30,27 +30,42 @@ import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-const PLACES: Record<string, { image: ImageSourcePropType; label: string; name: string; text: string; short: string }> = {
+import { useT, type Text as I18nText } from '@/lib/i18n';
+import { useColors } from '@/theme/tokens';
+
+const PLACES: Record<
+  string,
+  { image: ImageSourcePropType; label: I18nText; name: I18nText; short: I18nText; text: I18nText }
+> = {
   kalaja: {
     image: require('../../../assets/images/kalaja-e-novo-berdes.jpg'),
-    label: 'NOVOBËRDË · KALA',
-    name: 'Kalaja e Novobërdës',
-    short: 'Novobërdën',
-    text: 'Qytet minierash mesjetar dhe kala mbi një kodër vullkanike në lindje të Kosovës.',
+    label: { sq: 'NOVOBËRDË · KALA', en: 'NOVOBËRDË · FORTRESS' },
+    name: { sq: 'Kalaja e Novobërdës', en: 'Novo Brdo Fortress' },
+    short: { sq: 'Novobërdën', en: 'Novo Brdo' },
+    text: {
+      sq: 'Qytet minierash mesjetar dhe kala mbi një kodër vullkanike në lindje të Kosovës.',
+      en: 'A medieval mining town and fortress on a volcanic hill in eastern Kosovo.',
+    },
   },
   ujevarat: {
     image: require('../../../assets/images/ujevarat-e-mirushes.jpg'),
-    label: 'MALISHEVË · UJËVARË',
-    name: 'Ujëvarat e Mirushës',
-    short: 'Mirushën',
-    text: 'Një varg ujëvarash dhe pellgjesh në kanionin e lumit Mirusha, pranë Malishevës.',
+    label: { sq: 'MALISHEVË · UJËVARË', en: 'MALISHEVË · WATERFALL' },
+    name: { sq: 'Ujëvarat e Mirushës', en: 'Mirusha Waterfalls' },
+    short: { sq: 'Mirushën', en: 'Mirusha' },
+    text: {
+      sq: 'Një varg ujëvarash dhe pellgjesh në kanionin e lumit Mirusha, pranë Malishevës.',
+      en: 'A chain of waterfalls and pools in the Mirusha river canyon, near Malishevë.',
+    },
   },
   gjeravica: {
     image: require('../../../assets/images/gjeravica.jpg'),
-    label: 'DEÇAN · MAL',
-    name: 'Gjeravica',
-    short: 'Gjeravicën',
-    text: 'Maja më e lartë e Kosovës, 2.656 m, në Bjeshkët e Nemuna.',
+    label: { sq: 'DEÇAN · MAL', en: 'DEÇAN · MOUNTAIN' },
+    name: { sq: 'Gjeravica', en: 'Gjeravica' },
+    short: { sq: 'Gjeravicën', en: 'Gjeravica' },
+    text: {
+      sq: 'Maja më e lartë e Kosovës, 2.656 m, në Bjeshkët e Nemuna.',
+      en: "Kosovo's highest peak, 2,656 m, in the Accursed Mountains.",
+    },
   },
 };
 
@@ -61,6 +76,8 @@ export default function GuestPlace() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const place = PLACES[id ?? 'kalaja'] ?? PLACES.kalaja;
+  const c = useColors();
+  const t = useT();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
 
@@ -83,7 +100,7 @@ export default function GuestPlace() {
   };
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: c.bg }]}>
       <StatusBar style="light" />
 
       <Image
@@ -95,7 +112,7 @@ export default function GuestPlace() {
       <Pressable
         onPress={goBack}
         accessibilityRole="button"
-        accessibilityLabel="Kthehu"
+        accessibilityLabel={t({ sq: 'Kthehu', en: 'Back' })}
         style={[styles.backButton, { top: insets.top + 10 }]}
       >
         <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
@@ -113,24 +130,30 @@ export default function GuestPlace() {
           style={[
             styles.panel,
             {
+              backgroundColor: c.bg,
               minHeight: height - spacerHeight,
               paddingBottom: 40 + insets.bottom,
             },
           ]}
         >
-          <Text style={styles.label}>{place.label}</Text>
-          <Text style={styles.title}>{place.name}</Text>
-          <Text style={styles.description}>{place.text}</Text>
-          <Text style={styles.source}>Nga Wikipedia · foto nga Wikimedia Commons</Text>
+          <Text style={[styles.label, { color: c.label2 }]}>{t(place.label)}</Text>
+          <Text style={[styles.title, { color: c.label }]}>{t(place.name)}</Text>
+          <Text style={[styles.description, { color: c.label }]}>{t(place.text)}</Text>
+          <Text style={[styles.source, { color: c.label2 }]}>
+            {t({ sq: 'Nga Wikipedia · foto nga Wikimedia Commons', en: 'From Wikipedia · photo from Wikimedia Commons' })}
+          </Text>
 
-          <View style={styles.stampCard}>
-            <View style={styles.badge}>
-              <Ionicons name="shield" size={22} color="#9A9A9A" />
+          <View style={[styles.stampCard, { backgroundColor: c.fill }]}>
+            <View style={[styles.badge, { borderColor: c.label3 }]}>
+              <Ionicons name="shield" size={22} color={c.label3} />
             </View>
             <View style={styles.stampTextWrap}>
-              <Text style={styles.stampTitle}>Këtu të pret një vulë</Text>
-              <Text style={styles.stampText}>
-                Shiko atje, bëj foton në aplikacion dhe vula hyn në pasaportën tënde.
+              <Text style={[styles.stampTitle, { color: c.label }]}>{t({ sq: 'Këtu të pret një vulë', en: 'A stamp is waiting here' })}</Text>
+              <Text style={[styles.stampText, { color: c.label2 }]}>
+                {t({
+                  sq: 'Shko atje, bëj foton në aplikacion dhe vula hyn në pasaportën tënde.',
+                  en: 'Go there, take the photo in the app and the stamp goes into your passport.',
+                })}
               </Text>
             </View>
           </View>
@@ -138,9 +161,11 @@ export default function GuestPlace() {
           <Pressable
             onPress={onSaveToPassport}
             accessibilityRole="button"
-            style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}
+            style={({ pressed }) => [styles.primaryButton, { backgroundColor: c.tint }, pressed && styles.pressed]}
           >
-            <Text style={styles.primaryText}>Ruaje {place.short} në pasaportë</Text>
+            <Text style={[styles.primaryText, { color: c.onTint }]}>
+              {t({ sq: `Ruaje ${t(place.short)} në pasaportë`, en: `Save ${t(place.short)} to your passport` })}
+            </Text>
           </Pressable>
 
           <Pressable
@@ -148,7 +173,7 @@ export default function GuestPlace() {
             accessibilityRole="button"
             style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}
           >
-            <Text style={styles.secondaryText}>Vazhdo të shikosh</Text>
+            <Text style={[styles.secondaryText, { color: c.label2 }]}>{t({ sq: 'Vazhdo të shikosh', en: 'Keep looking' })}</Text>
           </Pressable>
         </View>
       </ScrollView>
