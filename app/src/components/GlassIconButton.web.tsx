@@ -1,0 +1,16 @@
+import type { SFSymbol } from 'expo-symbols';
+
+import { Glass } from './Glass';
+import { Icon } from './Icon';
+import { Press } from './Press';
+
+/** Web preview (for laptops without an iPhone): the translucent JS version. iPhones use GlassIconButton.tsx (SwiftUI). */
+export function GlassIconButton({ name, label, onPress, size = 44 }: { name: SFSymbol; label: string; onPress?: () => void; size?: number }) {
+  return (
+    <Press onPress={onPress} accessibilityLabel={label} scaleTo={0.92}>
+      <Glass interactive style={{ width: size, height: size, borderRadius: size / 2, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        <Icon name={name} size={20} />
+      </Glass>
+    </Press>
+  );
+}
