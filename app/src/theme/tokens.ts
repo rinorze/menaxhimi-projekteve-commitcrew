@@ -7,6 +7,7 @@ export const palette = {
   light: {
     bg: '#FFFFFF',
     grouped: '#F2F2F7',
+    surface: '#F2F2F7', // cards and lists on the page
     card: '#FFFFFF',
     fill: 'rgba(120,120,128,0.12)',
     fillStrong: 'rgba(120,120,128,0.2)',
@@ -29,6 +30,7 @@ export const palette = {
   dark: {
     bg: '#000000',
     grouped: '#000000',
+    surface: '#1C1C1E', // grouped is pure black in dark, so cards need their own colour
     card: '#1C1C1E',
     fill: 'rgba(120,120,128,0.24)',
     fillStrong: 'rgba(120,120,128,0.36)',
