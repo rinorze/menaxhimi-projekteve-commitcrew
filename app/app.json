@@ -41,7 +41,13 @@
         }
       ],
       "expo-image",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Discover Kosovo përdor vendndodhjen tënde vetëm në telefon, për të të treguar vendet pranë teje. · Discover Kosovo uses your location only on your phone, to show you places near you."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
