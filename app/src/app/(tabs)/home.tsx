@@ -1,145 +1,65 @@
 import { router } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import { useMemo, useState } from 'react';
-import { Alert, ScrollView, useWindowDimensions, View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { ScrollView, View } from 'react-native';
 
-import { Button, Icon, Press, Txt } from '@/components';
-import { ComingUp } from '@/components/home/ComingUp';
-import { KosovoMap } from '@/components/home/KosovoMap';
-import { PlaceOfTheDay } from '@/components/home/PlaceOfTheDay';
-import { QuestCard } from '@/components/home/QuestCard';
-import { Collect, Discover, NearbyCard, ProgressCard, QuickActions, SurpriseCard } from '@/components/home/Sections';
-import { StreakStrip } from '@/components/home/StreakStrip';
-import { UpNext } from '@/components/home/UpNext';
-import { getMunicipality, places, stamps } from '@/data';
+import { Button, Txt } from '@/components';
+import { Chips, ComingUpList, Header, Komunat, Popular, Quests, SearchPill, Section, Today, YourKosovo, type Filter } from '@/components/home/Blocks';
+import { places, stamps } from '@/data';
 import { placePhotos } from '@/data/photos';
-import { useLang, useT } from '@/lib/i18n';
-import { useColors, useIsDark } from '@/theme/tokens';
+import { useT } from '@/lib/i18n';
+import { useColors } from '@/theme/tokens';
 
-// 2.1 Home. Design: docs/design/screens/02-home/ (canvas board 2.1). Everything on it is real data. There is no account
-// or unlock yet (Card 2), so it shows the honest empty state: no stamps, no friends, no location. It fills itself when those arrive.
-
-function ranked() {
-  return places.filter((p) => placePhotos[p.slug]).sort((a, b) => b.score - a.score);
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <View style={{ marginTop: 28 }}>
-      <Txt variant="title2" weight="900" style={{ paddingHorizontal: 20, marginBottom: 14, letterSpacing: -0.3 }}>
-        {title}
-      </Txt>
-      {children}
-    </View>
-  );
-}
+// 2.1 Home. Design: docs/design/screens/02-home/ (rebuilt after research on 26 apps, see the notes in Blocks.tsx).
+// Everything on it is real data. There is no account or unlock yet (Card 2), so progress is 0 and says so.
 
 export default function Home() {
-  const { width } = useWindowDimensions();
   const t = useT();
-  const lang = useLang();
   const c = useColors();
-  const dark = useIsDark();
-  const [ghost, setGhost] = useState(true);
+  const [filter, setFilter] = useState<Filter>('all');
 
-  const count = Object.keys(stamps).length;
-  const visited = useMemo(() => new Set<string>(), []);
-
-  // Today's pick: the same place for everyone all day.
-  const { today, rest } = useMemo(() => {
-    const pool = ranked();
+  // Today's pick is the same for everyone all day.
+  const today = useMemo(() => {
+    const pool = places.filter((p) => placePhotos[p.slug]).sort((a, b) => b.score - a.score);
     const day = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86_400_000);
-    const today = pool[day % pool.length];
-    return { today, rest: pool.filter((p) => p.slug !== today.slug && !stamps[p.slug]) };
+    return pool[day % pool.length];
   }, []);
 
-  const cardW = width - 32;
-  const mapW = Math.min(cardW * 0.7, 300);
-  const mapH = (mapW * 325) / 300;
-
-  const surprise = () => {
-    Haptics.selectionAsync();
-    const pool = places.filter((p) => !stamps[p.slug]);
-    const p = pool[Math.floor(Math.random() * pool.length)];
-    const muni = getMunicipality(p.municipality);
-    Alert.alert(lang === 'sq' ? p.name_sq : p.name_en, muni ? (lang === 'sq' ? muni.name_sq : muni.name_en) : undefined);
-  };
-
-  const ghostLabel = ghost ? t({ sq: 'Modaliteti fantazmë: shokët nuk të shohin', en: 'Ghost mode: friends cannot see you' }) : t({ sq: 'Shokët të shohin', en: 'Friends can see you' });
+  const count = new Set(places.filter((p) => stamps[p.slug]).map((p) => p.municipality)).size;
 
   return (
-    <View style={{ flex: 1, backgroundColor: dark ? '#000000' : '#F6F5F1' }}>
+    <View style={{ flex: 1, backgroundColor: c.bg }}>
       <ScrollView contentInsetAdjustmentBehavior="never" contentContainerStyle={{ paddingBottom: 140 }} showsVerticalScrollIndicator={false}>
-        <PlaceOfTheDay place={today} />
-
-        <View style={{ marginTop: 4 }}>
-          <QuickActions />
-        </View>
-        <Animated.View entering={FadeInDown.duration(300).delay(40)} style={{ marginTop: 20 }}>
-          <NearbyCard items={[today, ...rest.slice(0, 2)]} />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(300).delay(80)} style={{ marginTop: 14 }}>
-          <ProgressCard count={count} municipalitiesCount={visited.size} />
-        </Animated.View>
-        <Animated.View entering={FadeInDown.duration(300).delay(120)} style={{ marginTop: 14 }}>
-          <StreakStrip weeks={0} doneDays={[false, false, false, false, false, false, false]} />
-        </Animated.View>
-
-        <Section title={t({ sq: 'Zbulo', en: 'Discover' })}>
-          <Discover items={rest.slice(0, 8)} />
+        <Header />
+        <SearchPill />
+        <Section title="" first>
+          <Chips value={filter} onChange={setFilter} />
         </Section>
 
-        <View style={{ marginTop: 22 }}>
-          <UpNext items={rest.slice(0, 3)} />
-        </View>
-
-        <Section title={t({ sq: 'Kosova në hartë', en: 'Kosovo on the map' })}>
-          <Press onPress={() => router.navigate('/map')} scaleTo={0.985} accessibilityLabel={t({ sq: 'Hap hartën', en: 'Open the map' })}>
-            <View
-              style={{
-                marginHorizontal: 16,
-                width: cardW,
-                height: mapH + 20,
-                borderRadius: 30,
-                borderCurve: 'continuous',
-                borderWidth: 1,
-                overflow: 'hidden',
-                alignItems: 'center',
-                paddingTop: 10,
-                backgroundColor: c.card,
-                borderColor: dark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.85)',
-              }}
-            >
-              <KosovoMap width={mapW} visited={visited} pins />
-            </View>
-          </Press>
-          <Press
-            onPress={() => setGhost((g) => !g)}
-            accessibilityLabel={ghostLabel}
-            style={{ marginHorizontal: 16, marginTop: 12, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: c.card, borderRadius: 22, paddingHorizontal: 16, height: 44 }}
-          >
-            <Icon name={ghost ? 'eye.slash.fill' : 'eye.fill'} size={18} />
-            <Txt variant="subheadline" weight="700" style={{ flex: 1 }}>
-              {ghostLabel}
-            </Txt>
-          </Press>
+        <Section title={t({ sq: 'Në fokus sot', en: 'In focus today' })} first>
+          <Today place={today} />
         </Section>
 
-        <Section title={t({ sq: 'Mblidhi të gjitha', en: 'Collect them all' })}>
-          <Collect />
+        <Section title={t({ sq: 'Më të njohurat në Kosovë', en: 'Popular in Kosovo' })} to="/search">
+          <Popular filter={filter} />
         </Section>
-        <View style={{ marginTop: 28 }}>
-          <QuestCard />
-        </View>
+
+        <Section title={t({ sq: 'Kosova jote', en: 'Your Kosovo' })} to="/passport">
+          <YourKosovo />
+        </Section>
+
+        <Section title={t({ sq: 'Sfidat', en: 'Quests' })}>
+          <Quests />
+        </Section>
+
+        <Section title="Komunat" link={t({ sq: `${count} nga 38`, en: `${count} of 38` })}>
+          <Komunat />
+        </Section>
+
         <Section title={t({ sq: 'Së shpejti', en: 'Coming up' })}>
-          <ComingUp />
+          <ComingUpList />
         </Section>
-        <View style={{ marginTop: 28 }}>
-          <SurpriseCard onPick={surprise} />
-        </View>
 
-        <Txt variant="caption" tone="label3" align="center" style={{ paddingHorizontal: 30, marginTop: 28 }}>
+        <Txt variant="caption" tone="label3" align="center" style={{ paddingHorizontal: 30, marginTop: 32 }}>
           {t({ sq: 'Vendet nga OpenStreetMap dhe Wikidata · fotot nga Wikimedia Commons · moti nga Open-Meteo', en: 'Places from OpenStreetMap and Wikidata · photos from Wikimedia Commons · weather from Open-Meteo' })}
         </Txt>
 
