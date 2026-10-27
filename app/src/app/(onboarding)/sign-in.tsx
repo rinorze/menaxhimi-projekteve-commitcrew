@@ -1,19 +1,3 @@
-// import { ScreenPlaceholder } from '@/components/screen-placeholder';
-
-// // 1.14 · Artiola · For returning users. Only the screen, no real login yet.
-// export default function SignIn() {
-//   return (
-//     <ScreenPlaceholder
-//       step="1.14"
-//       title="Hyr"
-//       owner="Artiola"
-//       design="01-onboarding/14-sign-in-returning-users.png"
-//       next="/home"
-//       nextLabel="Hyr"
-//       also={[{ href: '/welcome', label: 'Anulo' }]}
-//     />
-//   );
-// }
 import React from 'react';
 import {
   View,
@@ -25,7 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { SymbolView } from 'expo-symbols';
 
 import { useT } from '@/lib/i18n';
 import { useColors } from '@/theme/tokens';
@@ -56,7 +40,7 @@ export default function SignInScreen() {
 
       {/* Apple button (visual only) */}
       <Pressable onPress={() => router.replace('/home')} style={[styles.pillBtnBlack, { backgroundColor: c.tint }]}>
-        <Ionicons name="logo-apple" size={22} color={c.onTint} style={styles.appleIcon} />
+        <SymbolView name="apple.logo" size={20} tintColor={c.onTint} style={styles.appleIcon} />
         <Text style={[styles.pillBtnText, { color: c.onTint }]}>{t({ sq: 'Hyr me Apple', en: 'Sign in with Apple' })}</Text>
       </Pressable>
 
