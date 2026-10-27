@@ -2,7 +2,7 @@ import { EmailForm } from "../components/EmailForm";
 import { Phone } from "../components/Phone";
 import { useLang, useT } from "../i18n";
 import "./Landing.css";
-import { Ghost, MapPin, Medal, Minus, Plus, Send, Users, WifiOff } from "lucide-react";
+import { Ghost, MapPin, Minus, Plus, Send, Users, WifiOff } from "lucide-react";
 import { useState } from "react";
 
 // Design: docs/design/screens/10-website/01-landing-page.png
@@ -159,17 +159,6 @@ export default function Landing() {
                 en: "The app home screen",
               })}
             />
-          </div>
-          <div className="hero-stamp">
-            <span className="hero-stamp-icon">
-              <Medal size={30} strokeWidth={1.6} color="#3d2a00" />
-            </span>
-            <span>
-              <b>Ura e Gurit</b>
-              <small>
-                {t({ sq: "Vula 14 · Prizren", en: "Stamp 14 · Prizren" })}
-              </small>
-            </span>
           </div>
         </div>
       </section>

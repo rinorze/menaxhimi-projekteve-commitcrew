@@ -1,13 +1,13 @@
 .wl {
-  --wl-surface: #fff;
-  --wl-field: #f7f5f0;
-  --wl-line: rgba(16, 17, 20, 0.1);
-  --wl-muted: rgba(16, 17, 20, 0.42);
-  --wl-dark: #101114;
+  --wl-surface: var(--card);
+  --wl-field: var(--bg);
+  --wl-line: var(--line);
+  --wl-muted: var(--ink-3);
+  --wl-dark: var(--inverse);
   --wl-dark-field: rgba(255, 255, 255, 0.1);
   --wl-green: #34c759;
-  --wl-bg-top: #e4eaf7;
-  --wl-bg-bottom: #f7f5f0;
+  --wl-bg-top: var(--tint-blue);
+  --wl-bg-bottom: var(--bg);
   position: relative;
   isolation: isolate;
   padding-bottom: 120px;
@@ -26,7 +26,7 @@
 }
 
 .wl-head { max-width: 640px; margin: 0 auto; padding-top: 72px; text-align: center; }
-.wl-head h1 { margin: 12px 0 0; font-size: 64px; line-height: 66px; font-weight: 800; letter-spacing: -2.4px; }
+.wl-head h1 { margin: 12px 0 0; font-size: 64px; line-height: 66px; font-weight: 700; letter-spacing: -2.4px; }
 .wl-head p { margin: 16px 0 0; font-size: 20px; line-height: 30px; color: var(--ink-2); }
 
 .wl-card, .wl-done { max-width: 560px; margin: 0 auto; border-radius: 36px; }
@@ -67,7 +67,7 @@
 .wl-submit {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   height: 60px; border: 0; border-radius: 30px;
-  background: var(--ink); color: #fff;
+  background: var(--inverse); color: var(--on-inverse);
   font: inherit; font-size: 18px; font-weight: 650; cursor: pointer;
 }
 .wl-fine { margin: 18px 0 0; text-align: center; font-size: 14px; line-height: 1.5; color: var(--wl-muted); }
@@ -85,7 +85,7 @@
   display: grid; place-items: center; width: 72px; height: 72px; margin: 0 auto 24px;
   border-radius: 50%; background: var(--wl-green); color: #fff;
 }
-.wl-done h2 { margin: 0 0 10px; font-size: clamp(1.7rem, 6vw, 36px); letter-spacing: -1px; font-weight: 750; overflow-wrap: anywhere; }
+.wl-done h2 { margin: 0 0 10px; font-size: clamp(1.7rem, 6vw, 36px); letter-spacing: -1px; font-weight: 700; overflow-wrap: anywhere; }
 .wl-done p { margin: 0 0 28px; font-size: 1.05rem; opacity: 0.85; }
 .wl-share { display: flex; gap: 10px; margin-bottom: 16px; }
 .wl-share input {

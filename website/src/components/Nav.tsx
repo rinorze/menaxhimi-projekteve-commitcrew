@@ -24,7 +24,7 @@ export function Nav() {
     <header className="nav wrap">
       <Link to="/" className="nav-logo">
         <span className="logo-mark"><MapPin size={19} strokeWidth={2.2} /></span>
-        Discover Kosovo
+        <span className="nav-name">Discover Kosovo</span>
       </Link>
       <nav className="nav-links">
         <a href="#si-funksionon" onClick={go('si-funksionon')}>{t({ sq: 'Si funksionon', en: 'How it works' })}</a>

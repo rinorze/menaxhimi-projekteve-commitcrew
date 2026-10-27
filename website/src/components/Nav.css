@@ -1,5 +1,6 @@
 .nav { display: flex; align-items: center; gap: 24px; height: 88px; }
-.nav-logo { display: flex; align-items: center; gap: 12px; font-size: 19px; font-weight: 700; }
+.nav-logo { display: flex; align-items: center; gap: 12px; font-size: 19px; font-weight: 700; white-space: nowrap; }
+.nav .btn { white-space: nowrap; }
 .logo-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--ink); color: var(--bg); display: inline-flex; align-items: center; justify-content: center; }
 .nav-links { display: flex; gap: 32px; margin-left: 40px; color: var(--ink-2); font-size: 16px; }
 .nav-links a:hover { color: var(--ink); }
@@ -9,4 +10,9 @@
 
 @media (max-width: 860px) {
   .nav-links { display: none; }
+}
+@media (max-width: 480px) {
+  .nav { gap: 12px; }
+  .nav-name { display: none; } /* the mark is enough on a phone */
+  .nav .btn { min-height: 40px; padding: 0 16px; font-size: 15px; }
 }
