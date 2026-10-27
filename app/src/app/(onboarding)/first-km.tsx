@@ -8,7 +8,7 @@ export default function FirstKm() {
       title="Kilometri i parë"
       owner="Elvina"
       design="01-onboarding/13-first-kilometre.png"
-      next="/home"
+      next="/sign-in"
       nextLabel="Më çoj te harta"
     />
   );
