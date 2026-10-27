@@ -91,7 +91,7 @@ export default function Language() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#FFFFFF' },
+  root: { flex: 1 },
   content: { paddingHorizontal: 16, paddingBottom: 24 },
   progress: {
     flexDirection: 'row',
@@ -99,10 +99,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginBottom: 28,
   },
-  progressStep: { flex: 1, height: 4, borderRadius: 2, backgroundColor: '#E5E5E5' },
-  progressStepActive: { backgroundColor: '#0B0B0F' },
-  title: { fontSize: 29, lineHeight: 36, fontWeight: '800', color: '#000000' },
-  subtitle: { marginTop: 4, fontSize: 16, lineHeight: 21, color: '#8E8E93' },
+  progressStep: { flex: 1, height: 4, borderRadius: 2 },
+  title: { fontSize: 29, lineHeight: 36, fontWeight: '800' },
+  subtitle: { marginTop: 4, fontSize: 16, lineHeight: 21 },
   languages: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 10 },
   language: {
     width: '48.5%',
@@ -110,24 +109,20 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 13,
-    backgroundColor: '#F1F1F1',
     justifyContent: 'space-between',
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  languageSelected: { backgroundColor: '#FFFFFF', borderColor: '#0B0B0F' },
-  languageCode: { fontSize: 18, fontWeight: '700', color: '#000000' },
-  languageCodeUnselected: { color: '#A0A0A5' },
-  languageName: { fontSize: 16, fontWeight: '600', color: '#000000' },
-  note: { marginTop: 18, fontSize: 13, lineHeight: 18, color: '#8E8E93' },
+  languageCode: { fontSize: 18, fontWeight: '700' },
+  languageName: { fontSize: 16, fontWeight: '600' },
+  note: { marginTop: 18, fontSize: 13, lineHeight: 18 },
   footer: { paddingHorizontal: 16, paddingTop: 12 },
   continueButton: {
     height: 54,
     borderRadius: 28,
-    backgroundColor: '#0B0B0F',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  continueText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
+  continueText: { fontSize: 16, fontWeight: '700' },
   pressed: { opacity: 0.8 },
 });
