@@ -72,3 +72,15 @@ export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24 } as const;
 
 /** Every tappable thing is at least this big (Apple HIG). */
 export const minTouch = 44;
+
+/** true in dark mode */
+export function useIsDark(): boolean {
+  return useColorScheme() === 'dark';
+}
+
+/** Motion: calm springs, no bounce except for rewards (the stamp). Duration in milliseconds. */
+export const motion = {
+  snappy: { duration: 280, dampingRatio: 1 },
+  gentle: { duration: 450, dampingRatio: 1 },
+  reward: { duration: 700, dampingRatio: 0.72 },
+} as const;
