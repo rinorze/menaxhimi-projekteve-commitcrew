@@ -3,8 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { router, type Href } from 'expo-router';
 import type { SFSymbol } from 'expo-symbols';
-import { memo, useMemo } from 'react';
-import { ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { memo, useEffect, useMemo } from 'react';
+import { Linking, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Path } from 'react-native-svg';
 
@@ -12,8 +12,10 @@ import map from '@/data/kosovo-map.json';
 import { events, getMunicipality, municipalities, places, quests, stamps, type Place } from '@/data';
 import { placePhotos } from '@/data/photos';
 import { useLang, useT, type Text } from '@/lib/i18n';
+import { distanceTo, formatKm, nearestMunicipality, requestLocation, restoreLocation, useLocation } from '@/lib/location';
 import { useWeather } from '@/lib/weather';
 import { useColors, useIsDark } from '@/theme/tokens';
+import { Button } from '../Button';
 import { GlassButton } from '../GlassButton';
 import { GlassIconButton } from '../GlassIconButton';
 import { Icon } from '../Icon';
@@ -132,6 +134,8 @@ export function Today({ place }: { place: Place }) {
   const lang = useLang();
   const { width } = useWindowDimensions();
   const weather = useWeather(place.lat, place.lng);
+  const loc = useLocation();
+  const km = distanceTo(loc.coords, place);
   const muni = getMunicipality(place.municipality);
   const w = width - 32;
   return (
@@ -156,7 +160,7 @@ export function Today({ place }: { place: Place }) {
           {nameOf(place, lang)}
         </Txt>
         <Txt variant="callout" weight="500" style={{ color: 'rgba(255,255,255,0.85)', marginBottom: 14 }}>
-          {[muni ? (lang === 'sq' ? muni.name_sq : muni.name_en) : '', t(kindLabel(place))].filter(Boolean).join(' · ')}
+          {[muni ? (lang === 'sq' ? muni.name_sq : muni.name_en) : '', t(kindLabel(place)), km === undefined ? '' : t({ sq: `${formatKm(km)} nga ti`, en: `${formatKm(km)} from you` })].filter(Boolean).join(' · ')}
         </Txt>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
           <GlassButton label={t({ sq: 'Shiko vendin', en: 'View place' })} icon="location.fill" onPress={() => router.navigate('/map')} />
@@ -220,7 +224,7 @@ export function Popular({ filter }: { filter: Filter }) {
         </ScrollView>
       ) : null}
       {rest.length ? (
-        <View style={[styles.list, { backgroundColor: c.grouped, marginTop: withPhoto.length ? 18 : 0 }]}>
+        <View style={[styles.list, { backgroundColor: c.surface, marginTop: withPhoto.length ? 18 : 0 }]}>
           {rest.map((p, i) => {
             const muni = getMunicipality(p.municipality);
             return (
@@ -242,6 +246,87 @@ export function Popular({ filter }: { filter: Filter }) {
           })}
         </View>
       ) : null}
+    </View>
+  );
+}
+
+
+// ───────────────────────────── near you ─────────────────────────────
+
+/**
+ * The places closest to you, with the real distance. Location is asked for once, when you tap, with the reason shown
+ * first; it stays on the phone. Until then, and when it is refused, the block says so instead of showing made-up numbers.
+ */
+export function NearYou() {
+  const t = useT();
+  const lang = useLang();
+  const c = useColors();
+  const loc = useLocation();
+  useEffect(() => {
+    restoreLocation();
+  }, []);
+  const near = useMemo(() => (loc.coords ? places.map((p) => ({ p, km: distanceTo(loc.coords, p)! })).sort((a, b) => a.km - b.km).slice(0, 10) : []), [loc.coords]);
+
+  if (loc.status === 'granted' && loc.coords) {
+    const city = nearestMunicipality(loc.coords);
+    return (
+      <View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 20, marginTop: -4, marginBottom: 12 }}>
+          <Icon name="location.fill" size={13} tone="label2" />
+          <Txt variant="footnote" tone="label2">
+            {t({ sq: `Komuna më e afërt: ${city.name_sq}`, en: `Closest municipality: ${city.name_en}` })}
+          </Txt>
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}>
+          {near.map(({ p, km }) => {
+            const muni = getMunicipality(p.municipality);
+            return (
+              <Press key={p.slug} accessibilityLabel={`${nameOf(p, lang)}, ${formatKm(km)}`} style={{ width: 150 }} onPress={() => router.navigate('/map')}>
+                {placePhotos[p.slug] ? (
+                  <Image source={placePhotos[p.slug]} contentFit="cover" transition={250} style={styles.nearPhoto} />
+                ) : (
+                  <View style={[styles.nearPhoto, { backgroundColor: c.surface, alignItems: 'center', justifyContent: 'center' }]}>
+                    <Icon name={FILTERS.find((f) => f.key === p.category)?.icon ?? 'mappin'} size={30} tone="label3" />
+                  </View>
+                )}
+                <Txt variant="callout" weight="700" numberOfLines={1} style={{ marginTop: 8 }}>
+                  {nameOf(p, lang)}
+                </Txt>
+                <Txt variant="footnote" tone="label2" numberOfLines={1} style={{ fontVariant: ['tabular-nums'] }}>
+                  {[formatKm(km), muni ? (lang === 'sq' ? muni.name_sq : muni.name_en) : ''].filter(Boolean).join(' · ')}
+                </Txt>
+              </Press>
+            );
+          })}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  const denied = loc.status === 'denied';
+  const waiting = loc.status === 'asking' || loc.status === 'granted';
+  return (
+    <View style={[styles.card, { backgroundColor: c.surface, marginHorizontal: 16, padding: 18, gap: 14 }]}>
+      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+        <View style={[styles.rowIcon, { backgroundColor: c.fill }]}>
+          <Icon name={denied ? 'location.slash' : 'location'} size={19} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Txt variant="headline" weight="700">
+            {waiting ? t({ sq: 'Po e gjejmë ku je…', en: 'Finding where you are…' }) : denied ? t({ sq: 'Vendndodhja është e fikur', en: 'Location is off' }) : t({ sq: 'Shiko çfarë ka pranë teje', en: 'See what is near you' })}
+          </Txt>
+          <Txt variant="footnote" tone="label2">
+            {denied
+              ? t({ sq: 'Ndize te Cilësimet që të shohësh distancat.', en: 'Turn it on in Settings to see distances.' })
+              : t({ sq: 'Përdoret vetëm në telefonin tënd. Shokët nuk e shohin kurrë pa lejen tënde.', en: 'Used only on your phone. Friends never see it without your permission.' })}
+          </Txt>
+        </View>
+      </View>
+      {waiting ? null : denied ? (
+        <Button variant="secondary" label={t({ sq: 'Hap Cilësimet', en: 'Open Settings' })} onPress={() => Linking.openSettings()} />
+      ) : (
+        <Button variant="primary" icon="location.fill" label={t({ sq: 'Lejo vendndodhjen', en: 'Allow location' })} onPress={() => requestLocation()} />
+      )}
     </View>
   );
 }
@@ -282,7 +367,7 @@ export function YourKosovo() {
   const munis = new Set(list.map((p) => p.municipality)).size;
   const pct = Math.round((list.length / places.length) * 100);
   return (
-    <View style={[styles.card, { backgroundColor: c.grouped, marginHorizontal: 16 }]}>
+    <View style={[styles.card, { backgroundColor: c.surface, marginHorizontal: 16 }]}>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, paddingTop: 18, paddingHorizontal: 20 }}>
         <Txt variant="largeTitle" weight="800" style={{ fontVariant: ['tabular-nums'] }}>
           {pct}%
@@ -321,7 +406,7 @@ export function Quests() {
       {quests.map((q) => {
         const title = lang === 'sq' ? q.title_sq : q.title_en;
         return (
-          <Press key={q.slug} accessibilityLabel={`${title}, 0/${q.target}`} style={[styles.quest, { backgroundColor: c.grouped }]}>
+          <Press key={q.slug} accessibilityLabel={`${title}, 0/${q.target}`} style={[styles.quest, { backgroundColor: c.surface }]}>
             <View style={[styles.rowIcon, { backgroundColor: c.ice }]}>
               <Icon name="flag.fill" size={18} tone="iceInk" />
             </View>
@@ -366,7 +451,6 @@ const Silhouette = memo(function Silhouette({ d, view, fill }: { d: string; view
 export function Komunat() {
   const lang = useLang();
   const c = useColors();
-  const dark = useIsDark();
   const visited = new Set(stamped().map((p) => p.municipality));
   const list = useMemo(
     () =>
@@ -382,8 +466,8 @@ export function Komunat() {
         const on = visited.has(m.slug);
         const label = lang === 'sq' ? m.name_sq : m.name_en;
         return (
-          <View key={m.slug} style={[styles.komuna, { backgroundColor: c.grouped }]} accessible accessibilityLabel={`${label}${on ? ', ✓' : ''}`}>
-            <Silhouette d={shape!.d} view={shape!.view} fill={on ? c.ice : dark ? '#3A3F4D' : '#C9CED8'} />
+          <View key={m.slug} style={[styles.komuna, { backgroundColor: c.surface }]} accessible accessibilityLabel={`${label}${on ? ', ✓' : ''}`}>
+            <Silhouette d={shape!.d} view={shape!.view} fill={on ? c.ice : c.fillStrong} />
             <Txt variant="caption" weight={on ? '800' : '600'} numberOfLines={1} style={{ marginTop: 6 }}>
               {label}
             </Txt>
@@ -405,7 +489,7 @@ export function ComingUpList() {
   const now = new Date();
   const list = events.filter((e) => new Date(e.ends_at) >= now).sort((a, b) => a.starts_at.localeCompare(b.starts_at)).slice(0, 4);
   return (
-    <View style={[styles.list, { backgroundColor: c.grouped }]}>
+    <View style={[styles.list, { backgroundColor: c.surface }]}>
       {list.map((e, i) => {
         const d = new Date(e.starts_at);
         const city = getMunicipality(e.municipality);
@@ -448,6 +532,7 @@ const styles = StyleSheet.create({
   todayBottom: { position: 'absolute', left: 22, right: 22, bottom: 22 },
   sectionHead: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 20, marginBottom: 12, minHeight: 32 },
   railPhoto: { width: 188, height: 236, borderRadius: 22, borderCurve: 'continuous' },
+  nearPhoto: { width: 150, height: 150, borderRadius: 20, borderCurve: 'continuous' },
   list: { marginHorizontal: 16, borderRadius: 24, borderCurve: 'continuous', overflow: 'hidden' },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 14 },
   rowIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
