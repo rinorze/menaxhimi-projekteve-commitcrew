@@ -69,10 +69,24 @@ class PlaceAdmin(admin.ModelAdmin):
 
 @admin.register(models.Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'display_name', 'home_municipality', 'language', 'ghost_mode')
+    list_display = ('user', 'friend_code', 'display_name', 'home_municipality', 'language', 'ghost_mode')
     list_filter = ('language', 'ghost_mode', 'location_sharing')
     search_fields = ('user__username', 'display_name')
     autocomplete_fields = ('home_municipality',)
+
+
+@admin.register(models.SavedPlace)
+class SavedPlaceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'place', 'created_at')
+    search_fields = ('user__username', 'place__name_en')
+    list_select_related = ('user', 'place')
+
+
+@admin.register(models.PrivatePhoto)
+class PrivatePhotoAdmin(admin.ModelAdmin):
+    list_display = ('user', 'caption', 'created_at')
+    search_fields = ('user__username', 'caption')
+    list_select_related = ('user',)
 
 
 @admin.register(models.Stamp)

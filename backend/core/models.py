@@ -1,5 +1,22 @@
+import secrets
+
 from django.contrib.auth.models import User
 from django.db import models
+
+
+def generate_friend_code():
+    alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+    return 'DK-' + ''.join(secrets.choice(alphabet) for _ in range(4))
+
+
+def default_notification_preferences():
+    return {
+        'friend_requests': True,
+        'friend_activity': True,
+        'messages': True,
+        'postcards': True,
+        'events': True,
+    }
 
 
 class Timestamped(models.Model):
@@ -144,7 +161,14 @@ class Place(models.Model):
 
 
 class Profile(Timestamped):
+    SHARING_PRECISION_CHOICES = [
+        ('city', 'City'),
+        ('km', '1 km'),
+        ('exact', 'Exact'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    friend_code = models.CharField(max_length=7, unique=True, default=generate_friend_code)
     display_name = models.CharField(max_length=100, blank=True)
     home_municipality = models.ForeignKey(
         Municipality, on_delete=models.SET_NULL, null=True, blank=True, related_name='residents'
@@ -154,9 +178,41 @@ class Profile(Timestamped):
     bio = models.TextField(blank=True)
     ghost_mode = models.BooleanField(default=False)
     location_sharing = models.BooleanField(default=False)
+    sharing_precision = models.CharField(
+        max_length=10, choices=SHARING_PRECISION_CHOICES, default='city'
+    )
+    stop_sharing_after_minutes = models.PositiveIntegerField(default=60, null=True, blank=True)
+    notification_preferences = models.JSONField(default=default_notification_preferences, blank=True)
+
+    def save(self, *args, **kwargs):
+        while self._state.adding and Profile.objects.filter(friend_code=self.friend_code).exists():
+            self.friend_code = generate_friend_code()
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.display_name or self.user.username
+
+
+class SavedPlace(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='saved_places')
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='saved_by')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'place'], name='unique_saved_place_per_user'),
+        ]
+
+
+class PrivatePhoto(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='private_photos')
+    image_url = models.URLField(max_length=2048)
+    caption = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
 
 # ---------------------------------------------------------------- passport
