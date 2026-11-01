@@ -240,3 +240,207 @@ class ImportPlacesTests(TestCase):
         call_command('import_places', verbosity=0)
         call_command('import_places', verbosity=0)
         self.assertEqual(models.Place.objects.count(), 318)
+
+
+class ProfilePrivacyTests(TestCase):
+    def setUp(self):
+        self.region = models.Region.objects.create(name_sq='R', name_en='R', slug='privacy-r')
+        self.municipality = models.Municipality.objects.create(
+            region=self.region,
+            name_sq='M',
+            name_en='M',
+            slug='privacy-m',
+            lat=42.2,
+            lng=21.1,
+        )
+        self.place = models.Place.objects.create(
+            municipality=self.municipality,
+            name_sq='P',
+            name_en='P',
+            slug='privacy-p',
+            lat=42.2,
+            lng=21.1,
+        )
+        self.user = User.objects.create_user(username='privacy_user', password='Str0ngPass!23')
+        self.profile = models.Profile.objects.create(user=self.user)
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_profile_defaults_and_real_stats(self):
+        self.assertEqual(len(self.profile.friend_code), 7)
+        other = User.objects.create_user(username='privacy_other', password='Str0ngPass!23')
+        models.Stamp.objects.create(user=self.user, place=self.place)
+        models.SavedPlace.objects.create(user=self.user, place=self.place)
+        models.Trip.objects.create(owner=self.user, name='Trip')
+        models.Postcard.objects.create(sender=self.user, recipient=other, place=self.place)
+        models.Streak.objects.create(user=self.user, current=3, longest=5)
+
+        response = self.client.get('/api/profile/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['friend_code'], self.profile.friend_code)
+        self.assertFalse(response.json()['location_sharing'])
+        self.assertEqual(response.json()['sharing_precision'], 'city')
+        self.assertEqual(response.json()['stop_sharing_after_minutes'], 60)
+        self.assertEqual(response.json()['stats'], {
+            'stamps': 1,
+            'municipalities': {'visited': 1, 'total': 1},
+            'streak': {'current': 3, 'longest': 5},
+            'saved_places': 1,
+            'trips': 1,
+            'postcards': 1,
+        })
+
+    def test_notification_preferences_patch_merges_defaults(self):
+        response = self.client.patch(
+            '/api/profile/',
+            {'notification_preferences': {'messages': False}},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()['notification_preferences']['messages'])
+        self.assertTrue(response.json()['notification_preferences']['friend_requests'])
+
+    def test_private_photos_are_owner_only(self):
+        photo = models.PrivatePhoto.objects.create(
+            user=self.user, image_url='https://example.com/private.jpg', caption='Private'
+        )
+        other = User.objects.create_user(username='photo_other', password='Str0ngPass!23')
+        other_client = APIClient()
+        other_client.force_authenticate(user=other)
+
+        photos = self.client.get('/api/profile/photos/').json()
+        other_photos = other_client.get('/api/profile/photos/').json()
+        self.assertEqual(photos.get('results', photos)[0]['id'], photo.id)
+        self.assertEqual(other_photos.get('results', other_photos), [])
+        self.assertEqual(other_client.delete(f'/api/profile/photos/{photo.id}/').status_code, 404)
+
+    def test_saved_places_are_owner_scoped_and_idempotent(self):
+        first = self.client.post(
+            '/api/saved-places/', {'place_slug': self.place.slug}, format='json'
+        )
+        second = self.client.post(
+            '/api/saved-places/', {'place_slug': self.place.slug}, format='json'
+        )
+        other = User.objects.create_user(username='saved_other', password='Str0ngPass!23')
+        other_client = APIClient()
+        other_client.force_authenticate(user=other)
+
+        self.assertEqual(first.status_code, 201)
+        self.assertEqual(second.status_code, 200)
+        saved_places = self.client.get('/api/saved-places/').json()
+        other_saved_places = other_client.get('/api/saved-places/').json()
+        self.assertEqual(len(saved_places.get('results', saved_places)), 1)
+        self.assertEqual(other_saved_places.get('results', other_saved_places), [])
+
+    def test_ghost_mode_revokes_location_and_hides_user(self):
+        friend = User.objects.create_user(username='location_friend', password='Str0ngPass!23')
+        friend_profile = models.Profile.objects.create(
+            user=friend, location_sharing=True, sharing_precision='exact'
+        )
+        models.Friendship.objects.create(
+            from_user=friend, to_user=self.user, status='accepted'
+        )
+        models.Activity.objects.create(
+            user=friend,
+            type='unlock',
+            place=self.place,
+            text_en='Unlocked P',
+            text_sq='Zhbllokoi P',
+        )
+        models.LocationShare.objects.create(
+            user=friend, lat=42.2, lng=21.1, precision='exact'
+        )
+
+        response = self.client.get('/api/location-shares/')
+        self.assertEqual(response.status_code, 200)
+        shares = response.json().get('results', response.json())
+        self.assertEqual(shares[0]['lat'], 42.2)
+        self.assertEqual(len(self.client.get('/api/activity/').json()['results']), 1)
+
+        friend_client = APIClient()
+        friend_client.force_authenticate(user=friend)
+        response = friend_client.patch('/api/profile/', {'ghost_mode': True}, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        friend_profile.refresh_from_db()
+        self.assertTrue(friend_profile.ghost_mode)
+        self.assertFalse(friend_profile.location_sharing)
+        self.assertFalse(models.LocationShare.objects.filter(user=friend).exists())
+        shares = self.client.get('/api/location-shares/').json()
+        self.assertEqual(shares.get('results', shares), [])
+        self.assertEqual(self.client.get('/api/activity/').json()['results'], [])
+
+    def test_location_sharing_respects_preferences_and_expiration(self):
+        self.assertEqual(
+            self.client.post(
+                '/api/location-shares/', {'lat': 42.1, 'lng': 21.1}, format='json'
+            ).status_code,
+            403,
+        )
+        self.profile.location_sharing = True
+        self.profile.stop_sharing_after_minutes = 15
+        self.profile.sharing_precision = 'km'
+        self.profile.save()
+
+        response = self.client.post(
+            '/api/location-shares/', {'lat': 42.1234, 'lng': 21.1234}, format='json'
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['precision'], 'km')
+        self.assertEqual(response.json()['lat'], 42.12)
+        self.assertEqual(response.json()['lng'], 21.12)
+        self.assertIsNotNone(response.json()['expires_at'])
+
+    def test_blocked_people_can_be_listed_and_unblocked(self):
+        other = User.objects.create_user(username='blocked_other', password='Str0ngPass!23')
+        relation = models.Friendship.objects.create(
+            from_user=other, to_user=self.user, status='pending'
+        )
+        response = self.client.post(
+            '/api/blocked/', {'username': other.username}, format='json'
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.json()['status'], 'blocked')
+        self.assertFalse(models.Friendship.objects.filter(pk=relation.pk).exists())
+        self.assertEqual(
+            self.client.post(
+                '/api/friends/', {'to_username': other.username}, format='json'
+            ).status_code,
+            403,
+        )
+        self.assertEqual(
+            self.client.post(
+                '/api/conversations/', {'username': other.username}, format='json'
+            ).status_code,
+            403,
+        )
+        blocked = self.client.get('/api/blocked/').json()
+        self.assertEqual(len(blocked.get('results', blocked)), 1)
+        response = self.client.delete(f"/api/blocked/{response.json()['id']}/")
+        self.assertEqual(response.status_code, 204)
+        blocked = self.client.get('/api/blocked/').json()
+        self.assertEqual(blocked.get('results', blocked), [])
+
+    def test_account_delete_requires_password_and_cascades(self):
+        photo = models.PrivatePhoto.objects.create(
+            user=self.user, image_url='https://example.com/private.jpg'
+        )
+        models.SavedPlace.objects.create(user=self.user, place=self.place)
+        bad_password = self.client.delete(
+            '/api/account/', {'password': 'wrong'}, format='json'
+        )
+        self.assertEqual(bad_password.status_code, 400)
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())
+
+        response = self.client.delete(
+            '/api/account/', {'password': 'Str0ngPass!23'}, format='json'
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+        self.assertFalse(models.PrivatePhoto.objects.filter(pk=photo.pk).exists())
+        self.assertFalse(models.SavedPlace.objects.exists())
