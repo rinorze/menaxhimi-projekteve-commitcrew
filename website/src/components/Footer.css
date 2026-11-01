@@ -1,11 +1,16 @@
-.footer { margin-top: 120px; background: #101114; color: rgba(255, 255, 255, 0.7); padding: 64px 0; font-size: 15px; line-height: 24px; }
-.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 64px; }
+.footer { margin-top: 100px; background: #101114; color: rgba(255, 255, 255, 0.7); padding: 64px 0; font-size: 15px; line-height: 24px; }
+.footer-grid { display: grid; grid-template-columns: 380px auto auto 1fr; gap: 120px; }
 .footer-grid > div { display: flex; flex-direction: column; gap: 6px; }
 .footer-grid b { color: #fff; font-weight: 600; margin-bottom: 4px; }
+.footer-lang { text-align: right; }
 .footer-logo { display: flex; align-items: center; gap: 12px; color: #fff; font-size: 19px; font-weight: 700; }
 .footer p { max-width: 380px; margin: 14px 0 0; }
 .logo-mark.light { background: #fff; color: #101114; }
 
+@media (max-width: 1100px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .footer-lang { text-align: left; }
+}
 @media (max-width: 760px) {
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
 }
