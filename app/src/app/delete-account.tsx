@@ -33,7 +33,10 @@ export default function DeleteAccountScreen() {
       clearSession();
       router.replace('/welcome');
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not delete the account.');
+      setError(cause instanceof Error ? cause.message : t({
+        sq: 'Llogaria nuk mund të fshihej.',
+        en: 'Could not delete the account.',
+      }));
       setConfirming(false);
     } finally {
       setSaving(false);

@@ -1,3 +1,5 @@
+import { getLang } from './i18n';
+
 type Tokens = {
   access: string;
   refresh: string;
@@ -10,7 +12,9 @@ let tokens: Tokens | null = null;
 
 function getApiUrl(path: string) {
   if (!apiBaseUrl) {
-    throw new Error('Set EXPO_PUBLIC_API_URL to the backend host before using account settings.');
+    throw new Error(getLang() === 'sq'
+      ? 'Cakto EXPO_PUBLIC_API_URL te adresa e serverit për të përdorur cilësimet.'
+      : 'Set EXPO_PUBLIC_API_URL to the backend host before using account settings.');
   }
   return `${apiBaseUrl}/api/${path.replace(/^\/+/, '')}`;
 }
@@ -27,7 +31,9 @@ function getErrorMessage(payload: unknown, status: number) {
     if (typeof firstValue === 'string') return firstValue;
     if (Array.isArray(firstValue) && typeof firstValue[0] === 'string') return firstValue[0];
   }
-  return `Request failed (${status}).`;
+  return getLang() === 'sq'
+    ? `Kërkesa dështoi (${status}).`
+    : `Request failed (${status}).`;
 }
 
 async function request<T>(
@@ -46,7 +52,9 @@ async function request<T>(
   if (!response.ok) {
     if (response.status === 401 && authenticated) {
       tokens = null;
-      throw new Error('Your session expired. Sign in again to continue.');
+      throw new Error(getLang() === 'sq'
+        ? 'Sesioni skadoi. Hyr përsëri për të vazhduar.'
+        : 'Your session expired. Sign in again to continue.');
     }
     throw new Error(getErrorMessage(payload, response.status));
   }
