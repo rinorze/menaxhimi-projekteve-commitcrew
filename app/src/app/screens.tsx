@@ -6,7 +6,6 @@ import { onboardingScreens, profileScreens } from '@/lib/screens';
 import { useT } from '@/lib/i18n';
 import { radius, useColors } from '@/theme/tokens';
 
-// All 14 onboarding screens in the order of the design. Tap one to open it.
 export default function AllScreens() {
   const t = useT();
   return (
@@ -21,7 +20,10 @@ export default function AllScreens() {
         </Txt>
       </View>
       <ScreenList title={t({ sq: 'Onboarding', en: 'Onboarding' })} screens={onboardingScreens} />
-      <ScreenList title={t({ sq: 'Profili dhe cilësimet', en: 'Profile & settings' })} screens={profileScreens} />
+      <ScreenList
+        title={t({ sq: 'Profili dhe cilësimet', en: 'Profile & settings' })}
+        screens={profileScreens}
+      />
     </Screen>
   );
 }
@@ -45,7 +47,17 @@ function ScreenList({
             onPress={() => router.replace(screen.href)}
             accessibilityLabel={`${screen.step} ${screen.title}`}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 16, minHeight: 56, borderTopWidth: index ? 0.5 : 0, borderTopColor: c.separator }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 14,
+                paddingHorizontal: 16,
+                minHeight: 56,
+                borderTopWidth: index ? 0.5 : 0,
+                borderTopColor: c.separator,
+              }}
+            >
               <Txt variant="subheadline" tone="blue" weight="700" style={{ width: 40 }}>
                 {screen.step}
               </Txt>

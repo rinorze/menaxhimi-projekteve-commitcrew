@@ -36,7 +36,9 @@ export default function SignInScreen() {
           accessibilityLabel={t({ sq: 'Anulo', en: 'Cancel' })}
           style={{ minHeight: 44, alignSelf: 'flex-start', justifyContent: 'center' }}
         >
-          <Txt variant="headline" tone="blue">{t({ sq: 'Anulo', en: 'Cancel' })}</Txt>
+          <Txt variant="headline" tone="blue">
+            {t({ sq: 'Anulo', en: 'Cancel' })}
+          </Txt>
         </Press>
 
         <View style={{ gap: 4 }}>

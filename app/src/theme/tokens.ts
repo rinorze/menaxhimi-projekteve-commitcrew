@@ -7,6 +7,7 @@ export const palette = {
   light: {
     bg: '#FFFFFF',
     grouped: '#F2F2F7',
+    surface: '#F2F2F7', // cards and lists on the page
     card: '#FFFFFF',
     fill: 'rgba(120,120,128,0.12)',
     fillStrong: 'rgba(120,120,128,0.2)',
@@ -23,10 +24,13 @@ export const palette = {
     gold: '#F4B62A',
     goldInk: '#6B4A00',
     stone: '#8E8778',
+    ice: '#8CC4FF',
+    iceInk: '#FFFFFF', // text and icons on ice-blue buttons: white
   },
   dark: {
     bg: '#000000',
     grouped: '#000000',
+    surface: '#1C1C1E', // grouped is pure black in dark, so cards need their own colour
     card: '#1C1C1E',
     fill: 'rgba(120,120,128,0.24)',
     fillStrong: 'rgba(120,120,128,0.36)',
@@ -43,6 +47,8 @@ export const palette = {
     gold: '#F6C343',
     goldInk: '#F6C343',
     stone: '#A39B8B',
+    ice: '#8CC4FF',
+    iceInk: '#FFFFFF', // text and icons on ice-blue buttons: white
   },
 } as const;
 
@@ -72,3 +78,15 @@ export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24 } as const;
 
 /** Every tappable thing is at least this big (Apple HIG). */
 export const minTouch = 44;
+
+/** true in dark mode */
+export function useIsDark(): boolean {
+  return useColorScheme() === 'dark';
+}
+
+/** Motion: calm springs, no bounce except for rewards (the stamp). Duration in milliseconds. */
+export const motion = {
+  snappy: { duration: 280, dampingRatio: 1 },
+  gentle: { duration: 450, dampingRatio: 1 },
+  reward: { duration: 700, dampingRatio: 0.72 },
+} as const;

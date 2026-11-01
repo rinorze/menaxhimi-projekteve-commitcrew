@@ -8,9 +8,8 @@ export default function Avatar() {
       title="Pamja jote"
       owner="Elvina"
       design="01-onboarding/08-avatar-creator.png"
-      next="/save-passport"
+      next="/avatar-rewards"
       nextLabel="Përdor këtë fytyrë"
-      also={[{ href: '/avatar-rewards', label: 'Sende që i fiton' }]}
     />
   );
 }

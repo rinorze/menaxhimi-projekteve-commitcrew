@@ -22,7 +22,6 @@ export const onboardingScreens: { step: string; href: Href; title: string; owner
   { step: '1.13', href: '/first-km', title: 'Kilometri i parë', owner: 'Elvina' },
   { step: '1.14', href: '/sign-in', title: 'Hyr', owner: 'Artiola' },
 ];
-
 export const profileScreens: { step: string; href: Href; title: string; owner: string }[] = [
   { step: '9.2', href: '/settings', title: 'Cilësimet', owner: 'Elios' },
   { step: '9.3', href: '/blocked', title: 'Të bllokuarit', owner: 'Elios' },
