@@ -24,7 +24,10 @@ export default function BlockedUsersScreen() {
       })
       .catch((cause: unknown) => {
         if (active) {
-          setError(cause instanceof Error ? cause.message : 'Could not load blocked people.');
+          setError(cause instanceof Error ? cause.message : t({
+            sq: 'Lista e personave të bllokuar nuk mund të ngarkohej.',
+            en: 'Could not load blocked people.',
+          }));
         }
       })
       .finally(() => {
@@ -33,7 +36,7 @@ export default function BlockedUsersScreen() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   async function confirmUnblock() {
     if (!confirming) return;
@@ -44,7 +47,10 @@ export default function BlockedUsersScreen() {
       setBlocked((current) => current.filter((entry) => entry.id !== confirming.id));
       setConfirming(null);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not unblock this person.');
+      setError(cause instanceof Error ? cause.message : t({
+        sq: 'Ky person nuk mund të zhbllokohej.',
+        en: 'Could not unblock this person.',
+      }));
     } finally {
       setSaving(false);
     }

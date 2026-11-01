@@ -22,7 +22,10 @@ export default function SignInScreen() {
       await signIn(username.trim(), password);
       router.replace('/home');
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not sign in.');
+      setError(cause instanceof Error ? cause.message : t({
+        sq: 'Hyrja nuk u krye.',
+        en: 'Could not sign in.',
+      }));
     } finally {
       setBusy(false);
     }

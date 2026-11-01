@@ -42,12 +42,22 @@ export default function SettingsScreen() {
     Promise.all([getProfile(), getBlockedUsers()])
       .then(([settings, blocked]) => {
         if (!active) return;
-        if (!settings) throw new Error('The server returned no profile settings.');
+        if (!settings) {
+          throw new Error(t({
+            sq: 'Serveri nuk ktheu cilësimet e profilit.',
+            en: 'The server returned no profile settings.',
+          }));
+        }
         setProfile(settings);
         setBlockedCount(blocked.length);
       })
       .catch((cause: unknown) => {
-        if (active) setError(cause instanceof Error ? cause.message : 'Could not load settings.');
+        if (active) {
+          setError(cause instanceof Error ? cause.message : t({
+            sq: 'Cilësimet nuk mund të ngarkoheshin.',
+            en: 'Could not load settings.',
+          }));
+        }
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -55,17 +65,25 @@ export default function SettingsScreen() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [t]);
 
   async function save(patch: Partial<ProfileSettings>) {
     setSaving(true);
     setError('');
     try {
       const updated = await updateProfile(patch);
-      if (!updated) throw new Error('The server returned no updated settings.');
+      if (!updated) {
+        throw new Error(t({
+          sq: 'Serveri nuk ktheu cilësimet e përditësuara.',
+          en: 'The server returned no updated settings.',
+        }));
+      }
       setProfile(updated);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Could not save this setting.');
+      setError(cause instanceof Error ? cause.message : t({
+        sq: 'Ky cilësim nuk mund të ruhej.',
+        en: 'Could not save this setting.',
+      }));
     } finally {
       setSaving(false);
     }
