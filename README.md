@@ -14,7 +14,7 @@ Find places on a 2D and 3D map, go there, unlock them with your camera, and expl
 ![React](https://img.shields.io/badge/Website-React-20232A?logo=react&logoColor=61DAFB)
 ![Docker](https://img.shields.io/badge/Docker-PostgreSQL-2496ED?logo=docker&logoColor=white)
 
-[Feature Atlas (every screen)](https://claude.ai/artifact/Fh1ASH9JErhpenqCUmFxGw) · [Project board](https://github.com/users/rinorze/projects/1) · [Plan](docs/PLAN.md) · [MVP (Shqip)](docs/MVP.md) · [How we work](CONTRIBUTING.md)
+[Project board](https://github.com/users/rinorze/projects/1) · [Plan](docs/PLAN.md)
 
 </div>
 
@@ -40,8 +40,6 @@ At the same time, the people who would love these places are everywhere. **More 
 | Browse all 38 municipalities as big photo cards and open a city to see its best places and events. | Explore the map in 2D, or tilt to 3D to see Rugova, Sharr and Bjeshkët e Nemuna in real terrain. | Inside the place's radius the camera opens. The server checks GPS, accuracy and fake-GPS. | The stamp lands in your collection, your friends see it in their activity, and your streak grows. |
 
 ## What's inside
-
-More than 100 features: see every one, with a screen mockup, in the **[Feature Atlas](https://claude.ai/artifact/Fh1ASH9JErhpenqCUmFxGw)**.
 
 **🧭 Explore:** all 38 municipalities and 7 regions, city pages, place pages with stories in Albanian and English, search, categories, saved places, events and festivals.
 
@@ -69,16 +67,37 @@ More than 100 features: see every one, with a screen mockup, in the **[Feature A
 | **Gjilan** | Gjilan · Kamenicë · Viti · Kllokot · Ranillug · Partesh |
 | **Gjakovë** | Gjakovë · Rahovec · Deçan · Junik |
 
-## Built with
+## Run it
 
-| | |
+```bash
+git clone https://github.com/rinorze/menaxhimi-projekteve-commitcrew.git
+cd menaxhimi-projekteve-commitcrew
+git switch feat/<your name>               # your own branch; open a pull request into staging
+docker compose up                         # PostgreSQL + backend, loads the 318 places
+cd app && npm install && npx expo start   # the iPhone app: scan the QR code with Expo Go
+cd website && npm install && npm run dev  # the website
+```
+
+| What | Where | Login |
+| --- | --- | --- |
+| API health | http://localhost:8000/api/health/ | says `"database": "postgresql"` |
+| API docs | http://localhost:8000/api/docs/ | |
+| Django admin | http://localhost:8000/admin/ | `admin` / `admin` (local only, created automatically) |
+| Adminer (look inside the database) | http://localhost:8080 | System **PostgreSQL**, server `db`, user `postgres`, password `postgres`, database `discover_kosovo` |
+
+Everyone has their own database on their own laptop; the data lives in a Docker volume and survives `docker compose down`.
+
+| I want to… | Run |
 | --- | --- |
-| **App** (`app/`) | React Native with Expo SDK 58 · TypeScript · Expo Router · Apple Maps (2D/3D) · Expo Camera and Location |
-| **Backend** (`backend/`) | Python · Django and Django REST Framework · GeoDjango · Django Channels (chat and live location) |
-| **Website** (`website/`) | React · TypeScript · Vite · landing page, waiting list, app page |
-| **Database** | PostgreSQL 17 in Docker (`docker compose up`) · PostGIS later |
-| **AI** | Language and vision models, called only from the backend |
-| **Design** | [docs/design](docs/design): every screen in order, colours, type, photos |
+| stop it, keep the data | `docker compose down` |
+| **delete all data and start clean** | `docker compose down -v` |
+| run a Django command | `docker compose exec backend python manage.py <command>` (`makemigrations`, `migrate`, `test`, `import_places`) |
+| open a SQL prompt | `docker compose exec db psql -U postgres -d discover_kosovo` |
+| make a backup | `docker compose exec -T db pg_dump -U postgres discover_kosovo > backup.sql` |
+| restore a backup | `docker compose exec -T db psql -U postgres -d discover_kosovo < backup.sql` (on an empty database) |
+| see what is wrong | `docker compose logs backend` or `docker compose logs db` |
+
+Port already in use (5432, 8000, 8080)? Close the other program, or change the left number in `docker-compose.yml`. `docker` not recognised? Open a new terminal after installing Docker Desktop and wait for "Engine running". After you change a model, run `makemigrations` and `migrate` and commit the new file in `backend/core/migrations/`.
 
 ## Team: CommitCrew
 
@@ -91,4 +110,4 @@ More than 100 features: see every one, with a screen mockup, in the **[Feature A
 | Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Onboarding: where are you today, Kthimi, interests, save passport, privacy |
 | Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Onboarding: avatar creator, avatar items, one friend, first km |
 
-Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has cards on the [project board](https://github.com/users/rinorze/projects/1); work goes on your own branch and into `staging` through a pull request (see [CONTRIBUTING](CONTRIBUTING.md)).
+Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has cards on the [project board](https://github.com/users/rinorze/projects/1); work goes on your own branch and into `staging` through a pull request.

@@ -28,6 +28,10 @@ export function Footer() {
           <span>{t({ sq: 'Mbështetja', en: 'Support' })}</span>
           <span>hello@discoverkosovo.app</span>
         </div>
+        <div className="footer-lang">
+          <b>{t({ sq: 'Gjuha', en: 'Language' })}</b>
+          <span>Shqip · English · Deutsch · Français</span>
+        </div>
       </div>
     </footer>
   );

@@ -15,6 +15,7 @@ function Progress({ step, total = 7 }: { step: number; total?: number }) {
         <View key={i} style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: i < step ? c.label : c.fill }} />
       ))}
     </View>
+  
   );
 }
 
