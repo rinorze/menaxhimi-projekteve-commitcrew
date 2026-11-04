@@ -1,8 +1,12 @@
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.db import connection, transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -15,6 +19,13 @@ from .utils import haversine_m
 def health(request):
     """Is the API up, and which database is it talking to (sqlite or postgresql)?"""
     return Response({'ok': True, 'database': connection.vendor})
+
+
+def users_are_blocked(first_user, second_user):
+    return models.Friendship.objects.filter(status='blocked').filter(
+        Q(from_user=first_user, to_user=second_user)
+        | Q(from_user=second_user, to_user=first_user)
+    ).exists()
 
 
 # ---------------------------------------------------------------- accounts
@@ -52,6 +63,141 @@ class ProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         profile, _ = models.Profile.objects.get_or_create(user=self.request.user)
         return profile
+
+
+class DeleteAccountView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    @transaction.atomic
+    def delete(self, request):
+        serializer = serializers.DeleteAccountSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if not request.user.check_password(serializer.validated_data['password']):
+            return Response(
+                {'password': ['The password is incorrect.']},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        request.user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PrivatePhotoListView(generics.ListCreateAPIView):
+    serializer_class = serializers.PrivatePhotoSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return models.PrivatePhoto.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class PrivatePhotoDetailView(generics.DestroyAPIView):
+    serializer_class = serializers.PrivatePhotoSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return models.PrivatePhoto.objects.filter(user=self.request.user)
+
+
+class SavedPlaceListView(generics.ListCreateAPIView):
+    serializer_class = serializers.SavedPlaceSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return models.SavedPlace.objects.filter(user=self.request.user).select_related(
+            'place', 'place__municipality'
+        )
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        saved, created = models.SavedPlace.objects.get_or_create(
+            user=request.user, place=serializer.validated_data['place']
+        )
+        return Response(
+            self.get_serializer(saved).data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
+
+
+class SavedPlaceDetailView(generics.DestroyAPIView):
+    serializer_class = serializers.SavedPlaceSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return models.SavedPlace.objects.filter(user=self.request.user)
+
+
+class LocationSharesView(generics.ListCreateAPIView):
+    serializer_class = serializers.LocationShareSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        user = self.request.user
+        friendships = models.Friendship.objects.filter(status='accepted').filter(
+            Q(from_user=user) | Q(to_user=user)
+        )
+        friend_ids = set()
+        for friendship in friendships:
+            friend_ids.add(
+                friendship.to_user_id if friendship.from_user_id == user.id else friendship.from_user_id
+            )
+        blocked_ids = models.Friendship.objects.filter(status='blocked').filter(
+            Q(from_user=user) | Q(to_user=user)
+        ).values_list('from_user_id', 'to_user_id')
+        excluded_ids = {
+            blocked_user_id
+            for from_user_id, to_user_id in blocked_ids
+            for blocked_user_id in (
+                to_user_id if from_user_id == user.id else from_user_id,
+            )
+        }
+        return models.LocationShare.objects.filter(
+            user_id__in=friend_ids - excluded_ids,
+            user__profile__ghost_mode=False,
+            user__profile__location_sharing=True,
+        ).filter(
+            Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now())
+        ).select_related(
+            'user', 'user__profile', 'user__profile__home_municipality'
+        ).order_by('-updated_at', '-pk')
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.LocationShareCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        profile, _ = models.Profile.objects.get_or_create(user=request.user)
+        if profile.ghost_mode or not profile.location_sharing:
+            return Response(
+                {'error': 'Enable location sharing and turn off ghost mode first.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        expires_at = None
+        if profile.stop_sharing_after_minutes is not None:
+            expires_at = timezone.now() + timedelta(
+                minutes=profile.stop_sharing_after_minutes
+            )
+        share = models.LocationShare.objects.filter(user=request.user).order_by(
+            '-updated_at'
+        ).first()
+        values = {
+            **serializer.validated_data,
+            'precision': profile.sharing_precision,
+            'expires_at': expires_at,
+        }
+        if share:
+            for field, value in values.items():
+                setattr(share, field, value)
+            share.save()
+            created = False
+        else:
+            share = models.LocationShare.objects.create(user=request.user, **values)
+            created = True
+        return Response(
+            self.get_serializer(share).data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK,
+        )
 
 
 # ---------------------------------------------------------------- places
@@ -202,6 +348,8 @@ class FriendshipListCreateView(generics.ListCreateAPIView):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         if to_user == request.user:
             return Response({'error': 'Cannot add yourself'}, status=status.HTTP_400_BAD_REQUEST)
+        if users_are_blocked(request.user, to_user):
+            return Response({'error': 'This user is blocked'}, status=status.HTTP_403_FORBIDDEN)
         if models.Friendship.objects.filter(
             Q(from_user=request.user, to_user=to_user) | Q(from_user=to_user, to_user=request.user)
         ).exists():
@@ -224,6 +372,8 @@ class FriendshipActionView(generics.GenericAPIView):
         action = request.data.get('action')
 
         if action == 'accept':
+            if users_are_blocked(request.user, friendship.from_user):
+                return Response({'error': 'This user is blocked'}, status=status.HTTP_403_FORBIDDEN)
             friendship.status = 'accepted'
             friendship.save(update_fields=['status', 'updated_at'])
             for owner, other in (
@@ -236,12 +386,65 @@ class FriendshipActionView(generics.GenericAPIView):
                     text_sq=f'U bënë miq me {other.username}',
                 )
         elif action == 'block':
-            friendship.status = 'blocked'
-            friendship.save(update_fields=['status', 'updated_at'])
+            friendship = self.block_user(request.user, friendship.from_user)
         else:
             return Response({'error': "action must be 'accept' or 'block'"}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializers.FriendshipSerializer(friendship).data)
+
+    @staticmethod
+    def block_user(user, other):
+        models.Friendship.objects.filter(
+            from_user=other, to_user=user
+        ).delete()
+        friendship, created = models.Friendship.objects.get_or_create(
+            from_user=user,
+            to_user=other,
+            defaults={'status': 'blocked'},
+        )
+        if not created and friendship.status != 'blocked':
+            friendship.status = 'blocked'
+            friendship.save(update_fields=['status', 'updated_at'])
+        return friendship
+
+
+class BlockedUsersView(generics.ListCreateAPIView):
+    serializer_class = serializers.FriendshipSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        return models.Friendship.objects.filter(
+            from_user=self.request.user, status='blocked'
+        ).select_related('from_user', 'to_user').order_by('-created_at', '-pk')
+
+    def create(self, request, *args, **kwargs):
+        serializer = serializers.BlockUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        other = User.objects.filter(username=serializer.validated_data['username']).first()
+        if other is None:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        if other == request.user:
+            return Response({'error': 'Cannot block yourself'}, status=status.HTTP_400_BAD_REQUEST)
+        blocked = FriendshipActionView.block_user(request.user, other)
+        return Response(
+            serializers.FriendshipSerializer(blocked).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class BlockedUserDetailView(generics.GenericAPIView):
+    serializer_class = serializers.FriendshipSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def delete(self, request, pk):
+        friendship = get_object_or_404(
+            models.Friendship,
+            pk=pk,
+            from_user=request.user,
+            status='blocked',
+        )
+        friendship.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ActivityFeedView(generics.ListAPIView):
@@ -258,7 +461,9 @@ class ActivityFeedView(generics.ListAPIView):
             user_ids.add(
                 friendship.to_user_id if friendship.from_user_id == user.id else friendship.from_user_id
             )
-        return models.Activity.objects.filter(user_id__in=user_ids).select_related('place', 'user')
+        return models.Activity.objects.filter(user_id__in=user_ids).filter(
+            Q(user=user) | Q(user__profile__ghost_mode=False)
+        ).select_related('place', 'user')
 
 
 class PostcardListCreateView(generics.ListCreateAPIView):
@@ -279,6 +484,8 @@ class PostcardListCreateView(generics.ListCreateAPIView):
         recipient = User.objects.filter(username=username).first()
         if recipient is None:
             return Response({'error': 'Recipient not found'}, status=status.HTTP_404_NOT_FOUND)
+        if users_are_blocked(request.user, recipient):
+            return Response({'error': 'This user is blocked'}, status=status.HTTP_403_FORBIDDEN)
 
         place = models.Place.objects.filter(slug=request.data.get('place_slug')).first()
         postcard = models.Postcard.objects.create(
@@ -312,6 +519,8 @@ class ConversationListCreateView(generics.ListCreateAPIView):
             return Response(
                 {'error': 'Cannot create a conversation with yourself'}, status=status.HTTP_400_BAD_REQUEST
             )
+        if users_are_blocked(request.user, other):
+            return Response({'error': 'This user is blocked'}, status=status.HTTP_403_FORBIDDEN)
 
         for conversation in request.user.conversations.all():
             if conversation.participants.count() == 2 and conversation.participants.filter(id=other.id).exists():

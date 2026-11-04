@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 // Albanian first, English second. Every text in the app is written as t({ sq: '…', en: '…' }).
 // The language lives in this tiny store (no extra package), so changing it re-renders every screen.
@@ -32,5 +32,5 @@ export function useLang(): Lang {
 /** Use inside components: const t = useT(); <Txt>{t({ sq: 'Vazhdo', en: 'Continue' })}</Txt> */
 export function useT() {
   const lang = useLang();
-  return (text: Text) => text[lang];
+  return useCallback((text: Text) => text[lang], [lang]);
 }

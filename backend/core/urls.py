@@ -12,6 +12,9 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/me/', views.MeView.as_view(), name='me'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('account/', views.DeleteAccountView.as_view(), name='delete-account'),
+    path('profile/photos/', views.PrivatePhotoListView.as_view(), name='private-photos'),
+    path('profile/photos/<int:pk>/', views.PrivatePhotoDetailView.as_view(), name='private-photo-detail'),
 
     # places
     path('regions/', views.RegionListView.as_view(), name='regions'),
@@ -27,6 +30,11 @@ urlpatterns = [
     # social
     path('friends/', views.FriendshipListCreateView.as_view(), name='friends'),
     path('friends/<int:pk>/', views.FriendshipActionView.as_view(), name='friend-action'),
+    path('blocked/', views.BlockedUsersView.as_view(), name='blocked-users'),
+    path('blocked/<int:pk>/', views.BlockedUserDetailView.as_view(), name='blocked-user-detail'),
+    path('location-shares/', views.LocationSharesView.as_view(), name='location-shares'),
+    path('saved-places/', views.SavedPlaceListView.as_view(), name='saved-places'),
+    path('saved-places/<int:pk>/', views.SavedPlaceDetailView.as_view(), name='saved-place-detail'),
     path('activity/', views.ActivityFeedView.as_view(), name='activity-feed'),
     path('postcards/', views.PostcardListCreateView.as_view(), name='postcards'),
 
