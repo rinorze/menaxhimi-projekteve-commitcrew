@@ -3,201 +3,124 @@
 > **Team:** CommitCrew · **Course:** Menaxhimi i Projekteve (Prof. Lorent Sinani) · **Board:** [GitHub Project](https://github.com/users/rinorze/projects/1)
 > **Timeline:** 11 weekly sprints, 19 Oct 2026 → 10 Jan 2027 (holiday break 28 Dec – 3 Jan)
 
-This plan describes **what** we build, **which screens** come first, and **who builds what each week**. Every line in section 6 is an issue on the board.
+This plan describes **what** we build and **who builds what each week**. Every cell in section 6 is one card on the board: **one card per person per week**.
 
 ---
 
 ## 1. The product
 
-**Discover Kosovo is a discovering + travelling + social media app for all 38 municipalities of Kosovo.**
-You pick a city, find places on a 2D/3D map, go there, unlock each place with your camera, post the moment, and share it with friends: in the feed, in chat, and on the map.
+**Discover Kosovo is a discovering and travelling app for all 38 municipalities of Kosovo that feels like social media, without posts, likes or comments.**
 
-**Core loop:** *see a friend's unlock → open the place → go there → snap it → unlock → your post shows up for your friends → they want to go too.*
+You pick a city, find places on a 2D/3D map, go there and unlock each place with the in-app camera. Your friends see what you unlocked, where you are (only if you share), and you explore together: chat, trips, postcards, streaks, quests and festivals.
+
+**Core loop:** *a friend unlocks a place → you see it in your activity → you plan it together in chat → you go → you unlock it → your friends see it → they want to go too.*
 
 **Product principles**
-1. **Real visits only.** An unlock needs the in-app camera and your GPS inside the place's radius. That is what makes every post trustworthy.
-2. **Social first.** Friends, feed, chat and the friends map are core, not extras.
+1. **Real visits only.** An unlock needs the in-app camera and your GPS inside the place's radius, checked on the server.
+2. **Social without a feed.** No posts, likes or comments. The social feeling comes from people's real actions: automatic activity, presence on the map, chat, trips, postcards, streaks, quests, leagues and events.
 3. **All of Kosovo.** Every municipality has a city page, even the smallest ones (Partesh, Junik, Mamushë).
-4. **Beautiful and simple.** Big photos, rounded cards and glass buttons, in an iOS feel with Albanian and English everywhere.
-5. **Private by default.** Location sharing is off until you turn it on. Ghost mode and city-level precision are always available.
+4. **Beautiful and simple.** Big photos, rounded cards and glass buttons, in an iOS feel, with Albanian and English everywhere.
+5. **Private by default.** Location sharing is off until you turn it on, and ghost mode is one tap away.
 
 ---
 
 ## 2. What the research says
 
-| App | What it does well | What we take |
+Research was done with Claude, ChatGPT (Codex), Grok 4.7 and Cursor Composer, then checked.
+
+| App | What we take |
+| --- | --- |
+| **Snap Map, Bump (Zenly)** | Friends on a map, ghost mode, "bump" when you meet, best friends |
+| **Find My, Life360, Apple Check In** | Timed sharing, circles, "arrive safely" for hikes |
+| **Duolingo** | Friend streaks, weekly friend quests, leagues, nudges |
+| **Pokémon GO** | Going to real places to collect, friend codes, gifts (postcards), co-op places |
+| **Apple Fitness, Strava** | Today rings, 7-day races, clubs and challenges |
+| **Swarm / Foursquare** | Unlock = check-in with proof; "keeper of the place" among friends |
+| **Spotify** | Blend (a route made for two friends), Wrapped (your year in Kosovo) |
+| **Partiful, Facebook events** | "I'm going" and which friends are going |
+| **Fog of World, Been** | The map clears as you explore; % of Kosovo discovered |
+| **Wanderlog, Mindtrip** | AI day plans shown as place cards and a route |
+| **Visit Kosovo, Dardania Live, EduPrizrenin** | Content sources, but **no** unlocks, friends or chat: that gap is our opportunity |
+
+**Key decisions**
+- **Backend: Python with Django** (+ Django REST Framework, GeoDjango, Django Channels). The built-in admin is our content and moderation panel, GeoDjango + PostGIS does the distance checks, and Channels gives real-time chat and location.
+- **Database: PostgreSQL + PostGIS**, plus **Redis** for real time.
+- **Maps: Apple Maps** through `react-native-maps` (MapKit): 2D, a tilted 3D satellite view, and it runs in Expo Go, so the whole team can test without a development build. Mapbox stays the option if we later need 3D terrain.
+- **AI runs only on the backend**, and only recommends places that exist in our database. The Gemini free tier is not available in Kosovo, so we budget a small paid key or student credit.
+- **Friends on the map:** off by default, friends only, ghost mode, precision (city / ~1 km / exact), timed sharing (1 hour, tonight, until off), no history, no strangers.
+
+**UX rules**
+- Ask for each permission in context (location when the map opens, camera on the first unlock), never all at once. The app works with no permissions.
+- An unlock never creates a public post. Your unlock photos are private; you can send one to a friend as a postcard.
+- Religious and memorial places (Deçan, the Patriarchate of Peja, Graçanica, Prekaz) get a respect card and no confetti, points or meetups.
+
+**Ideas unique to Kosovo:** Kthimi (homecoming) mode for the diaspora · one stamp in each of the 38 municipalities · festival stamps (DokuFest, Sunny Hill, Anibar, Hardh Fest) · Rugova and Sharr in two seasons · Çarshia "open now" · co-op places that need two friends.
+
+**Design direction (Rinor):** big full-bleed photos in 24 px rounded cards, frosted glass buttons, a hero card with *View more*, a *Discover* carousel and a 2-column grid of city cards. Palette: limestone `#F6F3EE`, ink `#1A1814`, Kosovo blue `#1E4B99`, flag gold `#C6A15B` (stamps), pine `#1B6B45` (unlocked). We say *unlock* and *stamps*, never "earn" or "passport".
+
+---
+
+## 3. Features
+
+| Module | MVP (final demo) | Later |
 | --- | --- | --- |
-| **Instagram** | Photo feed, profiles, DMs, sharing | Feed + post card + profile grid; chat icon in the Home header |
-| **Snapchat (Snap Map)** | Friends on a map, Ghost Mode, stories at places | Friends layer on the map; ghost mode; "who's here" at a place |
-| **Bump** (Zenly's successor) | Live friends map, places you've been, chat | Friend preview sheet (last seen, chat, directions) |
-| **Swarm / Foursquare** | Check-ins, stickers that unlock by place type, friends-only "mayors" | Unlock = check-in with proof; stamps by category; friends leaderboard |
-| **Pokémon GO** | Going to real places to collect | The thrill of collecting by being physically there |
-| **Polarsteps** | Trip tracking, 3D route flyovers, travel books | Trip recap and 3D flyover ideas (later) |
-| **Strava** | Verified activity + kudos + segments | "Verified" badge on posts; friendly competition |
-| **Fog of World / Been** | Visual progress of where you've been | City and region progress bars; "% of Kosovo discovered" |
-| **Wanderlog / Mindtrip** | AI trip planning on a map | *Plan my day* with an itinerary on the map |
-| **Visit Kosovo, Dardania Live, EduPrizrenin** | Information about places | Content sources, but they have **no** unlocks, social or chat; that gap is our opportunity |
-
-**Key decisions from the research**
-- **Backend: Python with Django** (+ Django REST Framework, GeoDjango, Django Channels). The built-in **Django admin** gives us the content and moderation panel for free. **GeoDjango + PostGIS** does the distance checks for unlocks. **Channels** gives WebSockets for chat and live location in the same codebase. FastAPI was considered, but it would need us to assemble auth, admin, geo and realtime ourselves.
-- **Database: PostgreSQL + PostGIS** (places as points, municipalities as polygons), plus **Redis** for realtime.
-- **Maps: Mapbox** (`@rnmapbox/maps`) for a real **2D ↔ 3D toggle**, with 3D terrain over Rugova and Sharr plus 3D buildings. MapLibre was our first choice because it is free, but it still has **no 3D terrain on mobile**. Mapbox has a free tier for mobile monthly active users. Both need an Expo **development build**.
-- **AI runs only on the backend** (API keys never in the app): place Q&A over our own data, day plans, and a photo check for unlocks. *Note:* the Gemini API free tier is not available in Kosovo, so we budget a small paid key (OpenAI or similar) or a student credit.
-- **Privacy model for friends on the map** (based on Snap Map, Find My and Life360): off by default, friends only, ghost mode, precision levels (city / ~1 km / exact), temporary sharing (1 hour, until tonight, until off).
-
-**UX rules we adopt**
-- Ask for each permission **in context**: location when the map first opens, camera on the first unlock, notifications after the first unlock. Never all at once, and the city grid works with no permissions at all.
-- **Unlocking and posting are separate choices.** You can collect a stamp without publishing it.
-- The in-app camera only (no gallery) for unlocks. Retake is always allowed, and a weak GPS signal means "wait", not "fail".
-- Feed: chronological, friends + the selected city, no ranking algorithm at launch.
-- Friends map: everyone starts in **ghost mode**, city-level precision by default, "last updated" on every avatar, no location history, no strangers, no heatmaps.
-- Religious and memorial places (Deçan, Patriarchate of Peja, Graçanica, Prekaz) get a respectful visit card and **no** confetti, points or meetups.
-- AI only answers with places that exist in our database, and the results are cards you can reorder, not a wall of text.
-
-### Ideas unique to Kosovo
-- **Kthimi (homecoming) mode:** in summer, the diaspora sees family municipalities first and "who else is back" (city level only).
-- **The 38-city collection:** one stamp in every municipality, which is the top achievement.
-- **Festival layers:** DokuFest (Prizren), Sunny Hill (Prishtina), Anibar (Peja). Stages and spots appear only during the festival and leave a limited stamp.
-- **Rugova and Sharr in two seasons:** winter (Brezovica) and summer (Prevalla, Brod) sets with safety notes.
-- **Çarshia open now:** craft workshops in Gjakova and Prizren flip their own "open today" switch.
-- **Kulla keys:** a stone-tower-house set (Isniq, Dranoc, Junik, Deçan).
-- **NEWBORN year stamp:** remembers the word painted on the monument the year you visited.
-- **School trip mode:** a teacher code for a class trip with shared stamps, and never students' live location.
-
-### Design direction (for Rinor)
-- **Look:** big full-bleed photos in 24 px rounded cards, frosted circular glass buttons (44 pt), a hero card with title, author and *View more*, a *Discover* carousel, and a 2-column grid of city and place cards (3:4 photos, district chips on top).
-- **Palette idea:** limestone `#F6F3EE` background · ink `#1A1814` · Kosovo blue `#1E4B99` (primary) · flag gold `#C6A15B` (stamps, never body text) · pine `#1B6B45` (unlocked) · terracotta `#B85A32` (food) · locked `#C8C2B8`. Dark mode: `#10141A` background, gold `#E2C27A`.
-- **Type:** SF Pro on iOS and Inter or Source Sans 3 on Android (full ë/ç and Cyrillic support), scale 34/28/22/17/15/13.
-- **Tools:** Figma (start from Apple's iOS UI kit), FigJam (flows), Mobbin (references), Rive or Lottie (stamp animation), Stark (contrast). Test Albanian text in every component, since it is longer than English.
-- **Voice:** we say *unlock* and *stamps*, never "earn" or "passport" (in Kosovo a passport is an ID document). Other options from the research: *Mark / Shenjë* collected in a *Journal / Ditari*. Taglines: "See it. Snap it. Unlock it." · "Your map fills up when you show up." / "Harta jote mbushet kur ti del." · "38 komuna. Një hartë që e mbush ti."
+| Welcome & account | Splash, welcome slides, language, sign up, log in, profile, home town, interests, permissions, find friends | Google/Apple sign-in, tour |
+| Home | Friends nearby, friend activity, place of the day, continue exploring | Weather, weekend ideas, Kthimi |
+| Explore 38 cities | Cities grid, search, city page, facts, categories, saved places | Collections, hidden gems |
+| Place page | Photos, story sq/en, practical info, directions, unlock button, friends who unlocked, nearby, respect card | Audio story |
+| Map 2D & 3D | Map with pins, 3D mode, place sheet, filters, friends on the map, my location | Fog, borders by progress, satellite |
+| Unlock & collection | Unlock camera, not in range, server verification, "Unlocked!", collection, stamp detail, city completed, regions | Then & Now, offline unlock, QR in museums |
+| Friends & together | Friends list, add by code, requests, friend profile, postcards, block/report, friend streak, friend quest | Bump, best friends, co-op places, keeper, blend, meetups, circles, arrive safely |
+| Chat & trips | Chats, real-time chat, share a place, trip group chat, create a trip, trip checklist | Meet here, group unlock, trip recap |
+| Challenges | Weekly challenges, streak, friends leaderboard, achievements, XP | Leagues, trivia, 7-day race |
+| Events | Calendar, event page with "I'm going" | Festival stamps, festival map |
+| AI | Ask Kosovo, Plan my day | Route on the map, photo check, translation |
+| Profile & settings | Profile, stats, edit, private memories, settings, ghost mode, notifications, language, blocked users, privacy, delete account | Share card, help |
+| Admin (web) | Cities and places, events, moderation, demo mode | — |
 
 ---
 
-## 3. Features (MoSCoW)
+## 4. Navigation
 
-| Module | **Must** (MVP, final demo) | **Should** (planned) | **Could** (stretch) |
-| --- | --- | --- | --- |
-| Accounts | Sign up/in, profile setup, permissions, interests | Google sign-in, find friends | Email verification |
-| Explore | All 38 cities grid, city page, place page, search, categories, saved places | Events and festival unlocks, city progress | Curated routes ("Rugova in a day") |
-| Map | 2D map with places (locked/unlocked), place sheet, filters | **3D mode** (terrain + buildings), friends layer | 3D flyover to a city, offline cache |
-| Unlock | In-app camera + GPS radius check, unlock animation, stamp, post composer | AI photo check, city/region completion stamps | Then & Now archive overlay, QR unlock indoors |
-| Social | Feed (Following / For you), likes, comments, follow, profiles, notifications | Share, report/block, leaderboard | Stories, reposts |
-| Chat | 1:1 chat with realtime messages | Group chats, share a place/post into chat | Photos and voice notes in chat |
-| Friends map | — | Opt-in live location with ghost mode and precision | "Friends in Prizren this week" |
-| AI | — | *Ask Kosovo* guide, *Plan my day* | Auto-translate captions sq↔en |
-| Admin | Django admin: cities, places, events, users | Moderation of reports | Analytics dashboard |
-| Quality | sq/en, demo mode (fake location), empty/error states | Push notifications | Offline unlock queue |
+**Tabs:** `Home` · `Explore` · `⊕ Unlock` (gold camera button) · `Map` · `You`. The Home header has 💬 chats and 🔔 notifications, and Explore has ✨ *Ask Kosovo*.
 
 ---
 
-## 4. Navigation and screens
+## 5. Team: who does what
 
-**Tab bar:** `Home` · `Explore` · `⊕ Unlock` (centre camera button) · `Map` · `Profile`
-Home header: 💬 chats and 🔔 notifications. Explore header: ✨ *Ask Kosovo*.
+Three members have little coding experience, so the work is split by difficulty:
 
-| ID | Screen | Owner | Sprint |
-| --- | --- | --- | --- |
-| **A · Onboarding and accounts** | | | |
-| A1 | Splash | Artiola | 2 |
-| A2 | Welcome carousel (3 slides) | Artiola | 2 |
-| A3 | Sign up | Artiola | 2 |
-| A4 | Log in | Artiola | 2 |
-| A5 | Forgot / reset password | Artiola | 2 |
-| A6 | Permissions primer (location, camera, notifications) | Elvina | 2 |
-| A7 | Profile setup (photo, name, home town or diaspora country) | Elvina | 2 |
-| A8 | Interests and favourite cities | Elvina | 2 |
-| A9 | Find friends | Artiola | 3 |
-| **E · Explore** | | | |
-| E1 | Explore home: hero card, *Discover* carousel, categories, events | Erleta | 3 |
-| E2 | Cities grid: all 38, filter by region | Erleta | 2 |
-| E3 | City detail: hero, about, top places, progress, posts | Erleta | 3 |
-| E4 | Place detail: gallery, info, posts here, Unlock / Directions / Save | Elvina | 3 |
-| E5 | Search: places, cities, people | Artiola | 4 |
-| E6 | Category list | Erleta | 5 |
-| E7 | Events list | Erleta | 6 |
-| E8 | Event detail | Erleta | 6 |
-| E9 | Saved places | Elvina | 3 |
-| **M · Map** | | | |
-| M1 | Map 2D with place pins and the 3D toggle | Erleta | 4 |
-| M2 | Place preview sheet | Erleta | 4 |
-| M3 | Filters (locked/unlocked, category, events) | Erleta | 5 |
-| M4 | Friends layer + friend preview sheet | Erleta | 7 |
-| **U · Unlock** | | | |
-| U1 | Camera with "in range" indicator | Elvina | 4 |
-| U2 | Not in range (distance to the nearest places) | Elvina | 4 |
-| U3 | Verifying | Elvina | 5 |
-| U4 | Unlocked! (stamp reveal) | Elvina | 5 |
-| U5 | Post composer (caption, tag friends, visibility) | Elvina | 5 |
-| U6 | Unlock failed (reason + what to do) | Elvina | 5 |
-| **S · Social** | | | |
-| S1 | Home feed: Following / For you | Artiola | 5 |
-| S2 | Post detail | Artiola | 5 |
-| S3 | Comments | Artiola | 6 |
-| S4 | Notifications | Artiola | 6 |
-| S5 | Other user's profile | Artiola | 4 |
-| S6 | Followers, following, friend requests | Artiola | 7 |
-| S7 | Report / block | Artiola | 8 |
-| S8 | Share (to chat or outside the app) | Artiola | 8 |
-| **C · Chat** | | | |
-| C1 | Chats list | Elvina | 7 |
-| C2 | Chat (1:1, realtime) | Elvina | 7 |
-| C3 | New chat / new group | Elvina | 7 |
-| C4 | Group info | Elvina | 8 |
-| C5 | Share a place or post into a chat | Elvina | 8 |
-| **I · AI** | | | |
-| I1 | *Ask Kosovo* (AI guide chat) | Elvina | 8 |
-| I2 | *Plan my day* (time, interests, start point) | Erleta | 8 |
-| I3 | Day plan result (timeline + route on the map) | Erleta | 8 |
-| **P · Profile** | | | |
-| P1 | My profile: posts / stamps / map tabs | Artiola | 6 |
-| P2 | Collection: stamps by region and city, with progress | Elvina | 6 |
-| P3 | Stamp detail | Elvina | 6 |
-| P4 | Leaderboard (friends, city) | Artiola | 8 |
-| P5 | Edit profile | Artiola | 3 |
-| P6 | Settings (language, notifications, account) | Artiola | 7 |
-| P7 | Privacy and location sharing (ghost mode, precision) | Artiola | 7 |
-| P8 | Blocked users, about, delete account | Artiola | 9 |
-
-Rinor designs every screen **one sprint before** it is built (hi-fi in Figma, with loading, empty and error states).
-
----
-
-## 5. Team
-
-| Member | Role | Owns |
+| Member | Role | Level |
 | --- | --- | --- |
-| **Rinor Zeqiri** | Product Designer · Product Owner | Research, user flows, wireframes, design system, all hi-fi screens, prototype, usability tests, app icon, presentation visuals |
-| **Elios Mernica** | Backend Lead (Python) | Django project, PostgreSQL/PostGIS, auth, cities and places API, unlock verification, stamps, AI endpoints, deploy |
-| **Krenare Veseli** | Backend Developer · Scrum Master | Cities/places data model and admin, follows, posts, comments, notifications, chat (Channels), live location, moderation; sprint reviews and reports |
-| **Artiola Ferizi** | Frontend Developer | Onboarding and auth screens, search, feed, posts, comments, notifications, profile, settings, privacy |
-| **Erleta Qerimi** | Frontend Developer | App scaffold and tab bar, cities grid, Explore, city page, the 2D/3D map, events, *Plan my day* |
-| **Elvina Sinani** | Frontend Developer | Permissions and profile setup, place page, camera unlock flow, collection and stamps, chat, *Ask Kosovo* |
+| **Rinor Zeqiri** | Product Designer + hard frontend: designs every screen, builds the shared components, Home, the map, the camera unlock and the animations; Docker and the database; reviews every pull request | Hard |
+| **Elios Mernica** | Backend lead: Django API, sign-in, unlock checks, friends, real-time chat and location, AI, notifications, deploys | Hard |
+| **Artiola Ferizi** | Screens: onboarding (welcome, look around, guest place, language, sign in), then profile and settings | Easy |
+| **Erleta Qerimi** | Screens: onboarding (where are you today, Kthimi, interests, save passport, privacy), then cities, search, events | Easy |
+| **Elvina Sinani** | Screens: onboarding (avatar creator, avatar items, one friend, first km), then place page, collection, chat | Easy |
+| **Krenare Veseli** | The website (landing page, waiting list, app page) · Scrum Master · then friends, postcards and trips screens | Easy |
 
-**Content: all 38 municipalities split across the team** (city cover photo, sq/en description, and at least 3 places per municipality, entered through the Django admin):
-Elios → Prishtinë region (8) · Krenare → Mitrovicë region (7) · Artiola → Prizren region (5) · Erleta → Pejë + Gjakovë regions (7) · Elvina → Ferizaj region (5) · Rinor → Gjilan region (6).
+**How beginners work:** build each screen with Rinor's components and **mock data** first (it looks finished on day 1), then connect it to Elios's API together with him.
 
-> The roles are a first proposal based on GitHub profiles. Swap them in Sprint 1 if skills differ.
+**Content for all 38 municipalities** (photo, sq/en text, at least 3 places each) is entered in the Django admin by the beginners:
+Krenare → Prishtinë region (8) and Mitrovicë region (7) · Artiola → Prizren region (5) · Erleta → Pejë region (3) and Gjakovë region (4) · Elvina → Ferizaj region (5) and Gjilan region (6).
 
 ---
 
 ## 6. Week by week
 
-| Sprint | Rinor (design) | Elios (backend) | Krenare (backend · SM) | Artiola (frontend) | Erleta (frontend) | Elvina (frontend) |
+| Sprint | Rinor | Elios | Krenare | Artiola | Erleta | Elvina |
 | --- | --- | --- | --- | --- | --- | --- |
-| **S1** 19–25 Oct · *Kickoff* | MVP doc to the professor; research and moodboard; user flows and sitemap | Django + PostGIS scaffold in `backend/` (Docker) | Working agreement; spike: Django Channels chat | Spike: Expo Router + forms | Expo scaffold in `frontend/` with 5 tabs | Spike: camera + GPS |
-| **S2** 26 Oct–1 Nov · *Onboarding* | Design system v1; hi-fi A1–A9; wireframes for Explore and Map | Auth API (register, login, JWT, reset, me) | Region, municipality and place models + admin; seed all 38 cities | **A1–A5** splash, welcome, sign up, log in, reset | **E2** cities grid (38) + tab bar | **A6–A8** permissions, profile setup, interests |
-| **S3** 2–8 Nov · *Cities and places* | Hi-fi Explore, city, place, search; map look (2D/3D) | Places API (by city, nearby, detail, search) + image upload | Follow / friends API + user search | **A9** find friends, **P5** edit profile, session handling | **E1** Explore home, **E3** city page | **E4** place page, **E9** saved places |
-| **S4** 9–15 Nov · *Map* | Hi-fi map + unlock flow + stamp art | **Unlock API** (radius, accuracy, fake-GPS check, limits) + stamps | Posts API (photo upload, feed, likes) | **E5** search, **S5** other profile | **M1–M2** map 2D + place sheet + **3D toggle** | **U1–U2** camera, not in range |
-| *Content* | Gjilan region | Prishtinë region | Mitrovicë region | Prizren region | Pejë + Gjakovë | Ferizaj region |
-| **S5** 16–22 Nov · *Unlock and posts* | Hi-fi feed, post, comments, notifications, profile; **usability test #1** | Collection, progress and leaderboard API | Comments + notifications API | **S1–S2** home feed, post detail | **M3** filters, unlocked pins, **E6** categories | **U3–U6** verifying, unlocked!, composer, failed |
-| **S6** 23–29 Nov · *Social and profile* | Hi-fi chat, friends map, collection | Events API + AI photo check | **Chat backend** (Channels + Redis, 1:1 and groups) | **S3–S4** comments, notifications, **P1** my profile | **E7–E8** events + city progress | **P2–P3** collection, stamp detail |
-| **S7** 30 Nov–6 Dec · *Chat and friends* | Hi-fi AI screens; **usability test #2** | *Ask Kosovo* API (answers from our place data) | **Live location** (opt-in, ghost mode, precision) | **S6** followers/requests, **P6–P7** settings, privacy | **M4** friends on the map | **C1–C3** chats, chat, new chat |
-| **S8** 7–13 Dec · *AI and engagement* | App icon, splash, store visuals | *Plan my day* API; staging deploy | Push notifications + moderation | **S7–S8** report/block, share, **P4** leaderboard | **I2–I3** plan my day + route on map | **I1** Ask Kosovo, **C4–C5** groups, share to chat |
-| **S9** 14–20 Dec · *Polish and beta* | **Design QA + accessibility** | Security review + production deploy | **Beta test with 8+ users** + bug triage | **P8**, translations, empty states | Offline cache, map performance | Animations, chat polish |
-| **S10** 21–27 Dec · *Release candidate* | Presentation deck + demo storyboard | Android release build | **Final report** | Bug fixes (own screens) | Bug fixes + demo data | Bug fixes |
-| **S11** 4–10 Jan · *Final* | Demo video + case study | v1.0 release | Rehearsals + submission | Final QA | Demo phones checklist | Demo phones checklist |
-
-Every sprint also has a **sprint review** (Krenare), and in Sprint 1 everyone merges a first **onboarding PR**.
+| **1** 19–25 Oct · Kickoff | MVP to the professor, research, flows, wireframes, Expo app with 5 tabs | Django + PostGIS set-up | Working agreement; learn React Native | Learn RN; static welcome screen | Learn RN; static city card | Learn RN; static stamp |
+| **2** 26 Oct–1 Nov · Onboarding | Design system, hi-fi onboarding, shared components | Sign-in API | Where is home?, Find friends | Splash, welcome, language, sign up, log in | Cities grid (38) | Permissions, profile setup, interests |
+| **3** 2–8 Nov · Cities & places | Hi-fi explore/place/map; sign-in flow | Cities & places API, admin, seed 38 | Friends list; content: Prishtinë | Connect sign up/log in; content: Prizren | City page, facts, categories | Place page |
+| **4** 9–15 Nov · Map & content | **Map 2D/3D**, place sheet | **Unlock API** | Add friend, requests; content: Mitrovicë | Profile, edit profile, stats | Search, saved, nearby; content: Pejë, Gjakovë | Collection, stamp detail, not in range; content: Ferizaj, Gjilan |
+| **5** 16–22 Nov · Unlock & collection | **Unlock camera + "Unlocked!"** | Friends, activity, collection APIs | Connect friends; friend profile | Settings, language, notifications | Events, event page | Connect collection; regions; city completed |
+| **6** 23–29 Nov · Home & friends | Home screen; hi-fi chat/trips/challenges | Chat (real time), postcards API | Postcards, block/report | Ghost mode, blocked users | Place of the day, continue exploring | Friend activity, notifications |
+| **7** 30 Nov–6 Dec · Chat & trips | **Friends on the map**, meet here | Live location, push notifications | Create a trip, trip checklist | Private memories, delete account | Plan my day screens | Chats, chat, share a place |
+| **8** 7–13 Dec · AI & challenges | App icon, splash, design review | **AI**: Ask Kosovo, Plan my day | Friend streak, friend quest, leaderboard | Help, translations | Connect Plan my day | Ask Kosovo, challenges, XP |
+| **9** 14–20 Dec · Polish & beta | Design QA, accessibility, animations | Security, production deploy | **Beta test (8+ users)**, privacy policy | Empty/error states | Empty/error states | Empty/error states |
+| **10** 21–27 Dec · Release candidate | Deck + demo storyboard | APK + demo data | **Final report** | Bug fixes | Bug fixes | Bug fixes |
+| **11** 4–10 Jan · Final | Demo video; present | v1.0 release; present | Rehearsals, submission; present | Present | Demo phones; present | Present |
 
 ---
 
@@ -205,34 +128,33 @@ Every sprint also has a **sprint review** (Krenare), and in Sprint 1 everyone me
 
 ```mermaid
 flowchart LR
-  App["📱 frontend/<br/>Expo · React Native"] -- REST (JWT) --> API["🐍 backend/<br/>Django + DRF"]
+  App["📱 app/<br/>Expo · React Native"] -- REST (JWT) --> API["🐍 backend/<br/>Django + DRF"]
   App -- WebSocket --> WS["Django Channels<br/>chat · live location"]
   API --> DB[("PostgreSQL + PostGIS")]
   WS --> R[(Redis)]
   WS --> DB
   API --> S[(Photo storage)]
-  API --> AI["AI APIs<br/>(vision + language)"]
-  Admin["🛠️ Django admin<br/>(web)"] --> DB
-  App --> MB["Mapbox<br/>2D / 3D tiles"]
+  API --> AI["AI APIs"]
+  Admin["🛠️ Django admin (web)"] --> DB
+  App --> MB["Apple Maps 2D / 3D"]
 ```
 
 | Layer | Choice |
 | --- | --- |
-| Frontend (`frontend/`) | Expo SDK 58 · React Native · TypeScript · Expo Router · `@rnmapbox/maps` · `expo-camera` · `expo-location` · TanStack Query · Zustand · i18next (sq/en) · Reanimated |
-| Backend (`backend/`) | Python 3.12+ · Django 6.1 · Django REST Framework · GeoDjango · Channels + Redis · SimpleJWT · django-allauth · drf-spectacular (API docs) · Unfold (modern admin) · Celery |
-| Database | PostgreSQL 17 + PostGIS: `Region`, `Municipality` (polygon), `Place` (point, unlock radius), `Unlock`, `Stamp`, `Post`, `Like`, `Comment`, `Follow`, `Conversation`, `Message`, `LocationShare`, `Event`, `Report` |
-| Backend apps | `accounts` · `places` (regions, municipalities, places, events) · `unlocks` (verification, stamps) · `social` (posts, follows, feed) · `chat` · `location` · `notifications` · `ai` |
-| Unlock check | In-app photo + GPS → `POST /api/unlocks/` → PostGIS `distance ≤ radius`, accuracy ≤ 75 m, no fake GPS, rate limit → stamp + post (AI photo check is added later) |
-| Hosting (demo) | Docker locally · Render / Railway / Fly.io for Django · Neon or Supabase Postgres with PostGIS · Upstash Redis · Cloudflare R2 for photos |
+| App (`app/`) | Expo SDK 58 · React Native · TypeScript · Expo Router · `react-native-maps` (Apple Maps) · `expo-camera` · `expo-location` · TanStack Query · i18next (sq/en) · Reanimated |
+| Backend (`backend/`) | Python 3.12+ · Django 6.1 · Django REST Framework · GeoDjango · Channels + Redis · SimpleJWT · drf-spectacular · Celery |
+| Data | `Region`, `Municipality` (polygon), `Place` (point, unlock radius), `Unlock`, `Stamp`, `Friendship`, `Activity` (automatic), `Postcard`, `Conversation`, `Message`, `LocationShare`, `Trip`, `Challenge`, `Streak`, `Event`, `Report` |
+| Unlock check | In-app photo + GPS → `POST /api/unlocks/` → PostGIS distance ≤ radius, accuracy ≤ 75 m, no fake GPS, rate limit → stamp + activity |
+| Hosting (demo) | Docker locally (`docker compose up`: PostgreSQL 17 + backend) · later Render / Railway / Fly.io with a hosted PostgreSQL + PostGIS · Cloudflare R2 for photos |
 
 ---
 
 ## 8. How we work
 
-- **Scrum with 1-week sprints.** Planning right after class, an async stand-up in the group chat (Mon / Wed / Fri: *done · next · blocked*), and a review in class.
-- **Board columns:** Backlog → Todo → In Progress → In Review → Done. Every issue has one owner, a sprint, a priority (P0/P1/P2) and points.
-- **Git:** `main` (a stable release per sprint) ← `develop` (integration) ← `feat/<issue>-<name>` branches. A PR needs 1 approval, and a PR that changes UI also needs Rinor's design review. Details are in [CONTRIBUTING.md](../CONTRIBUTING.md).
-- **Definition of Done:** acceptance criteria met · screenshots in the PR · reviewed · merged into `develop` · sq/en text · card in Done.
+- **Scrum with 1-week sprints:** planning after class, a stand-up in the group chat (Mon / Wed / Fri: *done · next · blocked*), and a review in class.
+- **Board:** one card per person per week with a checklist. Columns: Todo → In Progress → In Review → Done.
+- **Git:** everyone pushes to **`staging`**. Work that runs goes to `develop` every week and to `main` at the end of each sprint (both protected).
+- **Definition of Done:** the checklist is ticked, the work is pushed with `Closes #card`, there is a screenshot for screens, the text is in sq and en, and the card is in Done.
 
 ---
 
@@ -240,25 +162,20 @@ flowchart LR
 
 | Risk | Plan |
 | --- | --- |
-| Most of the team is new to React Native or Django | Spikes in S1, review pairs, Elios and Erleta unblock within 24 h |
-| GPS or camera fails during the class demo | **Demo mode** (simulated location) and a recorded demo video |
-| 3D maps or realtime turn out harder than planned | Fallbacks are ready: `react-native-maps` with a tilted satellite view instead of Mapbox, and chat that polls every 3 s instead of WebSockets. Live location is *Should* |
-| Content for 38 municipalities takes long | Split by region across all 6 members; import candidates from OpenStreetMap/Wikidata |
-| AI API costs or availability (no Gemini free tier in Kosovo) | Backend-only keys, per-user daily limits, AI features are *Should* |
-| Privacy (live location, photos) | Off by default, ghost mode, precision levels, report/block, account deletion |
-| Free hosting limits | Demo runs on free tiers; Docker keeps everything reproducible locally |
+| Three members are new to programming | Easy screens only, shared components, mock data first, Rinor and Elios pair with them weekly |
+| GPS or camera fails during the class demo | Demo mode (simulated location) and a recorded video |
+| 3D maps or real time turn out harder | Fallbacks: `react-native-maps` with a tilted satellite view; chat that refreshes every 3 s |
+| Content for 38 municipalities takes long | Split across 4 members; import drafts from OpenStreetMap |
+| AI costs | Backend-only keys, daily limits per user; AI is the last core feature |
+| Privacy (location, photos) | Off by default, ghost mode, precision levels, private unlock photos, block/report, account deletion |
 
 ---
 
-## 10. Final demo (definition of success)
+## 10. Final demo
 
-1. A new user signs up, picks interests and opens the **cities grid with all 38 municipalities**.
-2. They open Prizren, find a place on the map, **tilt to 3D**, and unlock the place with the camera (demo mode).
-3. The unlock appears in a friend's **feed**; the friend likes it, comments, and **chats** about it.
-4. The collection shows the new stamp and city progress; the friend sees them on the **friends map**.
-5. *Ask Kosovo* answers "what should I see in Gjakova?" and *Plan my day* draws a route.
+1. A new user signs up, picks interests and sees **all 38 municipalities**.
+2. They open Prizren, tilt the map to **3D**, walk to a place (demo mode) and **unlock** it with the camera.
+3. Their friend sees the unlock in **Friend activity**, they **chat** about it and the friend sends a **postcard** back.
+4. The collection shows the new stamp and the city progress; their **friend streak** goes up.
+5. *Ask Kosovo* answers "What should I see in Gjakovë?" and *Plan my day* builds a route.
 6. An admin adds a place in the Django admin and it appears in the app.
-
----
-
-*Sources: [Koha: tourism 2025](https://www.koha.net/en/arberi/turizmi-gjeneroi-mbi-248-milione-euro-gjate-vitit-2025) · [RTV21: hotels July 2026](https://rtv21.tv/en/posts/rritet-numri-i-vizitorve-n-kosov-kto-jan-vendet-prej-nga-vijn-turistt) · [Wikipedia: Municipalities of Kosovo](https://en.wikipedia.org/wiki/Municipalities_of_Kosovo) · [MapLibre newsletter (no 3D terrain on Native yet)](https://maplibre.org/news/2026-04-01-maplibre-newsletter-march-2026/) · [Bump](https://apps.apple.com/us/app/-/id6471519217) · [Swarm](https://en.wikipedia.org/wiki/Foursquare_Swarm) · [Polarsteps summer 2026](https://www.polarsteps.com/news/polarsteps-launches-summer-2026-release-new-tools-for-planning-privacy-and-sharing) · [Snap Map Ghost Mode](https://www.online-tech-tips.com/what-is-ghost-mode-on-snapchat-and-how-to-turn-it-on/) · [Django vs FastAPI 2026](https://www.capitalnumbers.com/blog/django-vs-fastapi/) · research also done with Grok 4.7 and Cursor Composer.*

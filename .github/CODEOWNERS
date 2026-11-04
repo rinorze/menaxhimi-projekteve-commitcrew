@@ -1,5 +1,6 @@
 # Reviewers are requested automatically for changes in these paths.
-/backend/     @eliosmernica15 @krenareveselii
-/frontend/    @erletaqerimi-oss @artiolaferizi @elvinasinani-netizen @rinorze
+/backend/     @eliosmernica15 @rinorze
+/app/         @rinorze
+/website/     @krenareveselii @rinorze
 /docs/        @rinorze @krenareveselii
 /.github/     @eliosmernica15 @rinorze

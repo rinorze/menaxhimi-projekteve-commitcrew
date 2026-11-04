@@ -1,22 +1,12 @@
-## What & why
-
-<!-- One or two sentences. -->
+## What changed
 
 Closes #
 
-## How to test
+## Screenshots
 
-1. 
-2. 
+<!-- For screens: a screenshot or short video. Delete if not needed. -->
 
-## Screenshots / recording
-
-<!-- Required for UI changes: Android, light + dark. Delete this section if there is no UI change. -->
-
-## Checklist
-
-- [ ] Meets all acceptance criteria of the linked issue
-- [ ] Matches the Figma design (frontend) or has a test (backend)
-- [ ] Albanian + English strings added
-- [ ] Lint, typecheck and tests pass locally
-- [ ] No secrets, `.env` files or unlicensed images
+- [ ] The pull request goes **into `staging`** from my own branch (`feat/<my name>`)
+- [ ] It runs on my phone / locally, in light **and** dark mode
+- [ ] Albanian and English text added (for screens)
+- [ ] No `.env` files or keys

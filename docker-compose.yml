@@ -1,0 +1,52 @@
+# Database + backend with one command:   docker compose up
+#   API:       http://localhost:8000/api/health/   (should say "database": "postgresql")
+#   Database:  http://localhost:8080  (Adminer; System PostgreSQL, server db, user postgres, password postgres)
+#   Admin:     http://localhost:8000/admin/  (user admin, password admin; local development only)
+# The Expo app runs outside Docker (npx expo start in app/), so Expo Go on your phone can reach it.
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: discover_kosovo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d discover_kosovo"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/discover_kosovo
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,0.0.0.0"
+      # local development only: admin at http://localhost:8000/admin/ (user admin, password admin)
+      DJANGO_SUPERUSER_USERNAME: admin
+      DJANGO_SUPERUSER_PASSWORD: admin
+      DJANGO_SUPERUSER_EMAIL: admin@example.com
+    # migrate, make a local admin user if it does not exist yet, load the 318 places and 38 municipalities (safe to repeat), then run the server
+    command: sh -c "python manage.py migrate && (python manage.py createsuperuser --noinput || true) && python manage.py import_places && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app   # edit code on your laptop, the server reloads by itself
+    depends_on:
+      db:
+        condition: service_healthy
+
+  adminer:
+    image: adminer:5
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  pgdata:

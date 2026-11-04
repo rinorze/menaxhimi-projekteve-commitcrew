@@ -1,0 +1,37 @@
+[
+ {
+  "slug": "prishtine",
+  "name_sq": "Prishtinë",
+  "name_en": "Prishtina"
+ },
+ {
+  "slug": "mitrovice",
+  "name_sq": "Mitrovicë",
+  "name_en": "Mitrovica"
+ },
+ {
+  "slug": "peje",
+  "name_sq": "Pejë",
+  "name_en": "Peja"
+ },
+ {
+  "slug": "prizren",
+  "name_sq": "Prizren",
+  "name_en": "Prizren"
+ },
+ {
+  "slug": "ferizaj",
+  "name_sq": "Ferizaj",
+  "name_en": "Ferizaj"
+ },
+ {
+  "slug": "gjilan",
+  "name_sq": "Gjilan",
+  "name_en": "Gjilan"
+ },
+ {
+  "slug": "gjakove",
+  "name_sq": "Gjakovë",
+  "name_en": "Gjakova"
+ }
+]

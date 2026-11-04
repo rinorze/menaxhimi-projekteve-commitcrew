@@ -4,15 +4,17 @@
 
 ### See it. Snap it. Unlock it.
 
-**A social travel app for exploring all 38 municipalities of Kosovo with your friends.**
-Find places on a 2D and 3D map, go there, unlock them with your camera, share the moment, and chat with the people you explore with.
+**A travel and discovery app for all 38 municipalities of Kosovo that feels like social media, without posts, likes or comments.**
+Find places on a 2D and 3D map, go there, unlock them with your camera, and explore Kosovo together with your friends.
 
 ![Expo](https://img.shields.io/badge/Expo-React_Native-000020?logo=expo&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-Django-092E20?logo=django&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-PostGIS-336791?logo=postgresql&logoColor=white)
-![Mapbox](https://img.shields.io/badge/Maps-2D_%26_3D-000000?logo=mapbox&logoColor=white)
+![Apple Maps](https://img.shields.io/badge/Maps-2D_%26_3D-000000?logo=apple&logoColor=white)
+![React](https://img.shields.io/badge/Website-React-20232A?logo=react&logoColor=61DAFB)
+![Docker](https://img.shields.io/badge/Docker-PostgreSQL-2496ED?logo=docker&logoColor=white)
 
-[Project board](https://github.com/users/rinorze/projects/1) · [Plan](docs/PLAN.md) · [MVP (Shqip)](docs/MVP.md) · [How we work](CONTRIBUTING.md)
+[Project board](https://github.com/users/rinorze/projects/1) · [Plan](docs/PLAN.md)
 
 </div>
 
@@ -20,54 +22,38 @@ Find places on a 2D and 3D map, go there, unlock them with your camera, share th
 
 ## The idea
 
-Kosovo is small enough to cross in two hours, yet most people only know a handful of its places: Prishtina's boulevard, Prizren's fortress, Rugova's gorge. The rest, like the waterfalls of Mirusha, the fortress of Novo Brdo, the hidden bridges of Gjakova and the vineyards of Rahovec, stay invisible. They are spread across tourism websites, Instagram posts and word of mouth.
+Kosovo is small enough to cross in a few hours, yet most people only know a handful of its places: Prishtina's boulevard, Prizren's fortress, Rugova's gorge. The rest, like the waterfalls of Mirusha, the fortress of Novo Brdo, the hidden bridges of Gjakova and the vineyards of Rahovec, stay invisible.
 
-At the same time, the people who would love these places are everywhere. **More than 760,000 visitors came to Kosovo in 2025**, hundreds of thousands of diaspora come home every summer, and young locals are always looking for somewhere new to go on the weekend. Today they plan in Google Maps, share on Instagram and coordinate in WhatsApp, and nothing connects the three.
+At the same time, the people who would love these places are everywhere. **More than 760,000 visitors came to Kosovo in 2025**, hundreds of thousands of diaspora come home every summer, and young locals are always looking for somewhere new to go on the weekend.
 
-**Discover Kosovo puts discovering, travelling and social media into one app:**
+**Discover Kosovo turns exploring the country into something you do with your friends:**
 
 - a living **map** of every city and place worth seeing, in 2D or in 3D over Kosovo's real mountains;
-- a **camera unlock**: when you are really at a place, you snap it in the app and it unlocks, so every post is proof you were there;
-- a **social layer** where friends see your unlocks, react, comment, chat, and (if you choose) see where you are;
+- a **camera unlock**: when you are really at a place, you take the photo in the app and it unlocks, so every stamp proves you were there;
+- **friends instead of a feed**: no posts, no likes, no comments. You see what your friends actually do (who unlocked what, who is in Prizren tonight, who is on a streak), and you chat, plan trips, send postcards and finish quests together;
 - an **AI guide** that knows Kosovo and plans your day around the places you haven't unlocked yet.
 
 ## How it works
 
-| 1. Pick a city | 2. Find a place | 3. Go and snap it | 4. Unlock and share |
+| 1. Pick a city | 2. Find a place | 3. Go and snap it | 4. Unlock it, together |
 | --- | --- | --- | --- |
-| Browse all 38 municipalities as big photo cards and open a city to see its best places, events and posts. | Explore the map in 2D, or tilt to 3D to see Rugova, Sharr and Bjeshkët e Nemuna in real terrain. | Inside the place's radius, the camera opens. GPS (and AI, later) checks you are really there. | The place unlocks with an animation, your photo becomes a post, and your city progress grows. |
+| Browse all 38 municipalities as big photo cards and open a city to see its best places and events. | Explore the map in 2D, or tilt to 3D to see Rugova, Sharr and Bjeshkët e Nemuna in real terrain. | Inside the place's radius the camera opens. The server checks GPS, accuracy and fake-GPS. | The stamp lands in your collection, your friends see it in their activity, and your streak grows. |
 
 ## What's inside
 
-**🧭 Explore**
-- City grid with all **38 municipalities** and **7 regions**, plus a detail page per city (top places, events, posts, your progress)
-- Place pages with photos, history, opening hours, directions and the posts people made there
-- Search, categories (history, nature, food, culture, nightlife, hidden gems) and saved places
+**🧭 Explore:** all 38 municipalities and 7 regions, city pages, place pages with stories in Albanian and English, search, categories, saved places, events and festivals.
 
-**🗺️ Map: 2D and 3D**
-- Switch between a clean 2D map and a 3D view with terrain and buildings
-- Locked and unlocked places, friends who share their location, and live events on one map
+**🗺️ Map 2D & 3D:** places (locked, unlocked, saved), real terrain in 3D, filters, friends on the map, and fog that clears as you explore.
 
-**📸 Unlock and collection**
-- Unlock a place by taking a photo of it with the in-app camera while you are there
-- Every unlock adds a stamp to your collection. Finish a city or a whole region and its gold stamp is yours
-- The big goal: one stamp in **every one of the 38 municipalities**
-- City progress ("12 of 30 places in Prizren") and festival stamps that exist only during DokuFest, Sunny Hill or Anibar
+**📸 Unlock & collection:** an in-app camera only, verified on the server, a stamp animation, the collection by region, city completed and the goal of **one stamp in every municipality**.
 
-**💬 Social**
-- A home feed of friends' unlocks and posts, with likes, comments and shares
-- Friends and followers, profiles with your posts, your stamps and your map
-- **Chat** one-to-one and in groups, and send a place or a post straight into a chat
-- **Friends on the map** (opt-in), with ghost mode and city-level precision for privacy
+**🤝 Together (social, without posts):** friend activity, friends nearby, add a friend by QR code, digital postcards, friend streaks, weekly friend quests, leaderboards, co-op places that need two friends, "Bump" when you meet, meetups and circles.
 
-**✨ AI**
-- *Ask Kosovo*: a chat guide that answers questions using our own place data
-- *Plan my day*: a trip plan built from your time, interests and locked places
-- Photo check: AI confirms the photo really shows the place you are unlocking
+**💬 Chat & trips:** real-time chat, sharing a place in chat, trip group chats, shared trip checklists.
 
-**🛡️ Safe by design**
-- Location sharing is off by default, and photos and posts can be reported, users can be blocked, and you can delete your account at any time
-- Admin panel for places, cities, events and moderation
+**✨ AI:** *Ask Kosovo* (a guide that only recommends real places) and *Plan my day* (a route for your free hours).
+
+**🛡️ Private by default:** location sharing off by default, ghost mode, precision and time limits, private unlock photos, block and report, and account deletion.
 
 ## Every city of Kosovo
 
@@ -81,31 +67,47 @@ At the same time, the people who would love these places are everywhere. **More 
 | **Gjilan** | Gjilan · Kamenicë · Viti · Kllokot · Ranillug · Partesh |
 | **Gjakovë** | Gjakovë · Rahovec · Deçan · Junik |
 
-## Who it's for
+## Run it
 
-- **Visitors**: a trustworthy, beautiful guide that shows what is actually worth seeing, with a reason to go beyond the capital.
-- **The diaspora**: rediscover home with family and friends, keep the memories, and see who else is in town this summer.
-- **Locals and students**: weekend plans, friendly competition between friends and cities, and a social feed built around real places.
+```bash
+git clone https://github.com/rinorze/menaxhimi-projekteve-commitcrew.git
+cd menaxhimi-projekteve-commitcrew
+git switch feat/<your name>               # your own branch; open a pull request into staging
+docker compose up                         # PostgreSQL + backend, loads the 318 places
+cd app && npm install && npx expo start   # the iPhone app: scan the QR code with Expo Go
+cd website && npm install && npm run dev  # the website
+```
 
-## Built with
+| What | Where | Login |
+| --- | --- | --- |
+| API health | http://localhost:8000/api/health/ | says `"database": "postgresql"` |
+| API docs | http://localhost:8000/api/docs/ | |
+| Django admin | http://localhost:8000/admin/ | `admin` / `admin` (local only, created automatically) |
+| Adminer (look inside the database) | http://localhost:8080 | System **PostgreSQL**, server `db`, user `postgres`, password `postgres`, database `discover_kosovo` |
 
-| | |
+Everyone has their own database on their own laptop; the data lives in a Docker volume and survives `docker compose down`.
+
+| I want to… | Run |
 | --- | --- |
-| **Frontend** (`frontend/`) | React Native with Expo · TypeScript · Expo Router · Mapbox (2D/3D) · Expo Camera and Location |
-| **Backend** (`backend/`) | Python · Django and Django REST Framework · GeoDjango · Django Channels (chat and live location) |
-| **Database** | PostgreSQL with PostGIS · Redis |
-| **AI** | Vision and language models, called only from the backend |
-| **Design** | Figma · FigJam |
+| stop it, keep the data | `docker compose down` |
+| **delete all data and start clean** | `docker compose down -v` |
+| run a Django command | `docker compose exec backend python manage.py <command>` (`makemigrations`, `migrate`, `test`, `import_places`) |
+| open a SQL prompt | `docker compose exec db psql -U postgres -d discover_kosovo` |
+| make a backup | `docker compose exec -T db pg_dump -U postgres discover_kosovo > backup.sql` |
+| restore a backup | `docker compose exec -T db psql -U postgres -d discover_kosovo < backup.sql` (on an empty database) |
+| see what is wrong | `docker compose logs backend` or `docker compose logs db` |
+
+Port already in use (5432, 8000, 8080)? Close the other program, or change the left number in `docker-compose.yml`. `docker` not recognised? Open a new terminal after installing Docker Desktop and wait for "Engine running". After you change a model, run `makemigrations` and `migrate` and commit the new file in `backend/core/migrations/`.
 
 ## Team: CommitCrew
 
 | Member | Role |
 | --- | --- |
-| Rinor Zeqiri · [@rinorze](https://github.com/rinorze) | Product Designer: UI/UX and the whole look and feel of the app |
-| Elios Mernica · [@eliosmernica15](https://github.com/eliosmernica15) | Backend Lead: Python, database, unlocks, AI |
-| Krenare Veseli · [@krenareveselii](https://github.com/krenareveselii) | Backend Developer: social, chat, live location · Scrum Master |
-| Artiola Ferizi · [@artiolaferizi](https://github.com/artiolaferizi) | Frontend Developer: onboarding, profile, feed |
-| Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Frontend Developer: cities, places, 2D/3D map |
-| Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Frontend Developer: camera unlock, collection, chat, AI |
+| Rinor Zeqiri · [@rinorze](https://github.com/rinorze) | Product Designer: designs every screen; builds the shared components, Home and map; Docker and the database; reviews every pull request |
+| Elios Mernica · [@eliosmernica15](https://github.com/eliosmernica15) | Backend Lead: Django API, unlock checks, real time, AI |
+| Krenare Veseli · [@krenareveselii](https://github.com/krenareveselii) | The website (landing page, waiting list, app page) · Scrum Master |
+| Artiola Ferizi · [@artiolaferizi](https://github.com/artiolaferizi) | Onboarding: welcome, look around, guest place, language, sign in |
+| Erleta Qerimi · [@erletaqerimi-oss](https://github.com/erletaqerimi-oss) | Onboarding: where are you today, Kthimi, interests, save passport, privacy |
+| Elvina Sinani · [@elvinasinani-netizen](https://github.com/elvinasinani-netizen) | Onboarding: avatar creator, avatar items, one friend, first km |
 
-Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every task, owner and deadline lives on the [project board](https://github.com/users/rinorze/projects/1).
+Course *Menaxhimi i Projekteve* (Prof. Lorent Sinani): 11 one-week sprints, October 2026 – January 2027. Every member has cards on the [project board](https://github.com/users/rinorze/projects/1); work goes on your own branch and into `staging` through a pull request.
