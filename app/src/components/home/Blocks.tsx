@@ -69,7 +69,7 @@ export function Header() {
       </View>
       <View style={{ flexDirection: 'row', gap: 10 }}>
         <GlassIconButton name="bell" label={t({ sq: 'Njoftimet', en: 'Notifications' })} size={48} />
-        <GlassIconButton name="person" label={t({ sq: 'Pasaporta jote', en: 'Your passport' })} size={48} onPress={() => router.navigate('/passport')} />
+        <GlassIconButton name="person" label={t({ sq: 'Profili', en: 'Profile' })} size={48} onPress={() => router.navigate('/profile')} />
       </View>
     </View>
   );
