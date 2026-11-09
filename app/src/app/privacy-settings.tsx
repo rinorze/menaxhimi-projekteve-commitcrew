@@ -4,12 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { minTouch, radius, space, text, useColors } from '@/theme/tokens';
- // path-i i file-it të tokens
 
-// 9.10 · Krenare · Privacy and location. Design: docs/design/screens/12-new-design/settings/privacy.png
 
 type T = { sq: string; en: string };
-const LANG: 'sq' | 'en' = 'sq'; // zëvendësoje me hook-un e gjuhës që përdor settings.tsx
+const LANG: 'sq' | 'en' = 'sq'; 
 const t = (x: T) => x[LANG];
 
 const TEXT = {
@@ -179,7 +177,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1 },
   flex: { flex: 1 },
   center: { textAlign: 'center' },
-  content: { paddingHorizontal: space.xl, paddingBottom: 140 }, // vend për tab bar-in poshtë
+  content: { paddingHorizontal: space.xl, paddingBottom: 140 }, 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
