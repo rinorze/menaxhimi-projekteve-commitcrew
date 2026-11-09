@@ -1,18 +1,3 @@
-// import { ScreenPlaceholder } from '@/components/screen-placeholder';
-
-// // 1.2 · Artiola · Guest map, no account needed. The pin you tap opens that place.
-// export default function LookAround() {
-//   return (
-//     <ScreenPlaceholder
-//       step="1.2"
-//       title="Shiko përreth"
-//       owner="Artiola"
-//       design="01-onboarding/02-look-around-guest-map.png"
-//       next="/guest-place"
-//       nextLabel="Hap Kalanë e Novobërdës"
-//     />
-//   );
-// }
 import { useRef, useState } from 'react';
 import {
   View, Text, TextInput, Pressable, ScrollView, Animated, Image,
@@ -20,22 +5,25 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { SymbolView } from 'expo-symbols';
+
+import { useT } from '@/lib/i18n';
 
 const PLACES = [
-  { id: 'kalaja', name: 'Kalaja e Novobërdës', image: require('../../../assets/images/kalaja-e-novo-berdes.jpg') },
-  { id: 'ujevarat', name: 'Ujëvarat e Mirushës', image: require('../../../assets/images/ujevarat-e-mirushes.jpg') },
-  { id: 'gjeravica', name: 'Gjeravica', image: require('../../../assets/images/gjeravica.jpg') },
+  { id: 'kalaja', name: { sq: 'Kalaja e Novobërdës', en: 'Novo Brdo Fortress' }, image: require('../../../assets/images/kalaja-e-novo-berdes.jpg') },
+  { id: 'ujevarat', name: { sq: 'Ujëvarat e Mirushës', en: 'Mirusha Waterfalls' }, image: require('../../../assets/images/ujevarat-e-mirushes.jpg') },
+  { id: 'gjeravica', name: { sq: 'Gjeravica', en: 'Gjeravica' }, image: require('../../../assets/images/gjeravica.jpg') },
 ];
 
 const PINS = [
-  { id: 'ujevarat', x: 0.336, y: 0.306, icon: 'water', big: false },
-  { id: 'gjeravica', x: 0.69, y: 0.274, icon: 'image-filter-hdr', big: false },
-  { id: 'kalaja', x: 0.526, y: 0.383, icon: 'shield', big: true },
+  { id: 'ujevarat', x: 0.336, y: 0.306, icon: 'drop.fill', big: false },
+  { id: 'gjeravica', x: 0.69, y: 0.274, icon: 'mountain.2.fill', big: false },
+  { id: 'kalaja', x: 0.526, y: 0.383, icon: 'shield.fill', big: true },
 ] as const;
 
 export default function LookAround() {
   const router = useRouter();
+  const t = useT();
   const { width, height } = useWindowDimensions();
   const dark = useColorScheme() === 'dark';
   const c = dark
@@ -66,20 +54,23 @@ export default function LookAround() {
     <View style={[s.app, { backgroundColor: c.bg }]}>
       {/* Sfondi i hartës (fiks) */}
       <Image
-        source={require('../../../assets/images/map-bg.png')}
+        source={require('../../../assets/images/guest-map.jpg')}
         style={StyleSheet.absoluteFill}
         resizeMode="cover"
       />
+      {/* quiet the terrain like the design: a soft wash, stronger at the edges so pins and panel read well */}
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: dark ? 'rgba(30,31,29,0.55)' : 'rgba(236,234,227,0.5)' }]} pointerEvents="none" />
 
       {/* Pikat pozicionohen sipas përmasave të ekranit. */}
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
         {PINS.map((p) => {
           const size = p.big ? 46 : 40;
           const on = active === p.id;
+          const place = PLACES.find((item) => item.id === p.id);
           return (
             <Pressable
               key={p.id}
-              accessibilityLabel={PLACES.find((x) => x.id === p.id)?.name}
+              accessibilityLabel={place ? t(place.name) : p.id}
               onPress={() => openPlace(p.id)}
               style={[
                 s.pin,
@@ -94,7 +85,7 @@ export default function LookAround() {
                 },
               ]}
             >
-              <MaterialCommunityIcons name={p.icon} size={20} color={on ? '#fff' : '#111'} />
+              <SymbolView name={p.icon} size={20} tintColor={on ? '#fff' : '#111'} />
             </Pressable>
           );
         })}
@@ -103,17 +94,17 @@ export default function LookAround() {
       {/* Sipër: kërkimi + "Si mysafir" (vetëm pamje) */}
       <SafeAreaView edges={['top']} style={s.top} pointerEvents="box-none">
         <View style={[s.search, { backgroundColor: c.chip }]}>
-          <Ionicons name="search" size={17} color={c.muted} />
+          <SymbolView name="magnifyingglass" size={17} tintColor={c.muted} />
           <TextInput
             style={[s.input, { color: c.ink }]}
-            placeholder="Provo “Pejë” ose “ujëvara”"
+            placeholder={t({ sq: 'Provo “Pejë” ose “ujëvara”', en: 'Try “Pejë” or “waterfall”' })}
             placeholderTextColor={c.muted}
-            accessibilityLabel="Kërko"
+            accessibilityLabel={t({ sq: 'Kërko', en: 'Search' })}
           />
         </View>
         <View style={[s.guest, { backgroundColor: c.chip }]}>
-          <Ionicons name="alert-circle-outline" size={14} color={c.ink} />
-          <Text style={[s.guestText, { color: c.ink }]}>Si mysafir · asgjë nuk ruhet</Text>
+          <SymbolView name="exclamationmark.circle" size={14} tintColor={c.ink} />
+          <Text style={[s.guestText, { color: c.ink }]}>{t({ sq: 'Si mysafir · asgjë nuk ruhet', en: 'As a guest · nothing is saved' })}</Text>
         </View>
       </SafeAreaView>
 
@@ -128,12 +119,14 @@ export default function LookAround() {
       >
         <SafeAreaView edges={['bottom']}>
           <View style={[s.sheet, { backgroundColor: c.card }]}>
-            <Pressable onPress={toggleSheet} hitSlop={16} accessibilityLabel="Hap ose mbyll panelin">
+            <Pressable onPress={toggleSheet} hitSlop={16} accessibilityLabel={t({ sq: 'Hap ose mbyll panelin', en: 'Open or close the panel' })}>
               <View style={s.grab} />
             </Pressable>
 
-            <Text style={[s.h1, { color: c.ink }]}>38 komuna. Fillo me një.</Text>
-            <Text style={[s.p, { color: c.muted }]}>Prek një pikë. 318 vende deri tani, pa llogari.</Text>
+            <Text style={[s.h1, { color: c.ink }]}>{t({ sq: '38 komuna. Fillo me një.', en: '38 municipalities. Start with one.' })}</Text>
+            <Text style={[s.p, { color: c.muted }]}>
+              {t({ sq: 'Prek një pikë. 318 vende deri tani, pa llogari.', en: 'Tap a pin. 318 places so far, no account needed.' })}
+            </Text>
 
             <ScrollView
               horizontal
@@ -151,7 +144,7 @@ export default function LookAround() {
                       active === p.id && { borderWidth: 3, borderColor: dark ? '#fff' : '#111' },
                     ]}
                   />
-                  <Text style={[s.placeName, { color: c.ink }]}>{p.name}</Text>
+                  <Text style={[s.placeName, { color: c.ink }]}>{t(p.name)}</Text>
                 </Pressable>
               ))}
             </ScrollView>

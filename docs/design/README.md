@@ -2,6 +2,8 @@
 
 The final design of Discover Kosovo: **one version of every screen**, in the order a user meets the app (the same numbers as the canvas: 1.1, 1.2 …), in light mode (Home also in dark mode). Onboarding is shown in Albanian, the language the app opens in. The app is **in Albanian first**, then English; German and French can be chosen on the Language screen.
 
+**Built so far in the app (`app/`):** the shared components, the tab bar, Home (2.1) and placeholders for the 14 onboarding screens. Everything else on these pages is still to build.
+
 ## Folders
 
 | Folder | What is inside |

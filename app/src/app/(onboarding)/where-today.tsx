@@ -8,9 +8,8 @@ export default function WhereToday() {
       title="Ku je sot?"
       owner="Erleta"
       design="01-onboarding/05-where-are-you-today.png"
-      next="/interests"
+      next="/kthimi"
       nextLabel="Në Kosovë"
-      also={[{ href: '/kthimi', label: 'Jetoj jashtë · Kthimi' }]}
     />
   );
 }

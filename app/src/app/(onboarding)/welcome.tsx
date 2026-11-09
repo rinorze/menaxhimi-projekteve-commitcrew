@@ -1,32 +1,17 @@
-// import { ScreenPlaceholder } from '@/components/screen-placeholder';
-
-// // 1.1 · Artiola · “Shiko përreth fillimisht” is the biggest button in the design; the photo is Gjeravica.
-// export default function Welcome() {
-//   return (
-//     <ScreenPlaceholder
-//       step="1.1"
-//       title="Mirë se vjen"
-//       owner="Artiola"
-//       design="01-onboarding/01-welcome.png"
-//       next="/language"
-//       nextLabel="Krijo pasaportën time"
-//       also={[{ href: '/look-around', label: 'Shiko përreth fillimisht' }, { href: '/sign-in', label: 'Kam llogari' }]}
-//     />
-//   );
-// }
-
-// app/src/app/(onboarding)/welcome.tsx
-
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useT } from '@/lib/i18n';
 
 const HERO = require('../../../assets/images/gjeravica.jpg');
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const t = useT();
 
   return (
     <View style={styles.root}>
@@ -46,34 +31,34 @@ export default function WelcomeScreen() {
       />
 
       <View style={[styles.brand, { top: insets.top + 20 }]}>
-        <View style={styles.logo}>
+        {/* long-press: the list of every onboarding screen, for reviewing the flow */}
+        <Pressable onLongPress={() => router.push('/screens')} delayLongPress={600} style={styles.logo}>
           <View style={styles.logoGlyph} />
-        </View>
+        </Pressable>
         <Text style={styles.brandText}>DISCOVER KOSOVO</Text>
       </View>
 
       <View style={[styles.content, { paddingBottom: Math.max(insets.bottom, 20) + 24 }]}>
-        <Text style={styles.title}>{'Shiko.\nFotografo.\nHape.'}</Text>
+        <Text style={styles.title}>{t({ sq: 'Shiko.\nFotografo.\nHape.', en: 'See.\nSnap.\nUnlock.' })}</Text>
         <Text style={styles.subtitle}>
-          {'Të 38 komunat, nga Gjeravica në Partesh.\nNë 4 gjuhë.'}
+          {t({ sq: 'Të 38 komunat, nga Gjeravica në Partesh.\nNë 4 gjuhë.', en: 'All 38 municipalities, from Gjeravica to Partesh.\nIn 4 languages.' })}
         </Text>
-
         <Link href="/look-around" asChild>
           <Pressable style={({ pressed }) => [styles.primaryButton, pressed && styles.pressed]}>
-            <Text style={styles.primaryText}>Shiko përreth fillimisht</Text>
+            <Text style={styles.primaryText}>{t({ sq: 'Shiko përreth fillimisht', en: 'Look around first' })}</Text>
             <Text style={styles.primaryArrow}>→</Text>
           </Pressable>
         </Link>
 
         <Link href="/language" asChild>
           <Pressable style={({ pressed }) => [styles.secondaryButton, pressed && styles.pressed]}>
-            <Text style={styles.secondaryText}>Krijo pasaportën time</Text>
+            <Text style={styles.secondaryText}>{t({ sq: 'Krijo pasaportën time', en: 'Create my passport' })}</Text>
           </Pressable>
         </Link>
 
         <Link href="/sign-in" asChild>
           <Pressable hitSlop={12} style={styles.loginLink}>
-            <Text style={styles.loginText}>Kam llogari</Text>
+            <Text style={styles.loginText}>{t({ sq: 'Kam llogari', en: 'I have an account' })}</Text>
           </Pressable>
         </Link>
       </View>
